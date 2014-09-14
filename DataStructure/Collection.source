@@ -1,0 +1,215 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Cpp>
+template <typename T> class Collection{
+public:
+	
+	virtual ~Collection(){};
+	
+	/***
+	 * Return: true if the collection is empty (has no element),
+	 * or false if the collection is not empty.
+	 */
+	virtual bool isEmpty() = 0;
+	
+	/***
+	 * Return: the number of elements the collection has (>=0).
+	 */
+	virtual unsigned getSize() = 0;
+	
+	/***
+	 * Adds an element e to the collection.
+	 * Return: true if it successes, or false if it fails.
+	 */
+	virtual bool addElement(T e) = 0;	// ?
+	
+	/***
+	 * Return: true if the collection has the element e,
+	 * or false if the collection has not.
+	 */
+	virtual bool hasElement(T e) = 0;
+	
+	/***
+	 * Return: true if the collection has the element e
+	 * and successfully removes e from it, or false if
+	 * the collection has not e or fails to remove e.
+	 */
+	virtual bool removeElement(T e) = 0;
+	
+	/***
+	 * Removes all the elements in the collection
+	 * Return: true
+	 */
+	virtual bool removeAllElement() = 0;
+	
+}; // class Collection<T>
+
+template <typename T> class List : public Collection<T>{
+public:
+	
+	virtual ~List(){};
+	
+	/***
+	 * The first element in the list has index 0.
+	 * Return: null if the index is equal or larger
+	 * than the size of the list, or the element at
+	 * the given index.
+	 */
+	virtual T getElementAtIndex(unsigned index) = 0;
+	
+	/***
+	 * Inserts an element in the list at the given index.
+	 * The inserted element will be at the given index,
+	 * that is getElementAtIndex(index) == e after the
+	 * insertion.
+	 * Return: false if the index is larger than the
+	 * size of the list, or true if it successfully
+	 * inserts the element at the given index.
+	 */
+	virtual bool insertElementAtIndex(T e, unsigned index) = 0;
+	
+	/***
+	 * Return: false if the index is equal or larger
+	 * than the size of the list or it fails to remove
+	 * the element at the given index, or true if it
+	 * successfully removes the element at the given
+	 * index.
+	 */
+	virtual bool removeElementAtIndex(unsigned index) = 0;
+	
+	/***
+	 * Return: null if fromIndex>=toIndex, or a list
+	 * containing all the elements of this list from
+	 * getElementAtIndex(fromIndex) to
+	 * getElementAtIndex(toIndex-1)
+	 */
+	virtual List* subList(unsigned fromIndex, unsigned toIndex) = 0;
+	
+	/***
+	 * Return: true only if the two lists has the same elements
+	 * at the same indexes (in the same order)
+	 */
+	virtual bool isEqual(List *l) = 0;
+	
+}; // class IndexedCollection<T>
+
+template <typename T> class Stack : public Collection<T>{
+public:
+	
+	virtual ~Stack(){};
+	
+	/***
+	 * Pushes an element to the stack (adds the element
+	 * to the top of the stack.
+	 * 
+	 */
+	virtual bool pushElement(T e) = 0;
+	
+	/***
+	 * Pops an element from the stack (take the element
+	 * from the top of the stack).
+	 * 
+	 */
+	virtual T popElement() = 0;
+	
+}; // class Stack<T>
+
+template <typename T> class Queue : public Collection<T>{
+public:
+	
+	
+	/***
+	 * Return: the element at the head of the queue
+	 */
+	virtual T getHeadElement() = 0;
+	
+	/***
+	 * Adds the element e to the head of the queue
+	 */
+	virtual bool addElementToHead(T e) = 0;
+	
+	/***
+	 * Removes the element at the head of the queue
+	 */
+	virtual bool removeHeadElement() = 0;
+	
+	/***
+	 * Return: the element at the tail of the queue
+	 */
+	virtual T getTailElement() = 0;
+	
+	/***
+	 * Adds the element e to the tail of the queue
+	 */
+	virtual bool addElementToTail(T e) = 0;
+	
+	/***
+	 * Removes the element at the tail of the queue
+	 */
+	virtual bool removeTailElement() = 0;
+	
+}; // class Queue<T>
+
+template <typename T> class SortedCollection : public Collection<T>{
+public:
+	
+	/***
+	 * Return: the least element in the sorted collection
+	 */
+	virtual T getFirstElement() = 0;
+	
+	/***
+	 * Return: true only if it successfully removes the
+	 * least element in the sorted collection
+	 */
+	virtual bool removeFirstElement() = 0;
+	
+	/***
+	 * Return: the greatest element in the sorted collection
+	 */
+	virtual T getLastElement() = 0;
+	
+	/***
+	 * Return: true only if it successfully removes the
+	 * greatest element in the sorted collection
+	 */
+	virtual bool removeLastElement() = 0;
+	
+	/***
+	 * Return: the element in the sorted collection that
+	 * is less than or equal to (if inclusive==true) the
+	 * given element e
+	 */
+	virtual T getElementByFloor(T e, bool inclusive) = 0;
+	
+	/***
+	 * Return: the element in the sorted collection that
+	 * is greater than or equal to (if inclusive==true) the
+	 * given element e
+	 */
+	virtual T getElementByCeiling(T e, bool inclusive) = 0;
+	
+	/***
+	 *
+	 */
+	virtual SortedCollection* headSet(T toElement, bool inclusive) = 0;
+	
+	/***
+	 *
+	 */
+	virtual SortedCollection* tailSet(T fromElement, bool inclusive) = 0;
+	
+	/***
+	 *
+	 */
+	virtual SortedCollection* middleSet(T fromElement, bool fromInclusive,
+			T toElement, bool toInclusive) = 0;
+	
+}; // class SortedCollection<T>
+</Cpp>
