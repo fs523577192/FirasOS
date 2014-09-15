@@ -1,0 +1,332 @@
+<Head Language=Chinese>
+将是否左/右子和红黑颜色的信息保存在指针的0位中的红黑树
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language=English>
+Red Black Tree in Which the bit 0 of the Pointers Contain Information
+about Whether the Node Is a Left/Right Child and Whether the Node Is
+Red/Black
+
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Comment Language=Chinese>
+将是否左/右子和红黑颜色的信息保存在指针的0位中，故强制红黑树节点2字节对齐。
+左子指针保存是否左子，右子指针保存是否右子，父指针保存红色还是黑色。
+</Comment>
+<Comment Language=English>
+The information about whether the node is a left child or a right child,
+and whether the node is red or black is stored in the bit 0 of the pointers,
+so the node must be aligned to 2-byte boundaries.
+The left child pointer stores whether the node is a left child;
+the right child pointer stores whether the node is a right child;
+the parent pointer stores whether the node is red or black.
+</Comment>
+<Cpp>
+template <typename T> class RedBlackNode{
+protected:
+	
+	static const int ADDR_MASK = -2;	// ~1
+	#define	RedBlackNullNode	((RedBlackNode*)0)
+	
+	RedBlackNode *left, *right, *parent;
+	
+	T key;
+public:
+	
+	inline RedBlackNode *getLeft(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode) throw NullPointerException();
+		#endif
+		return reinterpret_cast<RedBlackNode*>(
+			reinterpret_cast<int>(left) & ADDR_MASK);
+	}
+	inline RedBlackNode *getRight(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode) throw NullPointerException();
+		#endif
+		return reinterpret_cast<RedBlackNode*>(
+			reinterpret_cast<int>(right) & ADDR_MASK);
+	}
+	inline RedBlackNode *getParent(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode) throw NullPointerException();
+		#endif
+		return reinterpret_cast<RedBlackNode*>(
+			reinterpret_cast<int>(parent) & ADDR_MASK);
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+RedBlackNode.ADDR_MASK	EQU	-2
+RedBlackNode.LEFT	EQU	0
+RedBlackNode.RIGHT	EQU	8
+RedBlackNode.PARENT	EQU	16
+RedBlackNode.KEY	EQU	24
+
+RedBlackNode.getLeft:
+	
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return		; TODO: NullPointerException
+	mov	rax,	[rcx+RedBlackNode.LEFT]
+	and	rax,	RedBlackNode.ADDR_MASK
+.return:
+	ret
+
+RedBlackNode.getRight:
+	
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return		; TODO: NullPointerException
+	mov	rax,	[rcx+RedBlackNode.RIGHT]
+	and	rax,	RedBlackNode.ADDR_MASK
+.return:
+	ret
+
+RedBlackNode.getParent:
+	
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return		; TODO: NullPointerException
+	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	rax,	RedBlackNode.ADDR_MASK
+.return:
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+RedBlackNode.ADDR_MASK	EQU	-2
+RedBlackNode.LEFT	EQU	0
+RedBlackNode.RIGHT	EQU	4
+RedBlackNode.PARENT	EQU	8
+RedBlackNode.KEY	EQU	12
+
+RedBlackNode.getLeft:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.LEFT]
+	and	eax,	RedBlackNode.ADDR_MASK
+.return:
+	retn	4
+
+RedBlackNode.getRight:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.RIGHT]
+	and	eax,	RedBlackNode.ADDR_MASK
+.return:
+	retn	4
+
+RedBlackNode.getParent:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.PARENT]
+	and	eax,	RedBlackNode.ADDR_MASK
+.return:
+	retn	4
+</AssemblyX86>
+<Cpp>
+	inline bool isLeft(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode) throw NullPointerException();
+		#endif
+		return (this != RedBlackNullNode) &&
+			((reinterpret_cast<int>(left) & 1) != 0);
+	}
+	inline bool isRight(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode) throw NullPointerException();
+		#endif
+		return (reinterpret_cast<int>(right) & 1) != 0;
+	}
+	inline bool isRed(){
+		// no need to check whether this == null
+		return (this != RedBlackNullNode) &&
+			((reinterpret_cast<int>(parent) & 1) != 0;
+	}
+	inline bool isBlack(){
+		// no need to check whether this == null
+		return (this == RedBlackNullNode) ||
+			((reinterpret_cast<int>(parent) & 1) == 0);
+	}
+<AssemblyX64 Compiler=fasm>
+
+RedBlackNode.isLeft:
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return		; TODO: NullPointerException
+	mov	rax,	[rcx+RedBlackNode.LEFT]
+	and	rax,	1
+.return:
+	ret
+
+RedBlackNode.isRight:
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return		; TODO: NullPointerException
+	mov	rax,	[rcx+RedBlackNode.RIGHT]
+	and	rax,	1
+.return:
+	ret
+
+RedBlackNode.isRed:
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return
+	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	rax,	1
+.return:
+	ret
+
+RedBlackNode.isBlack:
+	mov	rax,	rcx
+	test	rax,	rax
+	jz	.return
+	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	rax,	1
+.return:
+	btc	rax,	0
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+
+RedBlackNode.isLeft:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.LEFT]
+	and	eax,	1
+.return:
+	retn	4
+
+RedBlackNode.isRight:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.RIGHT]
+	and	eax,	1
+.return:
+	retn	4
+
+RedBlackNode.isRed:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return
+	mov	eax,	[eax+RedBlackNode.PARENT]
+	and	eax,	1
+.return:
+	retn	4
+
+RedBlackNode.isBlack:
+LABEL	.node	AT	esp+4
+	mov	eax,	[.node]
+	test	eax,	eax
+	jz	.return
+	mov	eax,	[eax+RedBlackNode.PARENT]
+	and	eax,	1
+.return:
+	btc	eax,	0
+	retn	4
+</AssemblyX86>
+<Comment Language=Chinese>
+
+</Comment>
+<Comment Language=English>
+
+</Comment>
+<Cpp>
+protected:
+	RedBlackNode *rotateLeft(){
+		
+	}
+	RedBlackNode *rotateRight(){
+		
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+RedBlackNode.X	EQU	RedBlackNode.LEFT
+RedBlackNode.Y	EQU	RedBlackNode.RIGHT
+
+RedBlackNode.rotateLeft:
+	
+	retn	4
+
+RedBlackNode.Y	EQU	RedBlackNode.LEFT
+RedBlackNode.X	EQU	RedBlackNode.RIGHT
+
+RedBlackNode.rotateRight:
+	
+	retn	4
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+RedBlackNode.X	EQU	RedBlackNode.LEFT
+RedBlackNode.Y	EQU	RedBlackNode.RIGHT
+
+RedBlackNode.rotateLeft:
+	
+	ret
+RedBlackNode.Y	EQU	RedBlackNode.LEFT
+RedBlackNode.X	EQU	RedBlackNode.RIGHT
+
+RedBlackNode.rotateRight:
+	
+	ret
+</AssemblyX86>
+<Cpp>
+	
+}; // class RedBlackNode<T>
+#define RedBlackNullNode	((RedBlackNode<T>*)0)
+
+template <typename T> class RedBlack : public SortedBinaryTree{
+protected:
+	
+	static int (*compareKey)(T *k1, T *k2);
+	#define	RedBlackNull	((RedBlack*)0)
+	
+public:
+	
+</Cpp>
+<Comment Language=Chinese>
+向以this为根的红黑树插入node，返回新树根
+</Comment>
+<Comment Language=English>
+Inserts node into the red-black-tree whose root is this.
+Returns the new root of the red-black-tree
+</Comment>
+
+<Cpp>
+public:
+	RedBlack *_insertNode(RedBlack *node){
+		if(this==RedBlackNull) return RedBlackNull;
+		
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+; _insertNode(root, node, compareKey)
+;             rcx   rdx   r8
+RedBlack._insertNode:
+	
+.return:
+
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+; _insertNode(root, node, compareKey)
+RedBlack._insertNode:
+
+.return:
+
+	retn	12
+</AssemblyX86>
+<Cpp>
+};//class RedBlack<T>
+</Cpp>
