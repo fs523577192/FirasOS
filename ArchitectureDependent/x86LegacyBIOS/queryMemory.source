@@ -1,0 +1,97 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统引导启动
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Loader of the OS
+</Head>
+<Comment Language=Chinese>
+http://wiki.osdev.org/Detecting_Memory_(x86)
+介绍了在用x86/x64架构、传统BIOS的电脑上检测系统内存的方法
+
+http://www.ctyme.com/intr/rb-1741.htm
+是BIOS调用int 15h，eax=0E820h的细节
+</Comment>
+<Comment Language=English>
+For introduction of querying system memory on x86/x64
+architecture with legacy BIOS, please see
+http://wiki.osdev.org/Detecting_Memory_(x86)
+
+For detail of the BIOS service int 15h, eax=0E820h,
+please see http://www.ctyme.com/intr/rb-1741.htm
+</Comment>
+<Cpp>
+class E820Entry{
+protected:
+	unsigned long long base, length;
+	unsigned type, acpiAttribute;
+public:
+	
+	inline void initialize(){
+		// base = length = 0;
+		// type = 0;
+		acpiAttribute = 1;
+	}
+</Cpp>
+<AssemblyX86 Compiler=fasm>
+USE16
+; TODO: MACRO
+; di: this
+E820Entry.INITIALIZE:
+	;mov	DWORD [di],	0
+	;mov	DWORD [di+4],	0	; base
+	;mov	DWORD [di+8],	0
+	;mov	DWORD [di+12],	0	; length
+	;mov	DWORD [di+16],	0	; type
+	mov	DWORD [di+20],	1	; acpiAttribute
+</AssemblyX86>
+	
+	inline unsigned long long getBase(){
+		return base;
+	}
+	inline unsigned long long getLength(){
+		return length;
+	}
+	inline unsigned getType(){
+		return type;
+	}
+	inline unsigned getAttribute(){
+		return acpiAttribute;
+	}
+	
+	inline bool isAvailable(){
+		return (type==1 && (acpiAttribute & 1)!=0);
+	}
+}; // class E820Entry
+</Cpp>
+<AssemblyX86 Compiler=fasm>
+E820.beforeFirstCall:
+	mov	DWORD [],	0	; for entry count
+	mov	DWORD [],	0
+	mov	DWORD [+4],	0	; for total available memory size
+	xor	ebx,	ebx	; indicate first call
+	mov	ax,	
+	mov	es,	ax
+	mov	di,	
+	
+E820.callE820:
+	mov	edx,	'SMAP'	; 534D4150h
+	mov	ecx,	24	; sizeof(E820Entry)
+	mov	eax,	0E820h
+	int	15h
+	jc	E820.fail
+	;cmp	eax,	'SMAP'
+	;jne	E820.fail
+	test	ecx,	ecx
+	jz	.invalidEntry
+	test	BYTE [es:di+20],	1
+	jz	.invalidEntry
+	add	di,	24	; sizeof(E820Entry)
+.invalidEntry:
+	test	ebx,	ebx
+	jnz	E820.callE820
+	
+E820.fail:
+	
+</AssemblyX86>

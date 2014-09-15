@@ -1,0 +1,29 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统内核
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: the OS kernel
+</Head>
+<Cpp>
+class Process{
+private:
+	unsigned processID;
+	unsigned userID;
+	unsigned 
+protected:
+
+public:
+	
+	inline unsigned getID(){
+		return processID;
+	}
+	
+	inline unsigned getUser(){
+		return userID;
+	}
+	
+	
+};
+</Cpp>

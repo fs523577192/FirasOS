@@ -1,0 +1,80 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统引导启动
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Loader of the OS
+</Head>
+<Comment Language=Chinese>
+关于A20地址线的介绍，请见http://wiki.osdev.org/A20_Line
+
+关于BIOS服务int 15h，ax = 2401h的细节，请见
+please see http://www.ctyme.com/intr/rb-1336.htm
+
+关于快速开启A20的方法，请参考
+http://www.win.tue.nl/~aeb/linux/kbd/A20.html
+</Comment>
+<Comment Language=English>
+For information on A20 address line, please see
+http://wiki.osdev.org/A20_Line
+
+For details of BIOS service int 15h, ax = 2401h,
+please see http://www.ctyme.com/intr/rb-1336.htm
+
+For information about fast A20 enabling, please
+see http://www.win.tue.nl/~aeb/linux/kbd/A20.html
+</Comment>
+<AssemblyX86 Compiler=fasm>
+A20.enable:
+.byBIOS:
+	mov	ax,	2401h
+	int	15h
+	jc	.by8042
+	
+	ret
+.by8042:
+	
+	ret
+.byPort92:
+	in	al,	92h
+	or	al,	2
+	and	al,	0FEh
+	out	92h,	al
+	
+	ret
+.fail:
+	
+
+A20.check:
+.byBIOS:
+	mov	ax,	
+	int	15h
+	
+	
+	push	es		; ##
+	mov	cx,	0FFFFh
+	mov	es,	cx
+@@:	mov	di,	7E0Eh
+	cmp	WORD [es:di],	0AA55h	; WORD [0:7EFE]
+	jnz	A20opened	; 检查A20是否打开
+	pop	es		; ##
+	ret
+
+A20.disable:
+	nop
+	nop
+.byBIOS:
+	mov	ax,	2400h
+	int	15h
+	jc	.fail
+	ret
+.by8042:
+	
+	ret
+.byPort92:
+	
+	ret
+.fail:
+
+</AssemblyX86>

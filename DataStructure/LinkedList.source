@@ -1,0 +1,905 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Cpp>
+template <typename T> class LinkedList;
+#ifdef _LINKED_LIST_CIRCULAR_
+template <typename T> class LinkedListO;
+#endif
+#ifdef _LINKED_STACK_
+template <typename T> class LinkedStack;
+#endif
+template <typename T> class LinkedListNode{
+protected:
+	LinkedListNode *next;
+	T key;
+	
+	friend class LinkedList<T>;
+	
+	#ifdef _LINKED_LIST_CIRCULAR_
+	friend class LinkedListO<T>;
+	#endif
+	#ifdef _LINKED_STACK_
+	friend class LinkedStack<T>;
+	#endif
+public:
+	#define LinkedListNullNode ((LinkedListNode*)0)
+	LinkedListNode(T k){
+		key = k;
+		next = LinkedListNullNode;
+	}
+	LinkedListNode(T k, LinkedListNode* n){
+		key = k;
+		next = n;
+	}
+
+	inline T getKey(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedListNullNode) throw NullPointerException();
+		#endif
+		return key;
+	}
+	inline LinkedListNode *getNext(){
+		if(this == LinkedListNullNode) throw NullPointerException();
+		return next;
+	}
+	LinkedListNode *getTail(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedListNullNode) throw NullPointerException();
+		#endif
+		register LinkedListNode *temp = this;
+		while(temp->next != LinkedListNullNode) temp = temp->next;
+		return temp;
+	}
+}; // class LinkedListNode<T>
+#define LinkedListNullNode ((LinkedListNode<T>*)0)
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedListNode.getTail:
+	
+	xor	rax,	rax	; rax = null
+@@:	cmp	rax,	[rcx]
+	je	@F		; jump if rcx->next == null
+	mov	rcx,	[rcx]	; rcx = rcx->next
+	jmp	@B
+@@:	mov	rax,	rcx
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedListNode.getTail:
+	
+@@:	mov	eax,	[esp+4]		; eax = this
+	cmp	DWORD [eax],	0
+	je	@F			; jump if eax->next == null
+	mov	eax,	[eax]		; eax = eax->next
+	jmp	@B
+@@:	retn	4
+</AssemblyX86>
+<Comment Language=Chinese>
+单向不循环链表
+</Comment>
+<Comment Language=English>
+Uni-directional Not-circular LinkedList
+</Comment>
+<Cpp>
+template <typename T> class LinkedList : public List<T>{
+private:
+	LinkedListNode<T> *head;
+public:
+	
+	LinkedList(){
+		head = LinkedListNullNode;
+	}
+	
+	LinkedList(T k){
+		head = new LinkedListNode<T>(k);
+	}
+	
+	~LinkedList(){
+		removeAllElement();
+	}
+	
+	bool isEmpty(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		#endif
+		return head == LinkedListNullNode;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedList.isEmpty:
+	
+	mov	rax,	[rcx]	; rcx == this; rax = this->head
+	test	rax,	rax
+	jz	@F		; jump if head == LinkedListNullNode
+	xor	rax,	rax
+	ret
+@@:	xor	rax,	rax
+	inc	rax
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedList.isEmpty:
+; stack: |ret |this|
+	
+	mov	eax,	[esp+4]	; eax = this
+	mov	eax,	[eax]	; eax = this->head
+	test	eax,	eax
+	jz	@F		; jump if head == LinkedListNullNode
+	xor	eax,	eax
+	retn	4
+@@:	mov	eax,	1
+	retn	4
+</AssemblyX86>
+<Cpp>
+	
+	unsigned getSize(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		#endif
+		register unsigned size = 0;
+		for(register LinkedListNode<T> *temp = head;
+			temp != LinkedListNullNode;
+			temp = temp->next) size++;
+		return size;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedList.getSize:
+	
+	xor	rax,	rax
+	mov	rcx,	[rcx]		; rcx = this->head
+@@:	test	rcx,	rcx
+	jz	@F			; jump if rcx == null
+	inc	rax
+	mov	rcx,	[rcx]		; rcx = rcx->next
+@@:	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedList.getSize:
+	push	ecx
+; stack: |ecx |ret |this|
+	mov	ecx,	[esp+8]		; ebx = this
+	
+	xor	eax,	eax
+	mov	ecx,	[ecx]		; ecx = this->head
+@@:	test	ecx,	ecx
+	jz	@F			; jump if ecx == null
+	inc	eax
+	mov	ecx,	[ecx]		; ecx = ecx->next
+@@:	pop	ecx
+	retn	4
+</AssemblyX86>
+<Cpp>
+	
+	bool addElement(T e){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		#endif
+		head = new LinkedListNode<T>(e, head);
+		return true;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedList.addElement:
+	
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedList.addElement:
+	
+</AssemblyX86>
+<Cpp>
+	
+	bool hasElement(T e){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		#endif
+		for(register LinkedListNode<T> *temp = head;
+				temp != LinkedListNullNode;
+				temp = temp->next)
+			if(temp->key == e) return true;
+		return false;
+	}
+	
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedList.hasElement:
+	
+	
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedList.hasElement:
+	
+</AssemblyX86>
+<Cpp>
+	
+	bool removeElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		LinkedListNode<T> *temp1 = head, *temp2 = head->next;
+		if(head->key == e){
+			head = temp2;
+			delete temp1;
+			return true;
+		}
+		while(temp2 != (LinkedListNode<T>*)0){
+			if(temp2->key == e){
+				temp1->next = temp2->next;
+				delete temp2;
+				return true;
+			}
+			temp1 = temp2;
+			temp2 = temp2->next;
+		}
+		return false;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedList.removeElement:
+	
+	
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedList.removeElement:
+	
+</AssemblyX86>
+<Cpp>
+	
+	bool removeAllElement(){	// inherited from Collection
+		if(isEmpty()) return false;
+		while(head != LinkedListNullNode){
+			register LinkedListNode<T> *temp = head;
+			head = head->next;
+			delete temp;
+		}
+		return true;
+	}
+	
+	T getElementAtIndex(unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0 || head == LinkedListNullNode)
+			throw NullPointerException();
+		#endif
+		LinkedListNode<T> *temp = head;
+		while(index > 0 && temp != LinkedListNullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp != LinkedListNullNode) return temp->key;
+		#ifdef _EXCEPTION_H_
+		throw IndexOutOfBoundsException();
+		#endif
+	}
+	
+	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		#endif
+		if(index == 0){
+			head = new LinkedListNode<T>(e, head);
+			return true;
+		}
+		LinkedListNode<T> *temp = head;
+		while(index > 1 && temp != LinkedListNullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp == LinkedListNullNode) return false;
+		temp->next = new LinkedListNode<T>(e, temp->next);
+		return true;
+	}
+	
+	bool removeElementAtIndex(unsigned index){	// inherited from List
+		if(isEmpty()) return false;
+		LinkedListNode<T> *temp1 = head, *temp2 = head->next;
+		if(index == 0){
+			head = temp2;
+			delete temp1;
+			return true;
+		}
+		while(index > 1 && temp2 != LinkedListNullNode){
+			temp1 = temp2;
+			temp2 = temp2->next;
+			index--;
+		}
+		if(temp2 == LinkedListNullNode) return false;
+		temp1->next = temp2->next;
+		delete temp2;
+		return true;
+	}
+	
+	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		if(fromIndex >= getSize() || toIndex > getSize())
+			throw IndexOutOfBoundsException();
+		#endif
+		LinkedList *list = new LinkedList();
+		if(fromIndex >= toIndex) return list;
+		LinkedListNode<T> *temp1 = head;
+		while(fromIndex > 0){
+			temp1 = temp1->next;
+			fromIndex--;
+			toIndex--;
+		}
+		list->head = new LinkedListNode<T>(temp1->key);
+		LinkedListNode<T> *temp2 = list->head;
+		while(toIndex > 1){
+			temp1 = temp1->next;
+			temp2->next = new LinkedListNode<T>(temp1->key);
+			temp2 = temp2->next;
+			toIndex--;
+		}
+		return list;
+	}
+	
+	bool isEqual(List<T> *l){
+		if(getSize() != l->getSize()) return false;
+		LinkedListNode<T> *temp = head;
+		for(unsigned i = 0;
+				temp != LinkedListNullNode;
+				i++, temp = temp->next)
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
+}; // class LinkedList<T>
+</Cpp>
+<Comment Language=Chinese>
+单向循环链表
+</Comment>
+<Comment Language=English>
+Uni-directional Circular LinkedList
+</Comment>
+<Cpp>
+#ifdef _LINKED_LIST_CIRCULAR_
+template <typename T> class LinkedListO : public List<T>{
+private:
+	LinkedListNode<T> *head;
+public:
+	
+	LinkedListO(){
+		head = LinkedListNullNode;
+	}
+	
+	LinkedListO(T e){
+		head = new LinkedListNode<T>(e);
+		head->next = head;
+	}
+	
+	~LinkedListO(){
+		removeAllElement();
+	}
+	
+	bool isEmpty(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedListO*)0) throw NullPointerException();
+		#endif
+		return head == LinkedListNullNode;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedListO.isEmpty:
+	
+	mov	rax,	[rcx]	; rcx == this; rax = this->head
+	test	rax,	rax
+	jz	@F		; jump if head == LinkedListNullNode
+	xor	rax,	rax
+	ret
+@@:	xor	rax,	rax
+	inc	rax
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedListO.isEmpty:
+; stack: |ret |this|
+	
+	mov	eax,	[esp+4]	; eax = this
+	mov	eax,	[eax]	; eax = this->head
+	test	eax,	eax
+	jz	@F		; jump if head == LinkedListNullNode
+	xor	eax,	eax
+	retn	4
+@@:	mov	eax,	1
+	retn	4
+</AssemblyX86>
+<Cpp>
+	
+	unsigned getSize(){	// inherited from Collection
+		if(isEmpty()) return 0;
+		register unsigned size = 1;
+		for(register LinkedListNode<T> *temp = head->next;
+			temp != head;
+			temp = temp->next) size++;
+		return size;
+	}
+<AssemblyX64 Compiler=fasm>
+LinkedListO.getSize:
+	call	LinkedListO.isEmpty
+	test	rax,	rax
+	jnz	@F		; jump if not empty
+	xor	rax,	rax
+	ret
+@@:	push	rbx		; ##
+	xor	rax,	rax
+	inc	rax
+	mov	rcx,	[rcx]	; rcx = this->head
+	mov	rbx,	[rcx]	; rcx = head->next
+.loop1:
+	cmp	rbx,	rcx
+	je	@F		; jump if rbx == rcx == head
+	mov	rbx,	[rbx]	; rbx = rbx->next
+	jmp	.loop1
+@@:	pop	rbx		; ##
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedListO.getSize:
+	push	DWORD [esp+4]
+	call	LinkedListO.isEmpty
+	test	eax,	eax
+	jnz	@F		; jump if not empty
+	xor	eax,	eax
+	retn	4
+@@:	push	ebx		; ##
+	push	ecx		; %%
+	mov	eax,	1
+	mov	ecx,	[esp+4]	; ecx = this
+	mov	ecx,	[ecx]	; ecx = this->head
+	mov	ebx,	[ecx]	; ebx = head->next
+.loop1:
+	cmp	ebx,	ecx
+	je	@F		; jump if ebx == ecx == head
+	inc	eax
+	mov	ebx,	[ebx]	; ebx = ebx->next
+	jmp	.loop1
+@@:	pop	ecx		; %%
+	pop	ebx		; ##
+	retn	4
+</AssemblyX86>
+	
+	bool addElement(T e){	// inherited from Collection
+		if(isEmpty()){
+			head = new LinkedListNode<T>(e);
+			head->next = head;
+			return true;
+		}
+		register LinkedListNode<T> *temp = head;
+		while(temp->next != head) temp = temp->next;
+		temp->next = head = new LinkedListNode<T>(e, head);
+		return true;
+	}
+	
+	bool hasElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		if(head->key == e) return true;
+		for(register LinkedListNode<T> *temp = head->next;
+				temp != head; temp = temp->next)
+			if(temp->key == e) return true;
+		return false;
+	}
+	
+	bool removeElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		register LinkedListNode<T> *temp1 = head, *temp2 = head->next;;
+		if(head->key == e){
+			while(temp1->next != head) temp1 = temp1->next;
+			temp1->next = temp2;
+			delete head;
+			head = temp2;
+			return true;
+		}
+		while(temp2 != head){
+			if(temp2->key == e){
+				temp1->next = temp2->next;
+				delete temp2;
+				return true;
+			}
+			temp1 = temp2;
+			temp2 = temp2->next;
+		}
+		return false;
+	}
+	
+	bool removeAllElement(){	// inherited from Collection
+		if(isEmpty()) return false;
+		LinkedListNode<T> *temp = head->next;
+		while(temp != head){
+			head->next = temp->next;
+			delete temp;
+			temp = head->next;
+		}
+		delete head;
+		head = LinkedListNullNode;
+	}
+	
+	T getElementAtIndex(unsigned index){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0 || head == LinkedListNullNode)
+			throw NullPointerException();
+		#endif
+		if(index == 0) return head->key;
+		register LinkedListNode<T> *temp = head->next;
+		while(index > 1 && temp != head){
+			temp = temp->next;
+			index--;
+		}
+		#ifdef _EXCEPTION_H_
+		if(temp == head)
+			throw IndexOutOfBoundsException();
+		#endif
+		return temp->key;
+	}
+	
+	bool insertElementAtIndex(T e, unsigned index){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedListO*)0) throw NullPointerException();
+		#endif
+		register LinkedListNode<T> *temp = head;
+		if(index == 0){
+			head = new LinkedListNode<T>(e, head);
+			if(head->next == LinkedListNullNode) head->next = head;
+			else{
+				while(temp->next != head->next) temp = temp->next;
+				temp->next = head;
+			}
+			return true;
+		}
+		if(index == 1){
+			if(head == LinkedListNullNode) return false;
+			head->next = new LinkedListNode<T>(e, head->next);
+			return true;
+		}
+		temp = head->next;
+		while(index > 2 && temp != head){
+			temp = temp->next;
+			index--;
+		}
+		if(temp == head) return false;
+		temp->next = new LinkedListNode<T>(e, temp->next);
+		return true;
+	}
+	
+	bool removeElementAtIndex(unsigned index){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedListO*)0) throw NullPointerException();
+		#endif
+		LinkedListNode<T> *temp1;
+		if(index == 0){
+			for(temp1 = head; temp1->next != head;
+				temp1 = temp1->next);
+			if(temp1 != head) temp1->next = head->next;
+			delete head;
+			head = temp1->next;
+			return true;
+		}
+		temp1 = head;
+		LinkedListNode<T> *temp2 = head->next;
+		while(index > 1 && temp2 != head){
+			temp1 = temp2;
+			temp2 = temp2->next;
+			index--;
+		}
+		if(temp2 == head) return false;
+		temp1->next = temp2->next;
+		delete temp2;
+		return true;
+	}
+	
+	bool isEqual(List<T> *l){
+		if(getSize() != l->getSize()) return false;
+		if(isEmpty()) return true;
+		
+		return true;
+	}
+	
+	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0) throw NullPointerException();
+		if(fromIndex >= getSize() || toIndex > getSize())
+			throw IndexOutOfBoundsException();
+		#endif
+		LinkedListO *list = new LinkedListO();
+		
+		return list;
+	}
+	
+}; // class LinkedListO<T>
+#endif // _LINKED_LIST_CIRCULAR_
+</Cpp>
+
+<Cpp>
+#if defined(_LINKED_LIST_BIDIRECTIONAL_) || defined(_LINKED_LIST_CIRCULAR_BIDIRECTIONAL_)
+template <typename T> class LinkedList2;
+template <typename T> class LinkedList2Node : public LinkedListNode<T>{
+protected:
+	LinkedList2Node *prev;
+	#define LinkedList2NullNode ((LinkedList2Node*)0)
+	friend class LinkedList2<T>;
+	#ifdef _LINKED_QUEUE_
+	friend class LinkedQueue<T>;
+	#endif
+public:
+	
+	LinkedList2Node(T e) : LinkedListNode<T>(e){
+		prev = LinkedList2NullNode;
+	}
+	
+	LinkedList2Node(T e, LinkedList2Node *n, LinkedList2Node *p) :
+			LinkedListNode<T>(e, n){
+		prev = n;
+		if(n != LinkedList2NullNode) n->prev = this;
+		if(p != LinkedList2NullNode) p->next = this;
+	}
+	
+	~LinkedList2Node(){
+		if(prev != LinkedList2NullNode) prev->next = next;
+		if(next != LinkedList2NullNode) next->prev = prev;
+	}
+	
+	inline LinkedList2Node *getPrev(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedList2NullNode) throw NullPointerException();
+		#endif
+		return prev;
+	}
+	
+	LinkedList2Node *getHead(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedList2NullNode) throw NullPointerException();
+		#endif
+		register LinkedList2Node *temp = this;
+		while(temp->prev != LinkedList2NullNode) temp = temp->prev;
+		return temp;
+	}
+	
+}; // class LinkedList2Node<T>
+#endif // defined(_LINKED_LIST_BIDIRECTIONAL_) || defined(_LINKED_LIST_CIRCULAR_BIDIRECTIONAL_)
+</Cpp>
+<Comment Language=Chinese>
+双向不循环链表
+</Comment>
+<Comment Language=English>
+Bi-directional Not-circular LinkedList
+</Comment>
+<Cpp>
+#ifdef _LINKED_LIST_BIDIRECTIONAL_
+template <typename T> class LinkedList2 : public List<T>{
+private:
+	LinkedList2Node<T> *head;
+	
+public:
+	
+	LinkedList2(){
+		head = (LinkedList2Node<T>*)0;
+	}
+	
+	LinkedList2(T e){
+		head = new LinkedList2Node<T>(e);
+	}
+	
+	~LinkedList2(){
+		removeAllElement();
+	}
+	
+	bool isEmpty(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0) throw NullPointerException();
+		#endif
+		return head == (LinkedList2Node<T>*)0;
+	}
+	
+	unsigned getSize(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0) throw NullPointerException();
+		#endif
+		register unsigned size = 0;
+		for(register LinkedList2Node<T> *temp = head;
+			temp != (LinkedList2Node<T>*)0;
+			temp = temp->next) size++;
+		return size;
+	}
+	
+	bool addElement(T e){	// inherited from Collection
+		if(isEmpty()) head = new LinkedList2Node<T>(e);
+		else head = new LinkedList2Node<T>(e, head, LinkedList2NullNode);
+		return true;
+	}
+	
+	bool hasElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		for(LinkedList2Node<T> *temp = head;
+				temp != LinkedList2NullNode;
+				temp = temp->next)
+			if(temp->key == e) return true;
+		return false;
+	}
+	
+	bool removeElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		register LinkedList2Node<T> *temp = head;
+		if(head->key == e){
+			head = head->next;
+			delete temp;
+			return true;
+		}
+		temp = head->next;
+		while(temp != LinkedList2NullNode){
+			if(temp->key == e){
+				delete temp;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	bool removeAllElement(){	// inherited from Collection
+		if(isEmpty()) return false;
+		while(head != LinkedList2NullNode){
+			LinkedList2Node<T> *temp = head;
+			head = head->next;
+			delete temp;
+		}
+		return true;
+	}
+	
+	T getElementAtIndex(unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0 || head == LinkedList2NullNode)
+			throw NullPointerException();
+		#endif
+		register LinkedList2Node<T> *temp = head;
+		while(index > 0 && temp != LinkedList2NullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp != LinkedList2NullNode) return temp->key;
+		#ifdef _EXCEPTION_H_
+		throw IndexOutOfBoundsException();
+		#endif
+	}
+	
+	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0) throw NullPointerException();
+		#endif
+		if(index == 0){
+			head = new LinkedList2Node<T>(e, head,
+				LinkedList2NullNode);
+			return true;
+		}
+		register LinkedList2Node<T> *temp = head;
+		while(index > 1 && temp != LinkedList2NullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp == LinkedList2NullNode) return false;
+		new LinkedList2Node<T>(e, temp->next, temp);
+		return true;
+	}
+	
+	bool removeElementAtIndex(unsigned index){	// inherited from List
+		if(isEmpty()) return false;
+		LinkedList2Node<T> *temp = head->next;
+		if(index == 0){
+			delete head;
+			head = temp;
+			return true;
+		}
+		while(index > 1 && temp != LinkedList2NullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp == LinkedList2NullNode) return false;
+		delete temp;
+		return true;
+	}
+	
+	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0) throw NullPointerException();
+		if(fromIndex >= getSize() || toIndex > getSize())
+			throw IndexOutOfBoundsException();
+		#endif
+		LinkedList2 *list = new LinkedList2();
+		if(fromIndex >= toIndex) return list;
+		LinkedList2Node<T> *temp1 = head;
+		while(fromIndex > 0){
+			temp1 = temp1->next;
+			fromIndex--;
+			toIndex--;
+		}
+		list->head = new LinkedList2Node<T>(temp1->key);
+		LinkedList2Node<T> *temp2 = list->head;
+		while(toIndex > 1){
+			temp1 = temp1->next;
+			temp2->next = new LinkedList2Node<T>(temp1->key);
+			temp2 = temp2->next;
+			toIndex--;
+		}
+		return list;
+	}
+	
+	bool isEqual(List<T> *l){
+		if(getSize() != l->getSize()) return false;
+		LinkedListNode<T> *temp = head;
+		for(unsigned i = 0;
+				temp != LinkedListNullNode;
+				i++, temp = temp->next)
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
+}; // class LinkedList2<T>
+#endif // _LINKED_LIST_BIDIRECTIONAL_
+</Cpp>
+<Comment Language=Chinese>
+双向循环链表
+</Comment>
+<Comment Language=English>
+Bi-directional Circular LinkedList
+</Comment>
+<Cpp>
+#ifdef _LINKED_LIST_CIRCULAR_BIDIRECTIONAL_
+template <typename T> class LinkedListO2 : public List<T>{
+private:
+	LinkedList2Node<T> *head;
+public:
+	
+	LinkedListO2(){
+		head = (LinkedList2Node<T>*)0;
+	}
+	
+	LinkedListO2(T e){
+		head = new LinkedList2Node<T>(e);
+		head->next = head->prev = head;
+	}
+	
+	~LinkedListO2(){
+		removeAllElement();
+	}
+	
+	bool isEmpty(){	// inherited from Collection
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedList2*)0) throw NullPointerException();
+		#endif
+		return head == (LinkedList2Node<T>*)0;
+	}
+	
+	unsigned getSize(){	// inherited from Collection
+		if(isEmpty()) return 0;
+		register unsigned size = 1;
+		for(register LinkedList2Node<T> *temp = head->next;
+			temp != head;
+			temp = temp->next) size++;
+		return size;
+	}
+	
+	bool addElement(T e){	// inherited from Collection
+		if(isEmpty()){
+			head = new LinkedList2Node<T>(e);
+			head->next = head->prev = head;
+		}else head = new LinkedList2Node<T>(e, head, head->prev);
+		return true;
+	}
+	
+	bool hasElement(T e){	// inherited from Collection
+		if(isEmpty()) return false;
+		
+	}
+	
+	bool removeElement(T e){	// inherited from Collection
+		
+	}
+	
+	bool removeAllElement(){	// inherited from Collection
+		
+	}
+	
+	
+}; // class LinkedListO2<T>
+</Cpp>

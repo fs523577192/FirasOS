@@ -1,0 +1,53 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统引导启动
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Loader of the OS
+</Head>
+<Comment Language=Chinese>
+
+</Comment>
+<Comment Language=English>
+
+</Comment>
+<Cpp>
+#define _ADDR_BDA_	0x400
+
+#define _STACK_TOP_	0x7000
+
+#define _CPU_INFO_	0x7000
+#define _DRIVE_INFO_	0x7100
+#define _SVGA_INFO_	
+
+#define _ADDR_STARTUP_	0x7C00
+
+#define _ADDR_IDT_	0x800	; to 0x1000, 
+#define _ADDR_GDT_	0x
+
+
+#define _MEMORY_MAP_	
+
+#define _TEXT_MEMORY_	0xB8000
+</Cpp>
+<AssemblyX86 Compiler=fasm>
+_ADDR_BDA_	EQU	400h
+
+_STACK_TOP_	EQU	7000h
+
+_CPU_INFO_	EQU	7000h
+_DRIVE_INFO_	EQU	7100h
+_SVGA_INFO_	EQU	
+
+_ADDR_STARTUP_	EQU	7C00h
+
+_ADDR_IDT_	EQU	800h	; to 1000h
+_ADDR_GDT_	EQU	
+
+
+_MEMORY_MAP_	EQU	
+
+_TEXT_MEMORY_	EQU	0B8000h
+
+</AssemblyX86>

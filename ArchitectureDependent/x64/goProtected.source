@@ -1,0 +1,20 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Cpp>
+class SegmentDescriptor{
+protected:
+
+public:
+
+
+}; // class SegmentDescriptor
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+
+</AssemblyX64>
