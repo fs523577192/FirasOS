@@ -8,6 +8,9 @@ BelongsTo: Data Structure in the OS
 </Head>
 <Cpp>
 #ifdef _LINKED_STACK_
+</Cpp>
+<Include>LinkedList</Include>
+<Cpp>
 template <typename T> class LinkedStack : public Stack<T>{
 private:
 	LinkedListNode<T> *top;

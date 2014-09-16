@@ -8,6 +8,9 @@ BelongsTo: Data Structure in the OS
 </Head>
 <Cpp>
 #ifdef _LINKED_QUEUE_
+</Cpp>
+<Include>LinkedList</Include>
+<Cpp>
 template <typename T> class LinkedQueue : public Queue<T> {
 private:
 	LinkedList2Node<T> *head;

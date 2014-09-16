@@ -4,14 +4,30 @@
 <Head Language=English>
 
 </Head>
+<AssemblyX86 Compiler=fasm Platform=Windows>
+format PE console
+entry start
+include "C:\FASM\INCLUDE\win32a.inc"
+
+section '.code' code readable executable
+start:
+	
+</AssemblyX86>
+<AssemblyX64 Compiler=fasm Platform=Windows>
+format PE64 GUI
+entry start
+
+section '.text' code readable executable
+
+start:
+	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
+	
+
+</AssemblyX64>
 <Cpp>
 #include <iostream>
 </Cpp>
-<Include=Collection />
-<Cpp>
-#define _LINKED_QUEUE_
-</Cpp>
-<Include=Queue />
+<Include>LinkedQueue</Include>
 <Cpp>
 int main(){
 	LinkedQueue<double> *queue = new LinkedQueue<double>();

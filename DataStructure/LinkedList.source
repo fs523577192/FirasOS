@@ -6,6 +6,7 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
+<Include>Collection</Include>
 <Cpp>
 template <typename T> class LinkedList;
 #ifdef _LINKED_LIST_CIRCULAR_

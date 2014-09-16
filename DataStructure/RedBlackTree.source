@@ -24,39 +24,92 @@ the right child pointer stores whether the node is a right child;
 the parent pointer stores whether the node is red or black.
 </Comment>
 <Cpp>
+template <typename T> class RedBlack;
 template <typename T> class RedBlackNode{
 protected:
 	
 	static const int ADDR_MASK = -2;	// ~1
+	// -2 = 0FFFFFFFEh	2 bytes (16 bits) align  2字节（16位）对齐
+	// -4 = 0FFFFFFFCh	4 bytes (32 bits) align  4字节（32位）对齐
+	// -8 = 0FFFFFFF8h	8 bytes (64 bits) align  8字节（64位）对齐
 	#define	RedBlackNullNode	((RedBlackNode*)0)
 	
 	RedBlackNode *left, *right, *parent;
 	
 	T key;
+	
+	
 public:
 	
+	RedBlackNode(T k){
+		key = k;
+		left = right = parent = RedBlackNullNode;
+	}
+	
+	RedBlackNode(T k, RedBlackNode *l, RedBlackNode *r, RedBlackNode *p){
+		key = k;
+		left = l; right = r; parent = p;
+	}
+	
 	inline RedBlackNode *getLeft(){
+		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this==RedBlackNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return RedBlackNullNode;
 		#endif
 		return reinterpret_cast<RedBlackNode*>(
-			reinterpret_cast<int>(left) & ADDR_MASK);
+			reinterpret_cast<unsigned>(left) & ADDR_MASK);
 	}
 	inline RedBlackNode *getRight(){
+		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this==RedBlackNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return RedBlackNullNode;
 		#endif
 		return reinterpret_cast<RedBlackNode*>(
-			reinterpret_cast<int>(right) & ADDR_MASK);
+			reinterpret_cast<unsigned>(right) & ADDR_MASK);
 	}
 	inline RedBlackNode *getParent(){
+		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this==RedBlackNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return RedBlackNullNode;
 		#endif
 		return reinterpret_cast<RedBlackNode*>(
-			reinterpret_cast<int>(parent) & ADDR_MASK);
+			reinterpret_cast<unsigned>(parent) & ADDR_MASK);
 	}
 </Cpp>
+<Comment Language=Chinese>
+--	一点说明：以下x86/x64汇编语句中会用
+	and	al/bl/cl/dl/BYTE [addr],	RedBlackNode.ADDR_MASK
+	or/test	al/bl/cl/dl/BYTE [addr],	1
+	来替代
+	and	rax/rbx/rcx/rdx/QWORD [addr],	RedBlackNode.ADDR_MASK
+	or/test	rax/rbx/rcx/rdx/QWORD [addr],	1
+--	因为两者可达到相同目的，而64位操作数的指令有REX.W前缀，
+	64位目的操作数的test指令的源操作数要用32位而不是8位，
+	故用字节操作指令来节省代码空间。
+--	除非64位目的操作数的and指令同时还充当test指令，后面跟着一条jz/jnz
+	指令，有判断指针是否为null的作用
+</Comment>
+<Comment Language=English>
+--	Notice: In the following x86/x64 assembly codes, I will use
+	and	al/bl/cl/dl/BYTE [addr],	RedBlackNode.ADDR_MASK
+	or/test	al/bl/cl/dl/BYTE [addr],	1
+	to replace
+	and	rax/rbx/rcx/rdx/QWORD [addr],	RedBlackNode.ADDR_MASK
+	or/test	rax/rbx/rcx/rdx/QWORD [addr],	1
+--	Because they achieve the same goals but instruction with a 64-bit
+	operand has prefix REX.W, and the test instruction with a 64-bit
+	destination operand has a source operand of 32 bits instead of 8 bits.
+--	There is one exception that the and instruction with a 64-bit
+	destination operand is also used as a test instruction to test
+	whether a pointer is null or not, which follows by a jz/jnz
+	instruction.
+</Comment>
 <AssemblyX64 Compiler=fasm>
 RedBlackNode.ADDR_MASK	EQU	-2
 RedBlackNode.LEFT	EQU	0
@@ -65,32 +118,29 @@ RedBlackNode.PARENT	EQU	16
 RedBlackNode.KEY	EQU	24
 
 RedBlackNode.getLeft:
-	
 	mov	rax,	rcx
-	test	rax,	rax
+	test	rcx,	rcx
 	jz	.return		; TODO: NullPointerException
 	mov	rax,	[rcx+RedBlackNode.LEFT]
-	and	rax,	RedBlackNode.ADDR_MASK
+	and	al,	RedBlackNode.ADDR_MASK
 .return:
 	ret
 
 RedBlackNode.getRight:
-	
 	mov	rax,	rcx
-	test	rax,	rax
+	test	rcx,	rcx
 	jz	.return		; TODO: NullPointerException
 	mov	rax,	[rcx+RedBlackNode.RIGHT]
-	and	rax,	RedBlackNode.ADDR_MASK
+	and	al,	RedBlackNode.ADDR_MASK
 .return:
 	ret
 
 RedBlackNode.getParent:
-	
 	mov	rax,	rcx
-	test	rax,	rax
+	test	rcx,	rcx
 	jz	.return		; TODO: NullPointerException
 	mov	rax,	[rcx+RedBlackNode.PARENT]
-	and	rax,	RedBlackNode.ADDR_MASK
+	and	al,	RedBlackNode.ADDR_MASK
 .return:
 	ret
 </AssemblyX64>
@@ -102,8 +152,7 @@ RedBlackNode.PARENT	EQU	8
 RedBlackNode.KEY	EQU	12
 
 RedBlackNode.getLeft:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return		; TODO: NullPointerException
 	mov	eax,	[eax+RedBlackNode.LEFT]
@@ -112,8 +161,7 @@ LABEL	.node	AT	esp+4
 	retn	4
 
 RedBlackNode.getRight:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return		; TODO: NullPointerException
 	mov	eax,	[eax+RedBlackNode.RIGHT]
@@ -122,8 +170,7 @@ LABEL	.node	AT	esp+4
 	retn	4
 
 RedBlackNode.getParent:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return		; TODO: NullPointerException
 	mov	eax,	[eax+RedBlackNode.PARENT]
@@ -132,28 +179,184 @@ LABEL	.node	AT	esp+4
 	retn	4
 </AssemblyX86>
 <Cpp>
+
+	RedBlackNode *getRoot(){
+		register RedBlackNode *temp;
+		for(temp = this; temp->getParent() != RedBlackNullNode;
+			temp = temp->getParent());
+		return temp;
+	}
+	
+	RedBlackNode *getLeftMost(){
+		register RedBlackNode *temp;
+		for(temp = this; temp->getLeft() != RedBlackNullNode;
+			temp = temp->getLeft());
+		return temp;
+	}
+	
+	RedBlackNode *getRightMost(){
+		register RedBlackNode *temp;
+		for(temp = this; temp->getRight() != RedBlackNullNode;
+			temp = temp->getRight());
+		return temp;
+	}
+	
+	RedBlackNode *getSibling(){
+		if(isLeft())
+			return getParent()->getRight();
+		if(isRight())
+			return getParent()->getLeft();
+		return RedBlackNullNode;
+	}
+	</Cpp>
+<AssemblyX64 Compiler=fasm>
+
+RedBlackNode.getRoot:
+	xor	rax,	rax
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+@@:	mov	rax,	rcx
+	mov	rcx,	[rcx+RedBlackNode.PARENT]
+	and	rcx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if rcx != null
+.return:
+	ret
+
+RedBlackNode.getLeftMost:
+	xor	rax,	rax
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+@@:	mov	rax,	rcx
+	mov	rcx,	[rcx+RedBlackNode.LEFT]
+	and	rcx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if rcx != null
+.return:
+	ret
+
+RedBlackNode.getRightMost:
+	xor	rax,	rax
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+@@:	mov	rax,	rcx
+	mov	rcx,	[rcx+RedBlackNode.RIGHT]
+	and	rcx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if rcx != null
+.return:
+	ret
+
+RedBlackNode.getSibling:
+	mov	rax,	rcx
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+	test	BYTE [rcx+RedBlackNode.LEFT],	1
+	jz	@F
+	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	al,	RedBlackNode.ADDR_MASK
+	mov	rax,	[rax+RedBlackNode.RIGHT]
+	and	al,	RedBlackNode.ADDR_MASK
+	ret
+@@:	test	BYTE [rcx+RedBlackNode.RIGHT],	1
+	jz	.return
+	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	al,	RedBlackNode.ADDR_MASK
+	mov	rax,	[rax+RedBlackNode.LEFT]
+	and	al,	RedBlackNode.ADDR_MASK
+.return:
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+
+RedBlackNode.getRoot:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	push	ebx		; ##
+	mov	ebx,	eax	; ebx = this
+@@:	mov	eax,	ebx
+	mov	ebx,	[ebx+RedBlackNode.PARENT]
+	and	ebx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if ebx != null
+	pop	ebx		; ##
+.return:
+	retn	4
+
+RedBlackNode.getLeftMost:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	push	ebx		; ##
+	mov	ebx,	eax	; ebx = this
+@@:	mov	eax,	ebx
+	mov	ebx,	[ebx+RedBlackNode.LEFT]
+	and	ebx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if ebx != null
+	pop	ebx		; ##
+.return:
+	retn	4
+
+RedBlackNode.getRightMost:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	push	ebx		; ##
+	mov	ebx,	eax	; ebx = this
+@@:	mov	eax,	ebx
+	mov	ebx,	[ebx+RedBlackNode.RIGHT]
+	and	ebx,	RedBlackNode.ADDR_MASK
+	jnz	@F		; loop if ebx != null
+	pop	ebx		; ##
+.return:
+	retn	4
+
+RedBlackNode.getSibling:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	test	BYTE [eax+RedBlackNode.LEFT],	1
+	jz	@F
+	mov	eax,	[eax+RedBlackNode.PARENT]
+	and	al,	RedBlackNode.ADDR_MASK
+	mov	eax,	[eax+RedBlackNode.RIGHT]
+	and	al,	RedBlackNode.ADDR_MASK
+	ret
+@@:	test	BYTE [eax+RedBlackNode.RIGHT],	1
+	jz	.return
+	mov	eax,	[eax+RedBlackNode.PARENT]
+	and	al,	RedBlackNode.ADDR_MASK
+	mov	eax,	[eax+RedBlackNode.LEFT]
+	and	al,	RedBlackNode.ADDR_MASK
+.return:
+	ret
+	
+</AssemblyX86>
+<Cpp>
 	inline bool isLeft(){
+		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this==RedBlackNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return false;
 		#endif
-		return (this != RedBlackNullNode) &&
-			((reinterpret_cast<int>(left) & 1) != 0);
+		return (reinterpret_cast<unsigned>(left) & 1) != 0;
 	}
 	inline bool isRight(){
+		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this==RedBlackNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return false;
 		#endif
-		return (reinterpret_cast<int>(right) & 1) != 0;
+		return (reinterpret_cast<unsigned>(right) & 1) != 0;
 	}
 	inline bool isRed(){
 		// no need to check whether this == null
 		return (this != RedBlackNullNode) &&
-			((reinterpret_cast<int>(parent) & 1) != 0;
+			((reinterpret_cast<unsigned>(parent) & 1) != 0);
 	}
 	inline bool isBlack(){
 		// no need to check whether this == null
 		return (this == RedBlackNullNode) ||
-			((reinterpret_cast<int>(parent) & 1) == 0);
+			((reinterpret_cast<unsigned>(parent) & 1) == 0);
 	}
 <AssemblyX64 Compiler=fasm>
 
@@ -197,8 +400,7 @@ RedBlackNode.isBlack:
 <AssemblyX86 Compiler=fasm>
 
 RedBlackNode.isLeft:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return		; TODO: NullPointerException
 	mov	eax,	[eax+RedBlackNode.LEFT]
@@ -207,8 +409,7 @@ LABEL	.node	AT	esp+4
 	retn	4
 
 RedBlackNode.isRight:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return		; TODO: NullPointerException
 	mov	eax,	[eax+RedBlackNode.RIGHT]
@@ -217,8 +418,7 @@ LABEL	.node	AT	esp+4
 	retn	4
 
 RedBlackNode.isRed:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return
 	mov	eax,	[eax+RedBlackNode.PARENT]
@@ -227,14 +427,145 @@ LABEL	.node	AT	esp+4
 	retn	4
 
 RedBlackNode.isBlack:
-LABEL	.node	AT	esp+4
-	mov	eax,	[.node]
+	mov	eax,	[esp+4]	; eax = this
 	test	eax,	eax
 	jz	.return
 	mov	eax,	[eax+RedBlackNode.PARENT]
 	and	eax,	1
 .return:
 	btc	eax,	0
+	retn	4
+</AssemblyX86>
+<Comment Language=Chinese>
+--	获取红黑树中大小不比本节点大/小的最大/小节点
+--	以不比本节点大的最大节点为例：若本节点有左子树，
+	这个节点应该是左子树的最右节点；若本节点没有左
+	子树，那么往树根方向查找，只要发现本节点属于某
+	节点的右子树，那么该节点就是所要找的节点
+</Comment>
+<Comment Language=English>
+
+</Comment>
+<Cpp>
+	
+	RedBlackNode *getPrevNode(){
+		if(getLeft() != RedBlackNullNode)
+			return getLeft()->getRightMost();
+		RedBlackNode *temp;
+		for(temp = this; temp->getParent() != RedBlackNullNode;
+				temp = temp->getParent()){
+			if(temp->isRight()) return temp->getParent();
+		}
+		return RedBlackNullNode;
+	}
+	
+	RedBlackNode *getNextNode(){
+		if(getRight() != RedBlackNullNode)
+			return getRight()->getLeftMost();
+		RedBlackNode *temp;
+		for(temp = this; temp->getParent() != RedBlackNullNode;
+				temp = temp->getParent()){
+			if(temp->isLeft()) return temp->getParent();
+		}
+		return RedBlackNullNode;
+	}
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+
+RedBlackNode.getPrevNode:
+	mov	rax,	rcx
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+	mov	rcx,	[rcx+RedBlackNode.LEFT]
+	and	rcx,	RedBlackNode.ADDR_MASK
+	jz	@F
+	call	RedBlackNode.getRightMost
+	ret
+@@:	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	rax,	RedBlackNode.ADDR_MASK
+	; rax = rcx->getParent()
+	jz	.return		; return null if rcx is root
+	test	BYTE [rcx+RedBlackNode.RIGHT],	1
+	jnz	.return
+	; if rcx->isRight(), return rcx->getParent(),
+	; which is rax
+	mov	rcx,	rax	; rcx = rcx->getParent()
+	jmp	@B
+.return:
+	ret
+
+RedBlackNode.getNextNode:
+	mov	rax,	rcx
+	test	rcx,	rcx
+	jz	.return		; TODO: NullPointerException
+	mov	rcx,	[rcx+RedBlackNode.RIGHT]
+	and	rcx,	RedBlackNode.ADDR_MASK
+	jz	@F
+	call	RedBlackNode.getLeftMost
+	ret
+@@:	mov	rax,	[rcx+RedBlackNode.PARENT]
+	and	rax,	RedBlackNode.ADDR_MASK
+	; rax = rcx->getParent()
+	jz	.return		; return null if rcx is root
+	test	BYTE [rcx+RedBlackNode.LEFT],	1
+	jnz	.return
+	; if rcx->isLeft(), return rcx->getParent(),
+	; which is rax
+	mov	rcx,	rax	; rcx = rcx->getParent()
+	jmp	@B
+.return:
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+
+RedBlackNode.getPrevNode:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.LEFT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	jz	@F
+	push	eax
+	call	RedBlackNode.getRightMost
+	retn	4
+@@:	push	ebx		; ##
+	mov	ebx,	eax	; ebx = this
+@@:	mov	eax,	[ebx+RedBlackNode.PARENT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	; eax = ebx->getParent()
+	jz	@F		; return null if ebx is root
+	test	BYTE [ebx+RedBlackNode.RIGHT],	1
+	jnz	@F
+	; if ebx->isRight(), return ebx->getParent,
+	; which is eax
+	mov	ebx,	eax	; ebx = ebx->getParent()
+	jmp	@B
+@@:	pop	ebx		; ##
+	retn	4
+
+RedBlackNode.getNextNode:
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	mov	eax,	[eax+RedBlackNode.RIGHT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	jz	@F
+	push	eax
+	call	RedBlackNode.getLeftMost
+	retn	4
+@@:	push	ebx		; ##
+	mov	ebx,	eax	; ebx = this
+@@:	mov	eax,	[ebx+RedBlackNode.PARENT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	; eax = ebx->getParent()
+	jz	@F		; return null if ebx is root
+	test	BYTE [ebx+RedBlackNode.LEFT],	1
+	jnz	@F
+	; if ebx->isLeft(), return ebx->getParent,
+	; which is eax
+	mov	ebx,	eax	; ebx = ebx->getParent()
+	jmp	@B
+@@:	pop	ebx		; ##
 	retn	4
 </AssemblyX86>
 <Comment Language=Chinese>
@@ -245,10 +576,23 @@ LABEL	.node	AT	esp+4
 </Comment>
 <Cpp>
 protected:
+	#define RedBlackNodeX	left
+	#define RedBlackNodeY	right
 	RedBlackNode *rotateLeft(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode || RedBlackNodeY==RedBlackNullNode)
+			throw NullPointerException();
+		#endif
 		
 	}
+	
+	#define RedBlackNodeY	left
+	#define RedBlackNodeX	right
 	RedBlackNode *rotateRight(){
+		#ifdef _EXCEPTION_H_
+		if(this==RedBlackNullNode || RedBlackNodeY==RedBlackNullNode)
+			throw NullPointerException();
+		#endif
 		
 	}
 </Cpp>
