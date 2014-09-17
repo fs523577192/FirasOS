@@ -1,35 +1,6 @@
-<Head Language=Chinese>
-
-</Head>
-<Head Language=English>
-
-</Head>
-<AssemblyX86 Compiler=fasm Platform=Windows>
-format PE console
-entry start
-include "C:\FASM\INCLUDE\win32a.inc"
-
-section '.code' code readable executable
-start:
-	
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm Platform=Windows>
-format PE64 GUI
-entry start
-
-section '.text' code readable executable
-
-start:
-	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
-	
-
-</AssemblyX64>
-<Cpp>
 #include <iostream>
-</Cpp>
-<Include>Exception</Include>
-<Include>LinkedQueue</Include>
-<Cpp>
+#include "Exception.cpp"
+#include "LinkedQueue.cpp"
 int main(){
 	LinkedQueue<double> *queue = new LinkedQueue<double>();
 	printf("%d %d\n", queue->isEmpty(), queue->getSize());
@@ -73,4 +44,3 @@ int main(){
 	
 	return 0;
 }
-</Cpp>

@@ -1,15 +1,5 @@
-<Head Language=Chinese>
-作者：伍裕平
-归属：操作系统数据结构
-</Head>
-<Head Language=English>
-Author: Firas
-BelongsTo: Data Structure in the OS
-</Head>
-<Include>LinkedListNode</Include>
-<Cpp>
-#ifndef _LINKED_STACK_H_
-#define _LINKED_STACK_H_
+#include "LinkedListNode.cpp"
+
 template <typename T> class LinkedStack : public Stack<T>{
 private:
 	LinkedListNode<T> *top;
@@ -27,7 +17,7 @@ public:
 		removeAllElement();
 	}
 	
-	inline bool isEmpty(){	// inherited from Collection
+	bool isEmpty(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedStack*)0) throw NullPointerException();
 		#endif
@@ -94,7 +84,7 @@ public:
 		return false;
 	}
 	
-	inline bool pushElement(T e){	// inherited from Stack
+	bool pushElement(T e){	// inherited from Stack
 		return addElement(e);
 	}
 	
@@ -111,5 +101,3 @@ public:
 	}
 	
 }; // class LinkedStack<T>
-#endif // _LINKED_STACK_H_
-</Cpp>

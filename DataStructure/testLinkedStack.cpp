@@ -1,35 +1,6 @@
-<Head Language=Chinese>
-
-</Head>
-<Head Language=English>
-
-</Head>
-<AssemblyX86 Compiler=fasm Platform=Windows>
-format PE console
-entry start
-include "C:\FASM\INCLUDE\win32a.inc"
-
-section '.code' code readable executable
-start:
-	
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm Platform=Windows>
-format PE64 GUI
-entry start
-
-section '.text' code readable executable
-
-start:
-	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
-	
-
-</AssemblyX64>
-<Cpp>
 #include <iostream>
-</Cpp>
-<Include>Exception</Include>
-<Include>LinkedStack</Include>
-<Cpp>
+#include "Exception.cpp"
+#include "LinkedStack.cpp"
 int main(){
 	LinkedStack<float> *stack = new LinkedStack<float>();
 	printf("%d %d\n", stack->isEmpty(), stack->getSize());
@@ -69,10 +40,3 @@ int main(){
 	
 	return 0;
 }
-</Cpp>
-<AssemblyX86 Compiler=fasm>
-
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm>
-
-</AssemblyX64>

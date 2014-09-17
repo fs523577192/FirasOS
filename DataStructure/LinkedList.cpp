@@ -1,19 +1,5 @@
-<Head Language=Chinese>
-作者：伍裕平
-归属：操作系统数据结构
-</Head>
-<Head Language=English>
-Author: Firas
-BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language=Chinese>
-单向不循环链表
-</Comment>
-<Comment Language=English>
-Uni-directional Not-circular LinkedList
-</Comment>
-<Include>LinkedListNode</Include>
-<Cpp>
+#include "LinkedListNode.cpp"
+
 #ifndef _LINKED_LIST_H_
 #define _LINKED_LIST_H_
 template <typename T> class LinkedList : public List<T>{
@@ -39,33 +25,6 @@ public:
 		#endif
 		return head == LinkedListNullNode;
 	}
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList.isEmpty:
-	
-	mov	rax,	[rcx]	; rcx == this; rax = this->head
-	test	rax,	rax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	rax,	rax
-	ret
-@@:	xor	rax,	rax
-	inc	rax
-	ret
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList.isEmpty:
-; stack: |ret |this|
-	
-	mov	eax,	[esp+4]	; eax = this
-	mov	eax,	[eax]	; eax = this->head
-	test	eax,	eax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	eax,	eax
-	retn	4
-@@:	mov	eax,	1
-	retn	4
-</AssemblyX86>
-<Cpp>
 	
 	unsigned getSize(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -77,34 +36,6 @@ LinkedList.isEmpty:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList.getSize:
-	
-	xor	rax,	rax
-	mov	rcx,	[rcx]		; rcx = this->head
-@@:	test	rcx,	rcx
-	jz	@F			; jump if rcx == null
-	inc	rax
-	mov	rcx,	[rcx]		; rcx = rcx->next
-@@:	ret
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList.getSize:
-	push	ecx
-; stack: |ecx |ret |this|
-	mov	ecx,	[esp+8]		; ebx = this
-	
-	xor	eax,	eax
-	mov	ecx,	[ecx]		; ecx = this->head
-@@:	test	ecx,	ecx
-	jz	@F			; jump if ecx == null
-	inc	eax
-	mov	ecx,	[ecx]		; ecx = ecx->next
-@@:	pop	ecx
-	retn	4
-</AssemblyX86>
-<Cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -113,16 +44,6 @@ LinkedList.getSize:
 		head = new LinkedListNode<T>(e, head);
 		return true;
 	}
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList.addElement:
-	
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList.addElement:
-	
-</AssemblyX86>
-<Cpp>
 	
 	bool hasElement(T e){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -134,18 +55,6 @@ LinkedList.addElement:
 			if(temp->key == e) return true;
 		return false;
 	}
-	
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList.hasElement:
-	
-	
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList.hasElement:
-	
-</AssemblyX86>
-<Cpp>
 	
 	bool removeElement(T e){	// inherited from Collection
 		if(isEmpty()) return false;
@@ -166,17 +75,6 @@ LinkedList.hasElement:
 		}
 		return false;
 	}
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList.removeElement:
-	
-	
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList.removeElement:
-	
-</AssemblyX86>
-<Cpp>
 	
 	bool removeAllElement(){	// inherited from Collection
 		if(isEmpty()) return false;
@@ -275,7 +173,5 @@ LinkedList.removeElement:
 			if(temp->key != l->getElementAtIndex(i)) return false;
 		return true;
 	}
-	
 }; // class LinkedList<T>
 #endif // _LINKED_LIST_H_
-</Cpp>

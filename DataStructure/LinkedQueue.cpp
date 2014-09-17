@@ -1,15 +1,5 @@
-<Head Language=Chinese>
-作者：伍裕平
-归属：操作系统数据结构
-</Head>
-<Head Language=English>
-Author: Firas
-BelongsTo: Data Structure in the OS
-</Head>
-<Include>LinkedList2Node</Include>
-<Cpp>
-#ifndef _LINKED_QUEUE_H_
-#define _LINKED_QUEUE_H_
+#include "LinkedList2Node.cpp"
+
 template <typename T> class LinkedQueue : public Queue<T> {
 private:
 	LinkedList2Node<T> *head;
@@ -22,6 +12,7 @@ public:
 	
 	LinkedQueue(T k){
 		head = new LinkedList2Node<T>(k);
+		head->next = head->prev = head;
 	}
 	
 	~LinkedQueue(){
@@ -44,7 +35,7 @@ public:
 		register LinkedList2Node<T> *temp = head;
 		while(temp->getNext() != head){
 			size++;
-			temp = temp->getNext();
+			temp = static_cast<LinkedList2Node<T>*>(temp->getNext());
 		}
 		return size;
 	}
@@ -55,7 +46,7 @@ public:
 		#endif
 		if(head == (LinkedList2Node<T>*)0){
 			head = new LinkedList2Node<T>(e);
-			head->prev = head->next = head;
+			head->next = head->prev = head;
 		}else{
 			head = new LinkedList2Node<T>(e, head, head->getPrev());
 		}
@@ -91,6 +82,7 @@ public:
 				return true;
 			}
 		}
+		return false;
 	}
 	
 	bool removeAllElement(){	// inherited from Collection
@@ -134,7 +126,7 @@ public:
 		#endif
 		return head->getPrev()->getKey();
 	}
-	
+
 	bool addElementToTail(T e){
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedQueue*)0) throw NullPointerException();
@@ -147,7 +139,7 @@ public:
 		}
 		return true;
 	}
-	
+
 	bool removeTailElement(){	// inherited from Queue
 		if(isEmpty()) return false;
 		if(head == head->getPrev()){
@@ -160,5 +152,3 @@ public:
 	}
 	
 }; // class LinkedQueue<T>
-#endif // _LINKED_QUEUE_H_
-</Cpp>

@@ -1,0 +1,82 @@
+<Head Language=Chinese>
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language=English>
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Include>Collection</Include>
+<Cpp>
+#ifndef _LINKED_LIST_NODE_H_
+#define _LINKED_LIST_NODE_H_
+template <typename T> class LinkedList;
+template <typename T> class LinkedListO;
+template <typename T> class LinkedStack;
+
+template <typename T> class LinkedListNode{
+protected:
+	LinkedListNode *next;
+	T key;
+	
+	friend class LinkedList<T>;
+	friend class LinkedListO<T>;
+	friend class LinkedStack<T>;
+	
+public:
+	#define LinkedListNullNode ((LinkedListNode*)0)
+	LinkedListNode(T k){
+		key = k;
+		next = LinkedListNullNode;
+	}
+	LinkedListNode(T k, LinkedListNode* n){
+		key = k;
+		next = n;
+	}
+
+	inline T getKey(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedListNullNode) throw NullPointerException();
+		#endif
+		return key;
+	}
+	inline virtual LinkedListNode *getNext(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedListNullNode) throw NullPointerException();
+		#endif
+		return next;
+	}
+	virtual LinkedListNode *getTail(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedListNullNode) throw NullPointerException();
+		#endif
+		register LinkedListNode *temp = this;
+		while(temp->getNext() != LinkedListNullNode) temp = temp->getNext();
+		return temp;
+	}
+}; // class LinkedListNode<T>
+#undef LinkedListNullNode
+#define LinkedListNullNode ((LinkedListNode<T>*)0)
+#endif // _LINKED_LIST_NODE_H_
+</Cpp>
+<AssemblyX64 Compiler=fasm>
+LinkedListNode.getTail:
+	
+	xor	rax,	rax	; rax = null
+@@:	cmp	rax,	[rcx]
+	je	@F		; jump if rcx->next == null
+	mov	rcx,	[rcx]	; rcx = rcx->next
+	jmp	@B
+@@:	mov	rax,	rcx
+	ret
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+LinkedListNode.getTail:
+	
+@@:	mov	eax,	[esp+4]		; eax = this
+	cmp	DWORD [eax],	0
+	je	@F			; jump if eax->next == null
+	mov	eax,	[eax]		; eax = eax->next
+	jmp	@B
+@@:	retn	4
+</AssemblyX86>

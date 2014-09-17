@@ -633,39 +633,42 @@ RedBlackNode.rotateRight:
 template <typename T> class RedBlack : public SortedBinaryTree{
 protected:
 	
+	RedBlackNode<T> *root;
 	static int (*compareKey)(T *k1, T *k2);
 	#define	RedBlackNull	((RedBlack*)0)
 	
 public:
 	
+	RedBlack(){
+		root = RedBlackNullNode;
+	}
+	
+	RedBlack(T firstElement){
+		root = new RedBlackNode<T>(firstElement)
+	}
 </Cpp>
 <Comment Language=Chinese>
-向以this为根的红黑树插入node，返回新树根
+
 </Comment>
 <Comment Language=English>
-Inserts node into the red-black-tree whose root is this.
-Returns the new root of the red-black-tree
+
 </Comment>
 
 <Cpp>
-public:
-	RedBlack *_insertNode(RedBlack *node){
-		if(this==RedBlackNull) return RedBlackNull;
-		
-	}
+	
+	
 </Cpp>
 <AssemblyX64 Compiler=fasm>
-; _insertNode(root, node, compareKey)
-;             rcx   rdx   r8
-RedBlack._insertNode:
+
+RedBlack.:
 	
 .return:
 
 	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
-; _insertNode(root, node, compareKey)
-RedBlack._insertNode:
+
+RedBlack.:
 
 .return:
 
