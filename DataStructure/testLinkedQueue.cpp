@@ -15,6 +15,9 @@ int main(){
 	// 1 0
 	printf("%d %d\n", queue->removeElement(0.5), queue->removeElement(0.25));
 	// 1 0
+	printf("%d ", queue->addElement(2.5));
+	printf("%d\n", queue->removeElement(2.5));
+	// 1 1
 	printf("%d %d\n\n", queue->isEmpty(), queue->getSize());
 	// 0 2
 	delete queue;

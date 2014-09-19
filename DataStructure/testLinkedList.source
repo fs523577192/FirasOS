@@ -50,8 +50,10 @@ int main(){
 	printf("%d %d\n", list->isEmpty(), list->getSize());
 	// 0 2
 	printf("%d ", list->addElement(0.125f));
+	printf("%d ", list->addElement(3.5f));
+	printf("%d ", list->removeElement(3.5f));
 	printf("%d\n\n", list->removeAllElement());
-	// 1 1
+	// 1 1 1 1
 	delete list;
 	
 	list = new LinkedList<float>(1.5f);

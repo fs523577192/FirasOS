@@ -15,6 +15,9 @@ int main(){
 	// 1 0
 	printf("%d %d\n", stack->removeElement(0.5f), stack->removeElement(1.0f));
 	// 1 0
+	printf("%d ", stack->addElement(3.5f));
+	printf("%d\n", stack->removeElement(3.5f));
+	// 1 1
 	printf("%d %d\n\n", stack->isEmpty(), stack->getSize());
 	// 0 2
 	delete stack;

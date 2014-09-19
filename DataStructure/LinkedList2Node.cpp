@@ -36,6 +36,10 @@ public:
 		if(getNext() != LinkedList2NullNode) next->prev = prev;
 	}
 	
+	inline T getKey(){
+		return key;
+	}
+	
 	inline LinkedList2Node *getNext(){
 		#ifdef _EXCEPTION_H_
 		if(this == LinkedList2NullNode) throw NullPointerException();
