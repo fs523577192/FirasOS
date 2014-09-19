@@ -24,6 +24,8 @@ the right child pointer stores whether the node is a right child;
 the parent pointer stores whether the node is red or black.
 </Comment>
 <Cpp>
+#ifndef _RED_BLACK_H_
+#define _RED_BLACK_H_
 template <typename T> class RedBlack;
 template <typename T> class RedBlackNode{
 protected:
@@ -675,5 +677,6 @@ RedBlack.:
 	retn	12
 </AssemblyX86>
 <Cpp>
-};//class RedBlack<T>
+}; // class RedBlack<T>
+#endif // _RED_BLACK_H_
 </Cpp>

@@ -42,21 +42,22 @@ public:
 </Cpp>
 <AssemblyX64 Compiler=fasm>
 LinkedList.isEmpty:
-	
+	;test	rcx,	rcx
+	; TODO: NullPointerException
 	mov	rax,	[rcx]	; rcx == this; rax = this->head
 	test	rax,	rax
 	jz	@F		; jump if head == LinkedListNullNode
 	xor	rax,	rax
 	ret
-@@:	xor	rax,	rax
-	inc	rax
+@@:	mov	rax,	1
 	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
 LinkedList.isEmpty:
 ; stack: |ret |this|
-	
 	mov	eax,	[esp+4]	; eax = this
+	;test	eax,	eax
+	; TODO: NullPointerException
 	mov	eax,	[eax]	; eax = this->head
 	test	eax,	eax
 	jz	@F		; jump if head == LinkedListNullNode
@@ -80,13 +81,15 @@ LinkedList.isEmpty:
 </Cpp>
 <AssemblyX64 Compiler=fasm>
 LinkedList.getSize:
-	
+	;test	rcx,	rcx
+	; TODO: NullPointerException
 	xor	rax,	rax
 	mov	rcx,	[rcx]		; rcx = this->head
 @@:	test	rcx,	rcx
 	jz	@F			; jump if rcx == null
 	inc	rax
 	mov	rcx,	[rcx]		; rcx = rcx->next
+	jmp	@B
 @@:	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
@@ -94,13 +97,15 @@ LinkedList.getSize:
 	push	ecx
 ; stack: |ecx |ret |this|
 	mov	ecx,	[esp+8]		; ebx = this
-	
+	;test	ecx,	ecx
+	; TODO: NullPointerException
 	xor	eax,	eax
 	mov	ecx,	[ecx]		; ecx = this->head
 @@:	test	ecx,	ecx
 	jz	@F			; jump if ecx == null
 	inc	eax
 	mov	ecx,	[ecx]		; ecx = ecx->next
+	jmp	@B
 @@:	pop	ecx
 	retn	4
 </AssemblyX86>
@@ -115,11 +120,15 @@ LinkedList.getSize:
 	}
 </Cpp>
 <AssemblyX64 Compiler=fasm>
+; TODO: new operator
 LinkedList.addElement:
+	;test	rcx,	rcx
+	; TODO: NullPointerException
 	
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
 LinkedList.addElement:
+	; TODO: NullPointerException
 	
 </AssemblyX86>
 <Cpp>
@@ -138,12 +147,43 @@ LinkedList.addElement:
 </Cpp>
 <AssemblyX64 Compiler=fasm>
 LinkedList.hasElement:
+	;test	rcx,	rcx
+	; TODO: NullPointerException
 	
-	
+.loop0:
+	mov	rcx,	[rcx]		; for first loop: rcx = head
+					; for other loops: rcx = rcx->next
+	test	rcx,	rcx
+	jz	.false
+	cmp	rdx,	[rcx+8]
+	jne	.loop0			; loop if rcx->key != 
+.true:	mov	rax,	1
+	ret
+.false:	xor	rax,	rax
+	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
 LinkedList.hasElement:
+	push	esi
+; stack: |ecx |ret |this|e   |
+LABEL	.node	esp+8
+LABEL	.key	esp+12
+	mov	eax,	[.node]		; eax = this
+	;test	eax,	eax
+	; TODO: NullPointerException
 	
+	mov	eax,	[eax]		; eax = head
+.loop0:
+	test	eax,	eax
+	jz	.false
+	mov	esi,	[.key]
+	cmp	esi,	[eax+
+.true:	mov	eax,	1
+	pop	esi
+	retn	8
+.false:	xor	eax,	eax
+	pop	esi
+	retn	8
 </AssemblyX86>
 <Cpp>
 	
@@ -242,9 +282,11 @@ LinkedList.removeElement:
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedList*)0) throw NullPointerException();
-		if(fromIndex >= getSize() || toIndex > getSize())
+		register unsigned size = getSize();
+		if(fromIndex >= size || toIndex > size)
 			throw IndexOutOfBoundsException();
 		#endif
 		LinkedList *list = new LinkedList();
@@ -266,7 +308,7 @@ LinkedList.removeElement:
 		return list;
 	}
 	
-	bool isEqual(List<T> *l){
+	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		LinkedListNode<T> *temp = head;
 		for(unsigned i = 0;

@@ -1,19 +1,4 @@
-<Head Language=Chinese>
-作者：伍裕平
-归属：操作系统数据结构
-</Head>
-<Head Language=English>
-Author: Firas
-BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language=Chinese>
-双向不循环链表
-</Comment>
-<Comment Language=English>
-Bi-directional Not-circular LinkedList
-</Comment>
-<Include>LinkedList2Node</Include>
-<Cpp>
+#include "LinkedList2Node.cpp"
 #ifndef _LINKED_LIST_2_H_
 #define _LINKED_LIST_2_H_
 template <typename T> class LinkedList2 : public List<T>{
@@ -51,57 +36,6 @@ public:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler=fasm>
-LinkedList2.isEmpty:
-		
-	mov	rax,	[rcx]	; rcx == this; rax = this->head
-	test	rax,	rax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	rax,	rax
-	ret
-@@:	mov	rax,	1
-	ret
-
-LinkedList2.getSize:
-	
-	xor	rax,	rax
-	mov	rcx,	[rcx]		; rcx = this->head
-@@:	test	rcx,	rcx
-	jz	@F			; jump if rcx == null
-	inc	rax
-	mov	rcx,	[rcx]		; rcx = rcx->next
-	jmp	@B
-@@:	ret
-</AssemblyX64>
-<AssemblyX86 Compiler=fasm>
-LinkedList2.isEmpty:
-	
-	mov	eax,	[esp+4]	; eax = this
-	mov	eax,	[eax]	; eax = this->head
-	test	eax,	eax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	eax,	eax
-	retn	4
-@@:	mov	eax,	1
-	retn	4
-
-LinkedList2.getSize:
-	push	ecx
-; stack: |ecx |ret |this|
-	mov	ecx,	[esp+8]		; ebx = this
-	
-	xor	eax,	eax
-	mov	ecx,	[ecx]		; ecx = this->head
-@@:	test	ecx,	ecx
-	jz	@F			; jump if ecx == null
-	inc	eax
-	mov	ecx,	[ecx]		; ecx = ecx->next
-	jmp	@B
-@@:	pop	ecx
-	retn	4
-</AssemblyX86>
-<Cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()) head = new LinkedList2Node<T>(e);
@@ -238,4 +172,3 @@ LinkedList2.getSize:
 	
 }; // class LinkedList2<T>
 #endif // _LINKED_LIST_2_H_
-</Cpp>

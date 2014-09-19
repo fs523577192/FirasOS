@@ -142,7 +142,8 @@ public:
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedList*)0) throw NullPointerException();
-		if(fromIndex >= getSize() || toIndex > getSize())
+		register unsigned size = getSize();
+		if(fromIndex >= size || toIndex > size)
 			throw IndexOutOfBoundsException();
 		#endif
 		LinkedList *list = new LinkedList();

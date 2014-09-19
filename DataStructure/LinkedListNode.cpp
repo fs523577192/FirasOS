@@ -32,18 +32,18 @@ public:
 		#endif
 		return key;
 	}
-	inline virtual LinkedListNode *getNext(){
+	inline LinkedListNode *getNext(){
 		#ifdef _EXCEPTION_H_
 		if(this == LinkedListNullNode) throw NullPointerException();
 		#endif
 		return next;
 	}
-	virtual LinkedListNode *getTail(){
+	LinkedListNode *getTail(){
 		#ifdef _EXCEPTION_H_
 		if(this == LinkedListNullNode) throw NullPointerException();
 		#endif
 		register LinkedListNode *temp = this;
-		while(temp->getNext() != LinkedListNullNode) temp = temp->getNext();
+		while(temp->next != LinkedListNullNode) temp = temp->next;
 		return temp;
 	}
 }; // class LinkedListNode<T>

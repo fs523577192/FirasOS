@@ -1,0 +1,60 @@
+
+<Comment Language=Chinese>
+--	在MBR、VBR之类的对代码占用的空间要小的地方，
+	用xor指令清零再用or 1或inc指令比但用一条
+	mov 1指令所需空间更少
+--	例如mov eax, 1的机器码为5字节的0xB8 0x01 0x00 0x00 0x00
+	或0xC7 0x01 0x00 0x00 0x00
+	mov rax, 1的机器码为10字节的
+	0x48 0xB8 0x01 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+	或7字节的0x48 0xC7 0xC0 0x01 0x00 0x00 0x00
+--	而xor eax, eax的机器码为0x31 0xC0
+	xor rax, rax的机器码为0x48 0x31 0xC0
+	32位模式中inc eax的机器码为0x40
+	64位模式中inc eax的机器码为0xFF 0xC0
+	or al, 1的机器码为0x0C 0x01
+</Comment>
+<AssemblyX86 Compiler=fasm>
+IF ~DEFINED _MACRO_H_
+_MACRO_H_	EQU	1
+; reg can be a 32-bit general register
+MACRO	MOV1TO	reg{
+IF DEFINED _LIMITED_SPACE_
+	xor	reg,	reg
+	inc	reg
+ELSE
+	mov	reg,	1
+END IF ; DEFINED _LIMITED_SPACE_
+} ; MACRO MOV1TO
+</AssemblyX86>
+<AssemblyX64 Compiler=fasm>
+; reg can be a 64-bit or 32-bit general register
+MACRO	MOV1TO	reg{
+IF DEFINED _LIMITED_SPACE_
+	xor	reg,	reg
+MATCH =rax, reg {	or	al,	1	}
+MATCH =rbx, reg {	or	bl,	1	}
+MATCH =rcx, reg {	or	cl,	1	}
+MATCH =rdx, reg {	or	dl,	1	}
+MATCH =rbp, reg {	inc	ebp		}
+MATCH =rsi, reg {	inc	esi		}
+MATCH =rdi, reg {	inc	edi		}
+MATCH =eax, reg {	or	al,	1	}
+MATCH =ebx, reg {	or	bl,	1	}
+MATCH =ecx, reg {	or	cl,	1	}
+MATCH =edx, reg {	or	dl,	1	}
+MATCH =ebp, reg {	inc	ebp		}
+MATCH =esi, reg {	inc	esi		}
+MATCH =edi, reg {	inc	edi		}
+ELSE
+	mov	reg,	1
+END IF ; DEFINED _LIMITED_SPACE_
+} ; MACRO MOV1TO
+</AssemblyX64>
+
+<AssemblyX86 Compiler=fasm>
+END IF ; ~DEFINED _MACRO_H_
+</AssemblyX86>
+<AssemblyX86 Compiler=fasm>
+END IF ; ~DEFINED _MACRO_H_
+</AssemblyX86>

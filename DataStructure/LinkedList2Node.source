@@ -6,7 +6,7 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Include>LinkedListNode</Include>
+<Include>Collection</Include>
 <Cpp>
 #ifndef _LINKED_LIST_2_NODE_H_
 #define _LINKED_LIST_2_NODE_H_
@@ -14,33 +14,41 @@ template <typename T> class LinkedList2;
 template <typename T> class LinkedListO2;
 template <typename T> class LinkedQueue;
 
-template <typename T> class LinkedList2Node : public LinkedListNode<T>{
+template <typename T> class LinkedList2Node{
 protected:
-	LinkedList2Node *prev;
+	
+	LinkedList2Node *next, *prev;
+	
+	T key;
+	
 	#define LinkedList2NullNode ((LinkedList2Node*)0)
 	friend class LinkedList2<T>;
 	friend class LinkedQueue<T>;
 	
 public:
 	
-	LinkedList2Node(T e) : LinkedListNode<T>(e){
-		prev = LinkedList2NullNode;
+	LinkedList2Node(T e){
+		key = e;
+		prev = next = LinkedList2NullNode;
 	}
 	
-	LinkedList2Node(T e, LinkedList2Node *n, LinkedList2Node *p) :
-			LinkedListNode<T>(e, n){
-		prev = n;
+	LinkedList2Node(T e, LinkedList2Node *n, LinkedList2Node *p){
+		key = e;
+		next = n; prev = p;
 		if(n != LinkedList2NullNode) n->prev = this;
 		if(p != LinkedList2NullNode) p->next = this;
 	}
 	
 	~LinkedList2Node(){
-		if(getPrev() != LinkedList2NullNode) getPrev()->next = getNext();
-		if(getNext() != LinkedList2NullNode) getNext()->prev = getPrev();
+		if(getPrev() != LinkedList2NullNode) prev->next = next;
+		if(getNext() != LinkedList2NullNode) next->prev = prev;
 	}
 	
 	inline LinkedList2Node *getNext(){
-		return dynamic_cast<LinkedList2Node*>(this->next);
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedList2NullNode) throw NullPointerException();
+		#endif
+		return next;
 	}
 	
 	inline LinkedList2Node *getPrev(){
@@ -48,6 +56,15 @@ public:
 		if(this == LinkedList2NullNode) throw NullPointerException();
 		#endif
 		return prev;
+	}
+	
+	LinkedList2Node *getTail(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedList2NullNode) throw NullPointerException();
+		#endif
+		register LinkedList2Node *temp = this;
+		while(temp->next != LinkedList2NullNode) temp = temp->next;
+		return temp;
 	}
 	
 	LinkedList2Node *getHead(){
@@ -64,3 +81,61 @@ public:
 #define LinkedList2NullNode ((LinkedList2Node<T>*)0)
 #endif // _LINKED_LIST_2_NODE_H_
 </Cpp>
+<AssemblyX64 Compiler=fasm>
+IF ~DEFINED _LINKED_LIST_2_NODE_H_
+_LINKED_LIST_2_NODE_H_	EQU	1
+
+LINKED_LIST_NEXT	EQU	8
+LINKED_LIST_PREV	EQU	16
+LINKED_LIST_KEY		EQU	24
+
+LinkedListNode.getTail:
+	;test	rcx,	rcx
+	; TODO: NullPointerException
+	xor	rax,	rax			; rax = null
+@@:	cmp	rax,	[rcx+LINKED_LIST_NEXT]
+	je	@F				; jump if rcx->next == null
+	mov	rcx,	[rcx+LINKED_LIST_NEXT]	; rcx = rcx->next
+	jmp	@B
+@@:	mov	rax,	rcx
+	ret
+
+LinkedList2Node.getHead:
+	;test	rcx,	rcx
+	; TODO: NullPointerException
+	xor	rax,	rax			; rax = null
+@@:	cmp	rax,	[rcx+LINKED_LIST_PREV]
+	je	@F				; jump if rcx->prev == null
+	mov	rcx,	[rcx+LINKED_LIST_PREV]	; rcx = rcx->prev
+	jmp	@B
+@@:	mov	rax,	rcx
+	ret
+
+END IF ; _LINKED_LIST_2_NODE_H_
+</AssemblyX64>
+<AssemblyX86 Compiler=fasm>
+IF ~DEFINED _LINKED_LIST_2_NODE_H_
+_LINKED_LIST_2_NODE_H_	EQU	1
+
+LinkedList2Node.getTail:
+	;cmp	DWORD [esp+4],	0
+	; TODO: NullPointerException
+@@:	mov	eax,	[esp+4]			; eax = this
+	cmp	DWORD [eax+LINKED_LIST_NEXT],	0
+	je	@F				; jump if eax->next == null
+	mov	eax,	[eax+LINKED_LIST_NEXT]	; eax = eax->next
+	jmp	@B
+@@:	retn	4
+
+LinkedList2Node.getHead:
+	;cmp	DWORD [esp+4],	0
+	; TODO: NullPointerException
+@@:	mov	eax,	[esp+4]			; eax = this
+	cmp	DWORD [eax+LINKED_LIST_PREV],	0
+	je	@F				; jump if eax->prev == null
+	mov	eax,	[eax+LINKED_LIST_PREV]	; eax = eax->prev
+	jmp	@B
+@@:	retn	4
+
+END IF ; _LINKED_LIST_2_NODE_H_
+</AssemblyX86>
