@@ -19,7 +19,7 @@ public:
 		removeAllElement();
 	}
 	
-	bool isEmpty(){	// inherited from Collection
+	inline bool isEmpty(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedList*)0) throw NullPointerException();
 		#endif
@@ -140,6 +140,7 @@ public:
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedList*)0) throw NullPointerException();
 		register unsigned size = getSize();
@@ -165,7 +166,7 @@ public:
 		return list;
 	}
 	
-	bool isEqual(List<T> *l){
+	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		LinkedListNode<T> *temp = head;
 		for(unsigned i = 0;

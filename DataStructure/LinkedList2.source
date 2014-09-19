@@ -34,7 +34,7 @@ public:
 		removeAllElement();
 	}
 	
-	bool isEmpty(){	// inherited from Collection
+	inline bool isEmpty(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedList2*)0) throw NullPointerException();
 		#endif

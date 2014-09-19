@@ -219,6 +219,7 @@ LinkedStack.hasElement:
 LinkedStack.pushElement	EQU	LinkedStack.addElement
 
 LinkedStack.popElement:
+	
 	ret
 
 END IF ; _LINKED_STACK_H_
@@ -227,6 +228,7 @@ END IF ; _LINKED_STACK_H_
 LinkedStack.pushElement	EQU	LinkedStack.addElement
 
 LinkedStack.popElement:
+	
 	ret
 
 END IF ; _LINKED_STACK_H_

@@ -34,7 +34,7 @@ public:
 		removeAllElement();
 	}
 	
-	bool isEmpty(){	// inherited from Collection
+	inline bool isEmpty(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		#endif
@@ -43,21 +43,22 @@ public:
 </Cpp>
 <AssemblyX64 Compiler=fasm>
 LinkedListO.isEmpty:
-	
+	;test	rcx,	rcx
+	; TODO: NullPointerException
 	mov	rax,	[rcx]	; rcx == this; rax = this->head
 	test	rax,	rax
 	jz	@F		; jump if head == LinkedListNullNode
 	xor	rax,	rax
 	ret
-@@:	xor	rax,	rax
-	inc	rax
+@@:	mov	rax,	1
 	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
 LinkedListO.isEmpty:
 ; stack: |ret |this|
-	
 	mov	eax,	[esp+4]	; eax = this
+	;test	eax,	eax
+	; TODO: NullPointerException
 	mov	eax,	[eax]	; eax = this->head
 	test	eax,	eax
 	jz	@F		; jump if head == LinkedListNullNode
@@ -76,60 +77,64 @@ LinkedListO.isEmpty:
 			temp = temp->next) size++;
 		return size;
 	}
+</Cpp>
 <AssemblyX64 Compiler=fasm>
 LinkedListO.getSize:
-	call	LinkedListO.isEmpty
-	test	rax,	rax
-	jnz	@F		; jump if not empty
-	xor	rax,	rax
-	ret
-@@:	push	rbx		; ##
-	xor	rax,	rax
-	inc	rax
+	;test	rcx,	rcx
+	; TODO: NullPointerException
+	xor	rax,	rax	; rax = 0
 	mov	rcx,	[rcx]	; rcx = this->head
-	mov	rbx,	[rcx]	; rcx = head->next
+	test	rcx,	rcx
+	jnz	@F		; jump if head != LinkedListNullNode
+	ret			; return 0
+@@:	push	rbx		; ##
+	inc	rax		; rax = 1
+	mov	rbx,	[rcx]	; rbx = head->next
 .loop1:
 	cmp	rbx,	rcx
 	je	@F		; jump if rbx == rcx == head
 	mov	rbx,	[rbx]	; rbx = rbx->next
+	inc	rax
 	jmp	.loop1
 @@:	pop	rbx		; ##
 	ret
 </AssemblyX64>
 <AssemblyX86 Compiler=fasm>
 LinkedListO.getSize:
-	push	DWORD [esp+4]
-	call	LinkedListO.isEmpty
-	test	eax,	eax
-	jnz	@F		; jump if not empty
+	push	ebx			; ##
+	push	ecx			; %%
+; stack: |ecx |ebx |ret |this|
+	mov	ecx,	[esp+12]	; ecx = this
+	;test	ecx,	ecx
+	; TODO: NullPointerException
 	xor	eax,	eax
-	retn	4
-@@:	push	ebx		; ##
-	push	ecx		; %%
-	mov	eax,	1
-	mov	ecx,	[esp+4]	; ecx = this
-	mov	ecx,	[ecx]	; ecx = this->head
-	mov	ebx,	[ecx]	; ebx = head->next
+	mov	ecx,	[ecx]		; ecx = this->head
+	test	ecx,	ecx
+	jnz	@F			; jump if head == LinkedListNullNode
+	retn	4			; return 0
+	inc	eax			; eax = 1
+	mov	ebx,	[ecx]		; ebx = head->next
 .loop1:
 	cmp	ebx,	ecx
-	je	@F		; jump if ebx == ecx == head
+	je	@F			; jump if ebx == ecx == head
 	inc	eax
-	mov	ebx,	[ebx]	; ebx = ebx->next
+	mov	ebx,	[ebx]		; ebx = ebx->next
 	jmp	.loop1
-@@:	pop	ecx		; %%
-	pop	ebx		; ##
+@@:	pop	ecx			; %%
+	pop	ebx			; ##
 	retn	4
 </AssemblyX86>
+<Cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()){
 			head = new LinkedListNode<T>(e);
 			head->next = head;
-			return true;
+		}else{
+			register LinkedListNode<T> *temp = head;
+			while(temp->next != head) temp = temp->next;
+			temp->next = head = new LinkedListNode<T>(e, head);
 		}
-		register LinkedListNode<T> *temp = head;
-		while(temp->next != head) temp = temp->next;
-		temp->next = head = new LinkedListNode<T>(e, head);
 		return true;
 	}
 	
@@ -174,11 +179,12 @@ LinkedListO.getSize:
 		}
 		delete head;
 		head = LinkedListNullNode;
+		return true;
 	}
 	
 	T getElementAtIndex(unsigned index){
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedList*)0 || head == LinkedListNullNode)
+		if(this == (LinkedListO*)0 || head == LinkedListNullNode)
 			throw NullPointerException();
 		#endif
 		if(index == 0) return head->key;
@@ -258,7 +264,7 @@ LinkedListO.getSize:
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedList*)0) throw NullPointerException();
+		if(this == (LinkedListO*)0) throw NullPointerException();
 		if(fromIndex >= getSize() || toIndex > getSize())
 			throw IndexOutOfBoundsException();
 		#endif

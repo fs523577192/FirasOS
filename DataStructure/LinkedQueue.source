@@ -94,7 +94,7 @@ LinkedQueue.isEmpty:
 LinkedQueue.getSize:
 	push	ebx		; ##
 	push	ecx		; @@
-; Stack: |ecx |ebx |ret |this|
+; stack: |ecx |ebx |ret |this|
 	mov	ecx,	[esp+12]	; ecx = this
 	;test	ecx,	ecx
 	; TODO: NullPointerException

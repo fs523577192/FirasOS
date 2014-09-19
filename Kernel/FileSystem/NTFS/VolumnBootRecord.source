@@ -7,11 +7,12 @@ Author: Firas
 BelongsTo: the OS kernel
 </Head>
 <Cpp>
-
+class NTFS_VBR{
+protected:
+	unsigned char jumpCode[3];
+	char oem[];
+	
+public:
+	
+}; // class NTFS_VBR
 </Cpp>
-<AssemblyX86 Compiler=fasm>
-
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm>
-
-</AssemblyX64>

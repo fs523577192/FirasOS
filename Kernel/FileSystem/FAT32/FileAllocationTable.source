@@ -7,11 +7,11 @@ Author: Firas
 BelongsTo: the OS kernel
 </Head>
 <Cpp>
-
+class FAT32{
+protected:
+	
+	
+public:
+	
+}; // class FAT32
 </Cpp>
-<AssemblyX86 Compiler=fasm>
-
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm>
-
-</AssemblyX64>

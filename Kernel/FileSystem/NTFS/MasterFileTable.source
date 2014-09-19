@@ -7,11 +7,11 @@ Author: Firas
 BelongsTo: the OS kernel
 </Head>
 <Cpp>
-
+class MFT{
+protected:
+	
+	
+public:
+	
+}; // class MFT
 </Cpp>
-<AssemblyX86 Compiler=fasm>
-
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm>
-
-</AssemblyX64>
