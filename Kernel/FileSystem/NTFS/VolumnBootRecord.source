@@ -1,15 +1,16 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统内核
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: the OS kernel
 </Head>
+<Include>../../../Macro</Include>
 <Cpp>
 class NTFS_VBR{
 protected:
-	unsigned char jumpCode[3];
+	BYTE jumpCode[3];
 	char oem[];
 	
 public:

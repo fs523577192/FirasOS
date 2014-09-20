@@ -1,4 +1,4 @@
-
+#include "../Macro.cpp"
 template <typename T> class Collection{
 public:
 	

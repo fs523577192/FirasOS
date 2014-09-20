@@ -1,15 +1,15 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统引导启动
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Loader of the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 
 </Comment>
 <Cpp>
@@ -31,7 +31,7 @@ BelongsTo: Loader of the OS
 
 #define _TEXT_MEMORY_	0xB8000
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 _ADDR_BDA_	EQU	400h
 
 _STACK_TOP_	EQU	7000h

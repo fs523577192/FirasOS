@@ -1,15 +1,15 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 双向不循环链表
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 Bi-directional Not-circular LinkedList
 </Comment>
 <Include>LinkedList2Node</Include>
@@ -52,7 +52,7 @@ public:
 		return size;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedList2.isEmpty:
 		
 	mov	rax,	[rcx]	; rcx == this; rax = this->head
@@ -74,7 +74,7 @@ LinkedList2.getSize:
 	jmp	@B
 @@:	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList2.isEmpty:
 	
 	mov	eax,	[esp+4]	; eax = this

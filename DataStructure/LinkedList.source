@@ -1,15 +1,15 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 单向不循环链表
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 Uni-directional Not-circular LinkedList
 </Comment>
 <Include>LinkedListNode</Include>
@@ -40,7 +40,7 @@ public:
 		return head == LinkedListNullNode;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedList.isEmpty:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -52,7 +52,7 @@ LinkedList.isEmpty:
 @@:	mov	rax,	1
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList.isEmpty:
 ; stack: |ret |this|
 	mov	eax,	[esp+4]	; eax = this
@@ -79,7 +79,7 @@ LinkedList.isEmpty:
 		return size;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedList.getSize:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -92,7 +92,7 @@ LinkedList.getSize:
 	jmp	@B
 @@:	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList.getSize:
 	push	ecx
 ; stack: |ecx |ret |this|
@@ -119,14 +119,14 @@ LinkedList.getSize:
 		return true;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 ; TODO: new operator
 LinkedList.addElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
 	
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList.addElement:
 	; TODO: NullPointerException
 	
@@ -145,7 +145,7 @@ LinkedList.addElement:
 	}
 	
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedList.hasElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -162,7 +162,7 @@ LinkedList.hasElement:
 .false:	xor	rax,	rax
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList.hasElement:
 	push	esi
 ; stack: |ecx |ret |this|e   |
@@ -207,12 +207,12 @@ LABEL	.key	esp+12
 		return false;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedList.removeElement:
 	
 	
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedList.removeElement:
 	
 </AssemblyX86>

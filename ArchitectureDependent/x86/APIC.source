@@ -1,17 +1,17 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 高级可编程中断控制器
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Advanced Programmable Interrupt Controller
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 
 </Comment>
 <Cpp>
@@ -23,7 +23,7 @@ public:
 
 }; // class APIC
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 hasLAPIC:
 	mov	eax,	
 	cpuid

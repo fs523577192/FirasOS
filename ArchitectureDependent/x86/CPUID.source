@@ -1,17 +1,17 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 CPU特性检测（cpuid指令）
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Detection of CPU characteristics (cpuid instruction)
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 
 </Comment>
 <Cpp>
@@ -26,7 +26,7 @@ public:
 	}
 }; // class APIC
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 
 cpuid0:
 	xor	eax,	eax

@@ -1,0 +1,122 @@
+<Head Language="Chinese">
+自旋锁、互斥量和信号量
+作者：伍裕平
+归属：操作系统数据结构
+</Head>
+<Head Language="English">
+Spin Lock, Mutex and Semaphore
+Author: Firas
+BelongsTo: Data Structure in the OS
+</Head>
+<Cpp>
+class SpinLock{
+private:
+
+public:
+
+}; // SpinLock
+</Cpp>
+<Cpp>
+class Semaphore{
+private:
+	int value;
+	LinkedQueue<Thread*> waitingThreads;
+public:
+	Semaphore(){
+		value = 0;
+		waitingThreads();
+	}
+	bool initializeSemaphore(int initialValue){
+		if(value<0) return false;
+		value = initialValue;
+		return true;
+	}
+</Cpp>
+<AssemblyX86 Compiler="fasm">
+; bool initializeSemaphore(Semaphore *s, int initialValue);
+initializeSemaphore:
+	mov	eax,	[esp+4]	; initial value
+	bt	eax,	31	; if initialValue>=0, carry bit set
+	jnc	@F
+	push	ecx
+	mov	ecx,	[esp+8]	; pointer to the semaphore
+	mov	[ecx],	eax
+	mov	DWORD [ecx+4],	0	; the waiting queue is null
+	pop	ecx
+@@:	sbb	eax,	eax
+	neg	eax
+	retn	8
+</AssemblyX86>
+<AssemblyX64 Compiler="fasm">
+initializeSemaphore:
+	bt	rdx,	63
+	jnc	@F
+	mov	[rcx],	rdx
+	mov	QWORD [rcx+8],	0	; the waiting queue is null
+@@:	sbb	rax,	rax
+	neg	rax
+	ret
+</AssemblyX64>
+<Cpp Compiler="gcc">
+	
+
+	
+}; // class Semaphore
+</Cpp>
+<AssemblyX86 Compiler="fasm">
+requireSemaphore:
+	
+	lock	dec	[]
+	jl	.wait	; jump if decrease to negative
+	
+releaseSemaphore:
+
+	lock	inc	[]
+	
+</AssemblyX86>
+<AssemblyX64 Compiler="fasm">
+requireSemaphore:
+	
+	lock	dec	[]
+	jl	.wait	; jump if decrease to negative
+	
+releaseSemaphore:
+	
+	lock	inc	[]
+	
+</AssemblyX64>
+<Comment Language=Chinese>
+以下是派生的有提供者和消费者队列的信号量
+</Comment>
+<Comment Language=English>
+The following is the derived class with providers queue and
+consumers queue
+</Comment>
+<Cpp>
+class BigSemaphore : public Semaphore{
+private:
+	LinkedQueue<Thread*> providers, consumers;
+public:
+	BigSemaphore(){
+		consumers();
+		providers();
+	}
+	bool initializeBigSemaphore(int initialValue, Thread *firstProvider){
+		if(value<0 || firstProvider==(Thread*)0) return false;
+		value = initialValue;
+		providers.add(firstProvider);
+		return true;
+	}
+	
+}; // class BigSemaphore
+</Cpp>
+
+<Cpp>
+class Mutex : public Semaphore{
+public:
+	Mutex(){
+		value = 1;
+	}
+	
+}; // class Mutex
+</Cpp>

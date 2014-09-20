@@ -1,10 +1,10 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 
 </Head>
-<Head Language=English>
+<Head Language="English">
 
 </Head>
-<AssemblyX86 Compiler=fasm Platform=Windows>
+<AssemblyX86 Compiler="fasm" Platform="Windows">
 format PE console
 entry start
 include "C:\FASM\INCLUDE\win32a.inc"
@@ -13,7 +13,7 @@ section '.code' code readable executable
 start:
 	
 </AssemblyX86>
-<AssemblyX64 Compiler=fasm Platform=Windows>
+<AssemblyX64 Compiler="fasm" Platform="Windows">
 format PE64 GUI
 entry start
 
@@ -70,9 +70,9 @@ int main(){
 	return 0;
 }
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 
 </AssemblyX86>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 
 </AssemblyX64>

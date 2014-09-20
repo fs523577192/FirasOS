@@ -1,8 +1,8 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
@@ -85,7 +85,7 @@ public:
 #define LinkedList2NullNode ((LinkedList2Node<T>*)0)
 #endif // _LINKED_LIST_2_NODE_H_
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 IF ~DEFINED _LINKED_LIST_2_NODE_H_
 _LINKED_LIST_2_NODE_H_	EQU	1
 
@@ -117,7 +117,7 @@ LinkedList2Node.getHead:
 
 END IF ; _LINKED_LIST_2_NODE_H_
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 IF ~DEFINED _LINKED_LIST_2_NODE_H_
 _LINKED_LIST_2_NODE_H_	EQU	1
 

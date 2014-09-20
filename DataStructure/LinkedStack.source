@@ -1,8 +1,8 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
@@ -45,7 +45,7 @@ public:
 		return size;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 IF ~DEFINED _LINKED_STACK_H_
 _LINKED_STACK_H_	EQU	1
 
@@ -70,7 +70,7 @@ LinkedStack.getSize:
 	jmp	@B
 @@:	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 IF ~DEFINED _LINKED_STACK_H_
 _LINKED_STACK_H_	EQU	1
 
@@ -110,12 +110,12 @@ LinkedStack.getSize:
 		return true;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedStack.addElement:
 	
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedStack.addElement:
 	
 	retn	8
@@ -141,12 +141,12 @@ LinkedStack.addElement:
 		return false;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedStack.removeElement:
 	
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedStack.removeElement:
 	
 	retn	8
@@ -163,12 +163,12 @@ LinkedStack.removeElement:
 		return true;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedStack.removeAllElement:
 	
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedStack.removeAllElement:
 	
 	retn	4
@@ -184,12 +184,12 @@ LinkedStack.removeAllElement:
 		return false;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedStack.hasElement:
 	
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedStack.hasElement:
 	
 	retn	8
@@ -215,7 +215,7 @@ LinkedStack.hasElement:
 }; // class LinkedStack<T>
 #endif // _LINKED_STACK_H_
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedStack.pushElement	EQU	LinkedStack.addElement
 
 LinkedStack.popElement:
@@ -224,7 +224,7 @@ LinkedStack.popElement:
 
 END IF ; _LINKED_STACK_H_
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedStack.pushElement	EQU	LinkedStack.addElement
 
 LinkedStack.popElement:

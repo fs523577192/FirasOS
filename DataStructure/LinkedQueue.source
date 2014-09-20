@@ -1,8 +1,8 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
@@ -46,7 +46,7 @@ public:
 		return size;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 IF ~DEFINED _LINKED_QUEUE_H_
 _LINKED_QUEUE_H_	EQU	1
 
@@ -77,7 +77,7 @@ LinkedQueue.getSize:
 .return:
 	ret
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 IF ~DEFINED _LINKED_QUEUE_H_
 _LINKED_QUEUE_H_	EQU	1
 
@@ -166,7 +166,7 @@ LinkedQueue.getSize:
 		return true;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedQueue.removeAllElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -190,7 +190,7 @@ LinkedQueue.removeAllElement:
 	
 	xor	eax,	eax
 	retn	4
-</AssemblyX86 Compiler=fasm>
+</AssemblyX86 Compiler="fasm">
 <Cpp>
 	
 	T getHeadElement(){	// inherited from Queue
@@ -217,14 +217,14 @@ LinkedQueue.removeAllElement:
 		return true;
 	}
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedQueue.removeHeadElement:
 
 </AssemblyX64>
 <AssemblyX86>
 LinkedQueue.removeHeadElement:
 
-</AssemblyX86 Compiler=fasm>
+</AssemblyX86 Compiler="fasm">
 <Cpp>
 	
 	T getTailElement(){	// inherited from Queue
@@ -262,12 +262,12 @@ LinkedQueue.removeHeadElement:
 }; // class LinkedQueue<T>
 #endif // _LINKED_QUEUE_H_
 </Cpp>
-<AssemblyX64 Compiler=fasm>
+<AssemblyX64 Compiler="fasm">
 LinkedQueue.removeTailElement:
 
 END IF ; _LINKED_QUEUE_H_
 </AssemblyX64>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 LinkedQueue.removeTailElement:
 
 END IF ; _LINKED_QUEUE_H_

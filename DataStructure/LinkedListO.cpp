@@ -1,19 +1,4 @@
-<Head Language="Chinese">
-作者：伍裕平
-归属：操作系统数据结构
-</Head>
-<Head Language="English">
-Author: Firas
-BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language="Chinese">
-单向循环链表
-</Comment>
-<Comment Language="English">
-Bi-directional Circular LinkedList
-</Comment>
-<Include>LinkedListNode</Include>
-<Cpp>
+#include "LinkedListNode.cpp"
 #ifndef _LINKED_LIST_O_H_
 #define _LINKED_LIST_O_H_
 template <typename T> class LinkedListO : public List<T>{
@@ -40,34 +25,6 @@ public:
 		#endif
 		return head == LinkedListNullNode;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
-LinkedListO.isEmpty:
-	;test	rcx,	rcx
-	; TODO: NullPointerException
-	mov	rax,	[rcx]	; rcx == this; rax = this->head
-	test	rax,	rax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	rax,	rax
-	ret
-@@:	mov	rax,	1
-	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
-LinkedListO.isEmpty:
-; stack: |ret |this|
-	mov	eax,	[esp+4]	; eax = this
-	;test	eax,	eax
-	; TODO: NullPointerException
-	mov	eax,	[eax]	; eax = this->head
-	test	eax,	eax
-	jz	@F		; jump if head == LinkedListNullNode
-	xor	eax,	eax
-	retn	4
-@@:	mov	eax,	1
-	retn	4
-</AssemblyX86>
-<Cpp>
 	
 	unsigned getSize(){	// inherited from Collection
 		if(isEmpty()) return 0;
@@ -77,54 +34,6 @@ LinkedListO.isEmpty:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
-LinkedListO.getSize:
-	;test	rcx,	rcx
-	; TODO: NullPointerException
-	xor	rax,	rax	; rax = 0
-	mov	rcx,	[rcx]	; rcx = this->head
-	test	rcx,	rcx
-	jnz	@F		; jump if head != LinkedListNullNode
-	ret			; return 0
-@@:	push	rbx		; ##
-	inc	rax		; rax = 1
-	mov	rbx,	[rcx]	; rbx = head->next
-.loop1:
-	cmp	rbx,	rcx
-	je	@F		; jump if rbx == rcx == head
-	mov	rbx,	[rbx]	; rbx = rbx->next
-	inc	rax
-	jmp	.loop1
-@@:	pop	rbx		; ##
-	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
-LinkedListO.getSize:
-	push	ebx			; ##
-	push	ecx			; %%
-; stack: |ecx |ebx |ret |this|
-	mov	ecx,	[esp+12]	; ecx = this
-	;test	ecx,	ecx
-	; TODO: NullPointerException
-	xor	eax,	eax
-	mov	ecx,	[ecx]		; ecx = this->head
-	test	ecx,	ecx
-	jnz	@F			; jump if head == LinkedListNullNode
-	retn	4			; return 0
-	inc	eax			; eax = 1
-	mov	ebx,	[ecx]		; ebx = head->next
-.loop1:
-	cmp	ebx,	ecx
-	je	@F			; jump if ebx == ecx == head
-	inc	eax
-	mov	ebx,	[ebx]		; ebx = ebx->next
-	jmp	.loop1
-@@:	pop	ecx			; %%
-	pop	ebx			; ##
-	retn	4
-</AssemblyX86>
-<Cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()){
@@ -181,8 +90,8 @@ LinkedListO.getSize:
 		head = LinkedListNullNode;
 		return true;
 	}
-	
-	T getElementAtIndex(unsigned index){
+
+	T getElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0 || head == LinkedListNullNode)
 			throw NullPointerException();
@@ -200,7 +109,7 @@ LinkedListO.getSize:
 		return temp->key;
 	}
 	
-	bool insertElementAtIndex(T e, unsigned index){
+	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		#endif
@@ -229,7 +138,7 @@ LinkedListO.getSize:
 		return true;
 	}
 	
-	bool removeElementAtIndex(unsigned index){
+	bool removeElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		#endif
@@ -255,7 +164,7 @@ LinkedListO.getSize:
 		return true;
 	}
 	
-	bool isEqual(List<T> *l){
+	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		if(isEmpty()) return true;
 		
@@ -263,6 +172,7 @@ LinkedListO.getSize:
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		if(fromIndex >= getSize() || toIndex > getSize())
@@ -275,4 +185,3 @@ LinkedListO.getSize:
 	
 }; // class LinkedListO<T>
 #endif // _LINKED_LIST_O_H_
-</Cpp>

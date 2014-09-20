@@ -1,19 +1,19 @@
-<Head Language=Chinese>
+<Head Language="Chinese">
 作者：伍裕平
 归属：操作系统引导启动
 </Head>
-<Head Language=English>
+<Head Language="English">
 Author: Firas
 BelongsTo: Loader of the OS
 </Head>
-<Comment Language=Chinese>
+<Comment Language="Chinese">
 http://wiki.osdev.org/Detecting_Memory_(x86)
 介绍了在用x86/x64架构、传统BIOS的电脑上检测系统内存的方法
 
 http://www.ctyme.com/intr/rb-1741.htm
 是BIOS调用int 15h，eax=0E820h的细节
 </Comment>
-<Comment Language=English>
+<Comment Language="English">
 For introduction of querying system memory on x86/x64
 architecture with legacy BIOS, please see
 http://wiki.osdev.org/Detecting_Memory_(x86)
@@ -34,7 +34,7 @@ public:
 		acpiAttribute = 1;
 	}
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 USE16
 ; TODO: MACRO
 ; di: this
@@ -65,7 +65,7 @@ E820Entry.INITIALIZE:
 	}
 }; // class E820Entry
 </Cpp>
-<AssemblyX86 Compiler=fasm>
+<AssemblyX86 Compiler="fasm">
 E820.beforeFirstCall:
 	mov	DWORD [],	0	; for entry count
 	mov	DWORD [],	0

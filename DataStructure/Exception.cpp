@@ -1,5 +1,6 @@
 #ifndef _EXCEPTION_H_
 #define _EXCEPTION_H_
+#include "../Macro.cpp"
 class Exception{
 protected:
 	const char *message;
