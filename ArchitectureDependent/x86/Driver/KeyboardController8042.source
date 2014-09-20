@@ -1,0 +1,68 @@
+<Head Language="Chinese">
+
+</Head>
+<Head Language="English">
+
+</Head>
+<Comment Language="Chinese">
+	http://stanislavs.org/helppc/8042.html
+	http://stanislavs.org/helppc/keyboard_commands.html
+	http://wiki.osdev.org/%228042%22_PS/2_Controller
+</Comment>
+<Comment Language="English">
+	http://stanislavs.org/helppc/8042.html
+	http://stanislavs.org/helppc/keyboard_commands.html
+	http://wiki.osdev.org/%228042%22_PS/2_Controller
+</Comment>
+<Cpp>
+class KC8042{
+public:
+	const static BYTE  DATA_PORT = 0x60;
+	const static BYTE  STATUS_PORT = 0x64, COMMAND_PORT = 0x64;
+	
+	void wait(){
+	
+	}
+	
+	bool enablePS2(){
+	
+	}
+	
+	bool disablePS2(){
+	
+	}
+	
+}; // class KC8042
+</Cpp>
+<AssemblyX86 Compiler="fasm">
+KC8042.BYTE DATA_PORT	EQU	0x60
+KC8042.STATUS_PORT	EQU	0x64
+KC8042.COMMAND_PORT	EQU	0x64
+
+KC8042.wait:
+	
+	ret
+
+KC8042.enablePS2:
+	push	ax
+	;call	Wait8042
+	mov	al,	0AEh	; 启用8042的第一通道
+	out	KC8042.COMMAND_PORT,	al
+	;call	Wait8042
+	mov	al,	0A8h	; 启用8042的第二通道
+	out	KC8042.COMMAND_PORT,	al
+	pop	ax
+	ret
+
+KC8042.disablePS2:
+	push	ax
+	;call	Wait8042
+	mov	al,	0ADh	; 禁用8042的第一通道
+	out	KC8042.COMMAND_PORT,	al
+	;call	Wait8042
+	mov	al,	0A7h	; 禁用8042的第二通道
+	out	KC8042.COMMAND_PORT,	al
+	pop	ax
+	ret
+
+</AssemblyX86>

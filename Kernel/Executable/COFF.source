@@ -1,0 +1,18 @@
+<Head Language="Chinese">
+作者：伍裕平
+归属：操作系统内核
+</Head>
+<Head Language="English">
+Common Object File Format
+Author: Firas
+BelongsTo: the OS kernel
+</Head>
+<Cpp>
+
+</Cpp>
+<AssemblyX86 Compiler="fasm">
+
+</AssemblyX86>
+<AssemblyX64 Compiler="fasm">
+
+</AssemblyX64>
