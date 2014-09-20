@@ -21,7 +21,7 @@ typedef unsigned long	WORD, UINT32;
 typedef unsigned long long	DWORD, UINT64;
 #endif
 typedef float		REAL4;
-typedef double		REAL8
+typedef double		REAL8;
 typedef long double 	REAL10;
 typedef unsigned int	BOOLEAN;
 #define TRUE	((BOOLEAN)1)

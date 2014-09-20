@@ -1,17 +1,202 @@
 <Head Language="Chinese">
 作者：伍裕平
-归属：操作系统数据结构
+归属：操作系统内核
 </Head>
 <Head Language="English">
 Author: Firas
-BelongsTo: Data Structure in the OS
+BelongsTo: OS Kernel
 </Head>
+<Comment Language="Chinese">
+
+RSDP	-	根系统描述指针
+RSDT	-	根系统描述表
+XSDT	-	拓展（根）系统描述表
+FADT	-	固定ACPI描述表
+FACS	-	固件ACPI控制结构
+DSDT	-	Differentiated系统描述表
+SSDT	-	二级系统描述表
+MADT	-	多APIC描述表
+
+</Comment>
+<Comment Language="English">
+
+RSDP	-	Root System Description Pointer
+RSDT	-	Root System Description Table
+XSDT	-	Extended System Description Table
+FADT	-	Fixed ACPI Description Table
+FACS	-	Firmware ACPI Control Structure
+DSDT	-	Differentiated System Description Table
+SSDT	-	Secondary System Description Table
+MADT	-	Multiple APIC Description Table
+
+</Comment>
 <Cpp>
-class SegmentDescriptor{
-protected:
+namespace ACPI{
 
+class RSDP{
 public:
+	char	signature[8];
+	BYTE	checksum;
+	char	oemID[6];
+	BYTE	revision;
+	UINT32	addressRSDT;
+	// extended
+	UINT32	length;
+	UINT64	addressXSDT;
+	BYTE	extendedChecksum;
+	BYTE	reserved[3];
+	
+}; // class RSDP
 
+class Head{
+public:
+	char	signature[4];
+	UINT32	length;
+	BYTE	revision;
+	BYTE	checksum;
+	char	oemID[6];
+	char	oemTableID[8];
+	UINT32	oemRevision;
+	UINT32	creatorID;
+	UINT32	creatorRevision;
+}; // Head
 
-}; // class SegmentDescriptor
+class RSDT{
+public:
+	Head	head;
+	// 32-bit entries (pointers to other ACPI tables)
+}; // class RSDT
+
+class XSDT{
+public:
+	Head	head;
+	// 64-bit entries (pointers to other ACPI tables)
+}; // class XSDT
+
+class FADT{
+public:
+	Head	head;
+	
+	UINT32	addressFACS;
+	UINT32	addressDSDT;
+	
+	BYTE	INT_MODEL;
+	BYTE	Prefered_PM_Profile;
+	UINT16	SCI_INT;
+	UINT32	SMI_CMD;
+	BYTE	ACPI_ENABLE;
+	BYTE	ACPI_DISABLE;
+	BYTE	S4BIOS_REQ;
+	BYTE	PSTATE_CNT;
+	UINT32	PM1a_EVT_BLK;
+	UINT32	PM1b_EVT_BLK;
+	UINT32	PM1a_CNT_BLK;
+	UINT32	PM1b_CNT_BLK;
+	UINT32	PM2_CNT_BLK;
+	UINT32	PM_TMR_BLK;
+	UINT32	GPE0_BLK;
+	UINT32	GPE1_BLK;
+	BYTE	PM1_EVT_LEN;
+	BYTE	PM1_CNT_LEN;
+	BYTE	PM2_CNT_LEN;
+	BYTE	PM_TMR_LEN;
+	BYTE	GPE0_BLK_LEN;
+	BYTE	GPE1_BLK_LEN;
+	BYTE	GPE1_BASE;
+	BYTE	CST_CNT;
+	UINT16	P_LVL2_LAT;
+	UINT16	P_LVL3_LAT;
+	UINT16	FLUSH_SIZE;
+	UINT16	FLUSH_STRIDE;
+	BYTE	DUTY_OFFSET;
+	BYTE	DUTY_WIDTH;
+	BYTE	DAY_ALARM;
+	BYTE	MONTH_ALARM;
+	BYTE	CENTURY;
+	UINT16	IAPC_BOOT_ARCH;
+	BYTE	reserved0;
+	UINT32	flags;
+	UINT32	RESET_REG0, RESET_REG1, RESET_REG2;
+	BYTE	RESET_VALUE;
+	BYTE	reserved1, reserved2, reserved3;
+	UINT64	X_FIRMWARE_CTRL;
+	UINT64	X_DSDT;
+	UINT32	X_PM1a_EVT_BLK0, X_PM1a_EVT_BLK1, X_PM1a_EVT_BLK2;
+	UINT32	X_PM1b_EVT_BLK0, X_PM1b_EVT_BLK1, X_PM1b_EVT_BLK2;
+	UINT32	X_PM1a_CNT_BLK0, X_PM1a_CNT_BLK1, X_PM1a_CNT_BLK2;
+	UINT32	X_PM1b_CNT_BLK0, X_PM1b_CNT_BLK1, X_PM1b_CNT_BLK2;
+	UINT32	X_PM2_CNT_BLK0, X_PM2_CNT_BLK1, X_PM2_CNT_BLK2;
+	UINT32	X_PM_TMR_BLK0, X_PM_TMR_BLK1, X_PM_TMR_BLK2;
+	UINT32	X_GPE0_BLK0, X_GPE0_BLK1, X_GPE0_BLK2;
+	UINT32	X_GPE1_BLK0, X_GPE1_BLK1, X_GPE1_BLK2;
+	UINT32	SLEEP_CONTROL_REG0, SLEEP_CONTROL_REG1, SLEEP_CONTROL_REG2;
+	UINT32	SLEEP_STATUS_REG0, SLEEP_STATUS_REG1, SLEEP_STATUS_REG2;
+}; // class FADT
+
+class FACS{
+public:
+	char	signature[4];
+	UINT32	length;
+	char	hardwareSignature[4];
+	UINT32	firmwareWakingVector;
+	UINT32	globalLock;
+	UINT32	flags;
+	UINT64	XfirmwareWakingVector;
+	BYTE	version;
+	BYTE	reserved0[3];
+	UINT32	OSPM_Flags;
+	BYTE	reserved1[24];
+	
+}; // class FACS
+
+class DSDT{
+	Head	head;
+	
+}; // class DSDT
+
+class SSDT{
+	Head	head;
+	
+}; // class SSDT
+
+class MADT{
+	Head	head;
+	UINT32	addressLIC;
+	UINT32	flags;
+	const static UINT32 PCAT_COMPAT = 1;
+	
+}; // class MADT
+class EntryLAPIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	processorID;
+	BYTE	APIC_ID;
+	UINT32	flags;
+	const static UINT32 ENABLED = 1;
+}; // class EntryLAPIC
+class EntryIOAPIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	id;
+	BYTE	reserved;
+	UINT32	address;
+	UINT32	interruptBase;
+}; // class EntryIOAPIC
+class InterruptSourceOverride{
+	BYTE	type;
+	BYTE	length;
+	BYTE	bus;
+	BYTE	source;
+	UINT32	globalSystemInterrupt;
+	UINT16	flags;
+	
+}; // class InterruptSourceOverride
+class {
+
+}; // 
+class {
+
+}; // 
+
+} // namespace ACPI
 </Cpp>
