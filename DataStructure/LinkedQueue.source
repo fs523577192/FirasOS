@@ -6,10 +6,20 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Include>LinkedList2Node</Include>
 <Cpp>
 #ifndef _LINKED_QUEUE_H_
 #define _LINKED_QUEUE_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+IF ~DEFINED _LINKED_QUEUE_H_
+_LINKED_QUEUE_H_	EQU	1
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _LINKED_QUEUE_H_
+_LINKED_QUEUE_H_	EQU	1
+</AssemblyX86>
+<Include>LinkedList2Node</Include>
+<Cpp>
 template <typename T> class LinkedQueue : public Queue<T> {
 private:
 	LinkedList2Node<T> *head;
@@ -47,8 +57,6 @@ public:
 	}
 </Cpp>
 <AssemblyX64 Compiler="fasm">
-IF ~DEFINED _LINKED_QUEUE_H_
-_LINKED_QUEUE_H_	EQU	1
 
 LinkedQueue.isEmpty:
 	;test	rcx,	rcx
@@ -78,8 +86,6 @@ LinkedQueue.getSize:
 	ret
 </AssemblyX64>
 <AssemblyX86 Compiler="fasm">
-IF ~DEFINED _LINKED_QUEUE_H_
-_LINKED_QUEUE_H_	EQU	1
 
 LinkedQueue.isEmpty:
 	mov	eax,	[esp+4]		; eax = this
@@ -111,7 +117,7 @@ LinkedQueue.getSize:
 .return:
 	pop	ecx		; @@
 	pop	ebx		; ##
-	retn
+	retn	4
 </AssemblyX86>
 <Cpp>
 	

@@ -10,6 +10,24 @@ BelongsTo: Data Structure in the OS
 <Cpp>
 #ifndef _LINKED_LIST_2_NODE_H_
 #define _LINKED_LIST_2_NODE_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_2_NODE_H_
+_LINKED_LIST_2_NODE_H_	EQU	1
+
+LINKED_LIST_NEXT	EQU	0
+LINKED_LIST_PREV	EQU	8
+LINKED_LIST_KEY		EQU	16
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_2_NODE_H_
+_LINKED_LIST_2_NODE_H_	EQU	1
+
+LINKED_LIST_NEXT	EQU	0
+LINKED_LIST_PREV	EQU	4
+LINKED_LIST_KEY		EQU	8
+</AssemblyX86>
+<Cpp>
 template <typename T> class LinkedList2;
 template <typename T> class LinkedListO2;
 template <typename T> class LinkedQueue;
@@ -86,12 +104,6 @@ public:
 #endif // _LINKED_LIST_2_NODE_H_
 </Cpp>
 <AssemblyX64 Compiler="fasm">
-IF ~DEFINED _LINKED_LIST_2_NODE_H_
-_LINKED_LIST_2_NODE_H_	EQU	1
-
-LINKED_LIST_NEXT	EQU	8
-LINKED_LIST_PREV	EQU	16
-LINKED_LIST_KEY		EQU	24
 
 LinkedListNode.getTail:
 	;test	rcx,	rcx
@@ -118,8 +130,6 @@ LinkedList2Node.getHead:
 END IF ; _LINKED_LIST_2_NODE_H_
 </AssemblyX64>
 <AssemblyX86 Compiler="fasm">
-IF ~DEFINED _LINKED_LIST_2_NODE_H_
-_LINKED_LIST_2_NODE_H_	EQU	1
 
 LinkedList2Node.getTail:
 	;cmp	DWORD [esp+4],	0

@@ -12,10 +12,20 @@ BelongsTo: Data Structure in the OS
 <Comment Language="English">
 Bi-directional Circular LinkedList
 </Comment>
-<Include>LinkedList2Node</Include>
 <Cpp>
 #ifndef _LINKED_LIST_O2_H_
 #define _LINKED_LIST_O2_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_O2_H_
+_LINKED_LIST_O2_H_	EQU	1
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_O2_H_
+_LINKED_LIST_O2_H_	EQU	1
+</AssemblyX86>
+<Include>LinkedList2Node</Include>
+<Cpp>
 template <typename T> class LinkedListO2 : public List<T>{
 private:
 	LinkedList2Node<T> *head;

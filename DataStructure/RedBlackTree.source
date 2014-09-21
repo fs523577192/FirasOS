@@ -26,6 +26,16 @@ the parent pointer stores whether the node is red or black.
 <Cpp>
 #ifndef _RED_BLACK_H_
 #define _RED_BLACK_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+IF ~DEFINED _RED_BLACK_H_
+_RED_BLACK_H_	EQU	1
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _RED_BLACK_H_
+_RED_BLACK_H_	EQU	1
+</AssemblyX86>
+<Cpp>
 template <typename T> class RedBlack;
 template <typename T> class RedBlackNode{
 protected:

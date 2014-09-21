@@ -13,12 +13,10 @@ BelongsTo: Data Structure in the OS
 <AssemblyX64 Compiler="fasm">
 IF ~DEFINED _LINKED_STACK_H_
 _LINKED_STACK_H_	EQU	1
-
 </AssemblyX64>
 <AssemblyX86 Compiler="fasm">
 IF ~DEFINED _LINKED_STACK_H_
 _LINKED_STACK_H_	EQU	1
-
 </AssemblyX86>
 <Include>LinkedListNode</Include>
 <Cpp>

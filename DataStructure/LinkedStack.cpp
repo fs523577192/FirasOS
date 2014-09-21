@@ -1,3 +1,5 @@
+#ifndef _LINKED_STACK_H_
+#define _LINKED_STACK_H_
 #include "LinkedListNode.cpp"
 
 template <typename T> class LinkedStack : public Stack<T>{
@@ -101,3 +103,4 @@ public:
 	}
 	
 }; // class LinkedStack<T>
+#endif // _LINKED_STACK_H_

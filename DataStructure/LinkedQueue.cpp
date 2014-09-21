@@ -1,3 +1,5 @@
+#ifndef _LINKED_QUEUE_H_
+#define _LINKED_QUEUE_H_
 #include "LinkedList2Node.cpp"
 
 template <typename T> class LinkedQueue : public Queue<T> {
@@ -152,3 +154,4 @@ public:
 	}
 	
 }; // class LinkedQueue<T>
+#endif // _LINKED_QUEUE_H_

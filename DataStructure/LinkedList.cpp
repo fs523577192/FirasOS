@@ -1,7 +1,6 @@
-#include "LinkedListNode.cpp"
-
 #ifndef _LINKED_LIST_H_
 #define _LINKED_LIST_H_
+#include "LinkedListNode.cpp"
 template <typename T> class LinkedList : public List<T>{
 private:
 	LinkedListNode<T> *head;

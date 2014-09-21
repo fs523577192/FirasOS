@@ -6,10 +6,26 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </Head>
-<Include>Collection</Include>
 <Cpp>
 #ifndef _LINKED_LIST_NODE_H_
 #define _LINKED_LIST_NODE_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_NODE_H_
+_LINKED_LIST_NODE_H_	EQU	1
+
+LINKED_LIST_NEXT	EQU	0
+LINKED_LIST_KEY		EQU	8
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _LINKED_LIST_NODE_H_
+_LINKED_LIST_NODE_H_	EQU	1
+
+LINKED_LIST_NEXT	EQU	0
+LINKED_LIST_KEY		EQU	4
+</AssemblyX86>
+<Include>Collection</Include>
+<Cpp>
 template <typename T> class LinkedList;
 template <typename T> class LinkedListO;
 template <typename T> class LinkedStack;
@@ -60,11 +76,6 @@ public:
 #endif // _LINKED_LIST_NODE_H_
 </Cpp>
 <AssemblyX64 Compiler="fasm">
-IF ~DEFINED _LINKED_LIST_NODE_H_
-_LINKED_LIST_NODE_H_	EQU	1
-
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_KEY		EQU	8
 
 LinkedListNode.getTail:
 	;test	rcx,	rcx
@@ -80,11 +91,6 @@ LinkedListNode.getTail:
 END IF ; _LINKED_LIST_NODE_H_
 </AssemblyX64>
 <AssemblyX86 Compiler="fasm">
-IF ~DEFINED _LINKED_LIST_NODE_H_
-_LINKED_LIST_NODE_H_	EQU	1
-
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_KEY		EQU	4
 
 LinkedListNode.getTail:
 	;cmp	DWORD [esp+4],	0

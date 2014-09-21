@@ -1,7 +1,6 @@
-#include "Collection.cpp"
-
 #ifndef _LINKED_LIST_NODE_H_
 #define _LINKED_LIST_NODE_H_
+#include "Collection.cpp"
 template <typename T> class LinkedList;
 template <typename T> class LinkedListO;
 template <typename T> class LinkedStack;
