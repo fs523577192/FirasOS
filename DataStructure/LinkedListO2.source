@@ -178,7 +178,7 @@ LinkedListO.getSize:
 		return true;
 	}
 	
-	T getElementAtIndex(unsigned index){
+	T getElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO2*)0 || head == LinkedList2NullNode)
 			throw NullPointerException();
@@ -196,23 +196,21 @@ LinkedListO.getSize:
 		return temp->key;
 	}
 	
-	bool insertElementAtIndex(T e, unsigned index){
+	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO2*)0) throw NullPointerException();
 		#endif
 		register LinkedList2Node<T> *temp = head;
 		if(index == 0){
-			head = new LinkedList2Node<T>(e, head);
-			if(head->next == LinkedList2NullNode) head->next = head;
-			else{
-				while(temp->next != head->next) temp = temp->next;
-				temp->next = head;
+			head = new LinkedList2Node<T>(e, head, head->prev);
+			if(head->next == LinkedList2NullNode){
+				head->prev = head->next = head;
 			}
 			return true;
 		}
 		if(index == 1){
 			if(head == LinkedList2NullNode) return false;
-			head->next = new LinkedList2Node<T>(e, head->next);
+			new LinkedList2Node<T>(e, head->next, head);
 			return true;
 		}
 		temp = head->next;
@@ -220,38 +218,31 @@ LinkedListO.getSize:
 			temp = temp->next;
 			index--;
 		}
-		if(temp == head) return false;
-		temp->next = new LinkedList2Node<T>(e, temp->next);
+		if(temp == head) return false;	// index >= getSize()
+		new LinkedList2Node<T>(e, temp->next, temp);
 		return true;
 	}
 	
-	bool removeElementAtIndex(unsigned index){
+	bool removeElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO2*)0) throw NullPointerException();
 		#endif
-		LinkedList2Node<T> *temp1;
+		LinkedList2Node<T> *temp = head->next;
 		if(index == 0){
-			for(temp1 = head; temp1->next != head;
-				temp1 = temp1->next);
-			if(temp1 != head) temp1->next = head->next;
 			delete head;
-			head = temp1->next;
+			head = temp;
 			return true;
 		}
-		temp1 = head;
-		LinkedList2Node<T> *temp2 = head->next;
-		while(index > 1 && temp2 != head){
-			temp1 = temp2;
-			temp2 = temp2->next;
+		while(index > 1 && temp != head){
+			temp = temp->next;
 			index--;
 		}
-		if(temp2 == head) return false;
-		temp1->next = temp2->next;
-		delete temp2;
+		if(temp == head) return false;	// index >= getSize()
+		delete temp;
 		return true;
 	}
 	
-	bool isEqual(List<T> *l){
+	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		if(isEmpty()) return true;
 		
@@ -259,6 +250,7 @@ LinkedListO.getSize:
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO2*)0) throw NullPointerException();
 		if(fromIndex >= getSize() || toIndex > getSize())

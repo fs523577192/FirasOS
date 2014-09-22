@@ -35,9 +35,11 @@ _RED_BLACK_H_	EQU	1
 IF ~DEFINED _RED_BLACK_H_
 _RED_BLACK_H_	EQU	1
 </assemblyX86>
+<include>BinaryTreeNode</include>
+<include>SortedBinaryTree</include>
 <cpp>
 template <typename T> class RedBlack;
-template <typename T> class RedBlackNode{
+template <typename T> class RedBlackNode : public BinaryTreeNode<T>{
 protected:
 	
 	static const int ADDR_MASK = -2;	// ~1
@@ -46,21 +48,15 @@ protected:
 	// -8 = 0FFFFFFF8h	8 bytes (64 bits) align  8字节（64位）对齐
 	#define	RedBlackNullNode	((RedBlackNode*)0)
 	
-	RedBlackNode *left, *right, *parent;
-	
-	T key;
-	
-	
 public:
 	
-	RedBlackNode(T k){
-		key = k;
-		left = right = parent = RedBlackNullNode;
+	RedBlackNode(T k) : BinaryTreeNode<T>(k){
+		
 	}
 	
-	RedBlackNode(T k, RedBlackNode *l, RedBlackNode *r, RedBlackNode *p){
-		key = k;
-		left = l; right = r; parent = p;
+	RedBlackNode(T k, RedBlackNode *l, RedBlackNode *r, RedBlackNode *p):
+			BinaryTreeNode<T>(k, l, r, p){
+		
 	}
 	
 	inline RedBlackNode *getLeft(){
@@ -370,6 +366,7 @@ RedBlackNode.getSibling:
 		return (this == RedBlackNullNode) ||
 			((reinterpret_cast<unsigned>(parent) & 1) == 0);
 	}
+</cpp>
 <assemblyX64 compiler="fasm">
 
 RedBlackNode.isLeft:
@@ -456,7 +453,11 @@ RedBlackNode.isBlack:
 	节点的右子树，那么该节点就是所要找的节点
 </comment>
 <comment language="English">
-
+--	Get the greatest/ node in the red black tree that
+	is not greater/ than this node
+--	Take the greatest node that is not greater than this
+	node for example. If this node has a left sub-tree,
+	the 
 </comment>
 <cpp>
 	
@@ -637,12 +638,18 @@ RedBlackNode.rotateRight:
 	
 	ret
 </assemblyX86>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
 <cpp>
 	
 }; // class RedBlackNode<T>
 #define RedBlackNullNode	((RedBlackNode<T>*)0)
 
-template <typename T> class RedBlack : public SortedBinaryTree{
+template <typename T> class RedBlack : public SortedBinaryTree<T>{
 protected:
 	
 	RedBlackNode<T> *root;
@@ -658,21 +665,37 @@ public:
 	RedBlack(T firstElement){
 		root = new RedBlackNode<T>(firstElement)
 	}
-</cpp>
-<comment language="Chinese">
-
-</comment>
-<comment language="English">
-
-</comment>
-
-<cpp>
 	
+	bool isEmpty(){	// inherited from Collection
+		if(this == RedBlackNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return true;
+		#endif
+		
+	}
 	
+	unsigned getSize(){	// inherited from Collection
+		if(isEmpty()) return 0;
+		
+	}
 </cpp>
 <assemblyX64 compiler="fasm">
 
-RedBlack.:
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+</assemblyX86>
+<cpp>
+	
+	bool addElement(T e){	// inherited from Collection
+	
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+
+RedBlack._addNode:
 	
 .return:
 
@@ -680,12 +703,36 @@ RedBlack.:
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 
-RedBlack.:
+RedBlack._addNode:
 
 .return:
 
 	retn	12
 </assemblyX86>
+<cpp>
+	
+	bool hasElement(T e){	// inherited from Collection
+		
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+
+RedBlack._hasElement:
+
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+RedBlack._hasElement:
+
+</assemblyX86>
+<cpp>
+	
+	bool removeElement(T e){	// inherited from Collection
+		
+	}
+</cpp>
+
+
 <cpp>
 }; // class RedBlack<T>
 #endif // _RED_BLACK_H_

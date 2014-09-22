@@ -147,6 +147,23 @@ LinkedListO.getSize:
 		}
 		return true;
 	}
+</cpp>
+<assemblyX64 compiler="fasm">
+; LinkedListO::_addNode(this, LinkedListNode<T>*node)
+;                       rcx                     rdx
+LinkedListO._addNode:
+	
+	ret
+
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+; LinkedListO::_addNode(this, LinkedListNode<T> node)
+LinkedListO._addNode:
+	
+	retn	8
+
+</assemblyX86>
+<cpp>
 	
 	bool hasElement(T e){	// inherited from Collection
 		if(isEmpty()) return false;
@@ -192,7 +209,7 @@ LinkedListO.getSize:
 		return true;
 	}
 	
-	T getElementAtIndex(unsigned index){
+	T getElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0 || head == LinkedListNullNode)
 			throw NullPointerException();
@@ -210,7 +227,7 @@ LinkedListO.getSize:
 		return temp->key;
 	}
 	
-	bool insertElementAtIndex(T e, unsigned index){
+	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		#endif
@@ -219,7 +236,8 @@ LinkedListO.getSize:
 			head = new LinkedListNode<T>(e, head);
 			if(head->next == LinkedListNullNode) head->next = head;
 			else{
-				while(temp->next != head->next) temp = temp->next;
+				while(temp->next != head->next)
+					temp = temp->next;
 				temp->next = head;
 			}
 			return true;
@@ -234,12 +252,12 @@ LinkedListO.getSize:
 			temp = temp->next;
 			index--;
 		}
-		if(temp == head) return false;
+		if(temp == head) return false;	// index >= getSize()
 		temp->next = new LinkedListNode<T>(e, temp->next);
 		return true;
 	}
 	
-	bool removeElementAtIndex(unsigned index){
+	bool removeElementAtIndex(unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		#endif
@@ -259,13 +277,13 @@ LinkedListO.getSize:
 			temp2 = temp2->next;
 			index--;
 		}
-		if(temp2 == head) return false;
+		if(temp2 == head) return false;	// index >= getSize()
 		temp1->next = temp2->next;
 		delete temp2;
 		return true;
 	}
 	
-	bool isEqual(List<T> *l){
+	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		if(isEmpty()) return true;
 		
@@ -273,6 +291,7 @@ LinkedListO.getSize:
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
+	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
 		if(fromIndex >= getSize() || toIndex > getSize())

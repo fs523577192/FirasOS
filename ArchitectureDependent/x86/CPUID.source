@@ -33,4 +33,16 @@ cpuid0:
 	cpuid
 	mov	
 	
+cpuid1:
+	mov	eax,	1
+	cpuid
+	
+cpuid80:
+	mov	eax,	80000000h
+	cpuid
+
+cpuid81:
+	mov	eax,	80000001h
+	cpuid
+	
 </assemblyX86>

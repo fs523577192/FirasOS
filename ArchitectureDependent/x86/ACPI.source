@@ -200,7 +200,44 @@ public:
 	BYTE	reserved1[24];
 	
 }; // class FACS
+</cpp>
+<assemblyX86 compiler="fasm">
 
+acquireGlobalLock:
+	push	ecx
+	push	edx
+; stack: |edx |ecx |ret |facs|
+	mov	ecx,	[esp+12]	; ecx = Address of FACS
+.acq:	mov	eax,	[ecx+16]	; Get current value of Global Lock
+	mov	edx,	eax
+	and	edx,	NOT 1		; Clear pending bit
+	bts	edx,	1		; Check and set owner bit
+	adc	edx,	0		; If owned, set pending bit
+	lock cmpxchg	DWORD [ecx],	edx	; Attempt to set new value
+	jnz	.acq			; If not set, try again
+	cmp	dl,	3		; Was it acquired or marked pending?
+	sbb	eax,	eax		; acquired = -1, pending = 0
+	pop	edx
+	pop	ecx
+	ret
+releaseGlobalLock:
+	push	ecx
+	push	edx
+; stack: |edx |ecx |ret |facs|
+	mov	ecx,	[esp+12]	; ecx = Address of FACS
+.rel:	mov	eax,	[ecx+16]	; Get current value of Global Lock
+	mov	edx,	eax
+	and	edx,	NOT 3		; Clear owner and pending field
+	lock cmpxchg	DWORD [ecx],	edx	; Attempt to set it
+	jnz	.rel			; If not set, try again
+	and	eax,	1		; Was pending set?
+	; If one is returned (we were pending) the caller must signal that the
+	; lock has been released using either GBL_RLS or BIOS_RLS as appropriate
+	pop	edx
+	pop	ecx
+	ret
+</assemblyX86>
+<cpp>
 class DSDT{
 	head	head;
 	

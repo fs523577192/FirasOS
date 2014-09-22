@@ -1,0 +1,24 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<cpp>
+#ifndef _SORTED_BINARY_TREE_H_
+#define _SORTED_BINARY_TREE_H_
+</cpp>
+<include>Collection</include>
+<cpp>
+template <typename T> class SortedBinaryTree : public SortedCollection{
+public:
+	
+	
+</cpp>
+
+<cpp>
+}; // class SortedBinaryTree<T>
+#endif // _SORTED_BINARY_TREE_H_
+</cpp>

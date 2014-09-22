@@ -1,0 +1,31 @@
+
+<assemblyX86 compiler="fasm" platform="Windows">
+format PE console
+entry start
+include "C:\FASM\INCLUDE\win32a.inc"
+
+section '.code' code readable executable
+start:
+	
+</assemblyX86>
+<assemblyX64 compiler="fasm" platform="Windows">
+format PE64 GUI
+entry start
+
+section '.text' code readable executable
+
+start:
+	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
+	
+
+</assemblyX64>
+
+<cpp>
+#include <iostream>
+</cpp>
+<Include>RedBlackTree</Include>
+<cpp>
+int main(){
+	RedBlack
+}
+</cpp>
