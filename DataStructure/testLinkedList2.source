@@ -1,10 +1,10 @@
-<Head Language="Chinese">
+<head language="Chinese">
 
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 
-</Head>
-<AssemblyX86 Compiler="fasm" Platform="Windows">
+</head>
+<assemblyX86 compiler="fasm" Platform="Windows">
 format PE console
 entry start
 include "C:\FASM\INCLUDE\win32a.inc"
@@ -12,8 +12,8 @@ include "C:\FASM\INCLUDE\win32a.inc"
 section '.code' code readable executable
 start:
 	
-</AssemblyX86>
-<AssemblyX64 Compiler="fasm" Platform=Windows>
+</assemblyX86>
+<assemblyX64 compiler="fasm" Platform=Windows>
 format PE64 GUI
 entry start
 
@@ -23,14 +23,14 @@ start:
 	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
 	
 
-</AssemblyX64>
+</assemblyX64>
 
-<Cpp>
+<cpp>
 #include <iostream>
-</Cpp>
-<Include>Exception</Include>
-<Include>LinkedList2</Include>
-<Cpp>
+</cpp>
+<include>Exception</include>
+<include>LinkedList2</include>
+<cpp>
 int main(){
 	LinkedList2<float> *list = new LinkedList2<float>();
 	printf("%d %d\n", list->isEmpty(), list->getSize());
@@ -92,4 +92,4 @@ int main(){
 	
 	return 0;
 }
-</Cpp>
+</cpp>

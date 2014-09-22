@@ -1,43 +1,43 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统内核
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Portable Executable
 Author: Firas
 BelongsTo: the OS kernel
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 http://msdn.microsoft.com/en-us/windows/hardware/gg463119.aspx
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 http://msdn.microsoft.com/en-us/windows/hardware/gg463119.aspx
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 #ifndef _PE_H_
 #define _PE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _PE_H_
 _PE_H_	EQU	1
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _PE_H_
 _PE_H_	EQU	1
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 class PE{
 public:
 	
 }; // class PE
-</Cpp>
+</cpp>
 
-<Cpp>
+<cpp>
 #endif // _PE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 END IF ; _PE_H_
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 END IF ; _PE_H_
-</AssemblyX86>
+</assemblyX86>

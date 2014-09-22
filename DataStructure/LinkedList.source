@@ -1,19 +1,19 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 单向不循环链表
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 Uni-directional Not-circular LinkedList
-</Comment>
-<Include>LinkedListNode</Include>
-<Cpp>
+</comment>
+<include>LinkedListNode</include>
+<cpp>
 #ifndef _LINKED_LIST_H_
 #define _LINKED_LIST_H_
 template <typename T> class LinkedList : public List<T>{
@@ -39,8 +39,8 @@ public:
 		#endif
 		return head == LinkedListNullNode;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedList.isEmpty:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -51,8 +51,8 @@ LinkedList.isEmpty:
 	ret
 @@:	mov	rax,	1
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList.isEmpty:
 ; stack: |ret |this|
 	mov	eax,	[esp+4]	; eax = this
@@ -65,8 +65,8 @@ LinkedList.isEmpty:
 	retn	4
 @@:	mov	eax,	1
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	unsigned getSize(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -78,8 +78,8 @@ LinkedList.isEmpty:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedList.getSize:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -91,8 +91,8 @@ LinkedList.getSize:
 	mov	rcx,	[rcx]		; rcx = rcx->next
 	jmp	@B
 @@:	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList.getSize:
 	push	ecx
 ; stack: |ecx |ret |this|
@@ -108,8 +108,8 @@ LinkedList.getSize:
 	jmp	@B
 @@:	pop	ecx
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -118,20 +118,20 @@ LinkedList.getSize:
 		head = new LinkedListNode<T>(e, head);
 		return true;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 ; TODO: new operator
 LinkedList.addElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
 	
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList.addElement:
 	; TODO: NullPointerException
 	
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool hasElement(T e){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
@@ -144,8 +144,8 @@ LinkedList.addElement:
 		return false;
 	}
 	
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedList.hasElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -161,8 +161,8 @@ LinkedList.hasElement:
 	ret
 .false:	xor	rax,	rax
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList.hasElement:
 	push	esi
 ; stack: |ecx |ret |this|e   |
@@ -184,8 +184,8 @@ LABEL	.key	esp+12
 .false:	xor	eax,	eax
 	pop	esi
 	retn	8
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool removeElement(T e){	// inherited from Collection
 		if(isEmpty()) return false;
@@ -206,17 +206,17 @@ LABEL	.key	esp+12
 		}
 		return false;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedList.removeElement:
 	
 	
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList.removeElement:
 	
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool removeAllElement(){	// inherited from Collection
 		if(isEmpty()) return false;
@@ -320,4 +320,4 @@ LinkedList.removeElement:
 	
 }; // class LinkedList<T>
 #endif // _LINKED_LIST_H_
-</Cpp>
+</cpp>

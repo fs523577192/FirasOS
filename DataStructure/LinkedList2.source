@@ -1,19 +1,19 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 双向不循环链表
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 Bi-directional Not-circular LinkedList
-</Comment>
-<Include>LinkedList2Node</Include>
-<Cpp>
+</comment>
+<include>LinkedList2Node</include>
+<cpp>
 #ifndef _LINKED_LIST_2_H_
 #define _LINKED_LIST_2_H_
 template <typename T> class LinkedList2 : public List<T>{
@@ -51,8 +51,8 @@ public:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedList2.isEmpty:
 		
 	mov	rax,	[rcx]	; rcx == this; rax = this->head
@@ -73,8 +73,8 @@ LinkedList2.getSize:
 	mov	rcx,	[rcx]		; rcx = rcx->next
 	jmp	@B
 @@:	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedList2.isEmpty:
 	
 	mov	eax,	[esp+4]	; eax = this
@@ -100,8 +100,8 @@ LinkedList2.getSize:
 	jmp	@B
 @@:	pop	ecx
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()) head = new LinkedList2Node<T>(e);
@@ -238,4 +238,4 @@ LinkedList2.getSize:
 	
 }; // class LinkedList2<T>
 #endif // _LINKED_LIST_2_H_
-</Cpp>
+</cpp>

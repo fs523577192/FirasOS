@@ -1,41 +1,41 @@
-<Head Language="Chinese">
+<head language="Chinese">
 将是否左/右子和红黑颜色的信息保存在指针的0位中的红黑树
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Red Black Tree in Which the bit 0 of the Pointers Contain Information
 about Whether the Node Is a Left/Right Child and Whether the Node Is
 Red/Black
 
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 将是否左/右子和红黑颜色的信息保存在指针的0位中，故强制红黑树节点2字节对齐。
 左子指针保存是否左子，右子指针保存是否右子，父指针保存红色还是黑色。
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 The information about whether the node is a left child or a right child,
 and whether the node is red or black is stored in the bit 0 of the pointers,
 so the node must be aligned to 2-byte boundaries.
 The left child pointer stores whether the node is a left child;
 the right child pointer stores whether the node is a right child;
 the parent pointer stores whether the node is red or black.
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 #ifndef _RED_BLACK_H_
 #define _RED_BLACK_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _RED_BLACK_H_
 _RED_BLACK_H_	EQU	1
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _RED_BLACK_H_
 _RED_BLACK_H_	EQU	1
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 template <typename T> class RedBlack;
 template <typename T> class RedBlackNode{
 protected:
@@ -93,8 +93,8 @@ public:
 		return reinterpret_cast<RedBlackNode*>(
 			reinterpret_cast<unsigned>(parent) & ADDR_MASK);
 	}
-</Cpp>
-<Comment Language="Chinese">
+</cpp>
+<comment language="Chinese">
 --	一点说明：以下x86/x64汇编语句中会用
 	and	al/bl/cl/dl/BYTE [addr],	RedBlackNode.ADDR_MASK
 	or/test	al/bl/cl/dl/BYTE [addr],	1
@@ -106,8 +106,8 @@ public:
 	故用字节操作指令来节省代码空间。
 --	除非64位目的操作数的and指令同时还充当test指令，后面跟着一条jz/jnz
 	指令，有判断指针是否为null的作用
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 --	Notice: In the following x86/x64 assembly codes, I will use
 	and	al/bl/cl/dl/BYTE [addr],	RedBlackNode.ADDR_MASK
 	or/test	al/bl/cl/dl/BYTE [addr],	1
@@ -121,8 +121,8 @@ public:
 	destination operand is also used as a test instruction to test
 	whether a pointer is null or not, which follows by a jz/jnz
 	instruction.
-</Comment>
-<AssemblyX64 Compiler="fasm">
+</comment>
+<assemblyX64 compiler="fasm">
 RedBlackNode.ADDR_MASK	EQU	-2
 RedBlackNode.LEFT	EQU	0
 RedBlackNode.RIGHT	EQU	8
@@ -155,8 +155,8 @@ RedBlackNode.getParent:
 	and	al,	RedBlackNode.ADDR_MASK
 .return:
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 RedBlackNode.ADDR_MASK	EQU	-2
 RedBlackNode.LEFT	EQU	0
 RedBlackNode.RIGHT	EQU	4
@@ -189,8 +189,8 @@ RedBlackNode.getParent:
 	and	eax,	RedBlackNode.ADDR_MASK
 .return:
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 
 	RedBlackNode *getRoot(){
 		register RedBlackNode *temp;
@@ -220,8 +220,8 @@ RedBlackNode.getParent:
 			return getParent()->getLeft();
 		return RedBlackNullNode;
 	}
-	</Cpp>
-<AssemblyX64 Compiler="fasm">
+	</cpp>
+<assemblyX64 compiler="fasm">
 
 RedBlackNode.getRoot:
 	xor	rax,	rax
@@ -275,8 +275,8 @@ RedBlackNode.getSibling:
 	and	al,	RedBlackNode.ADDR_MASK
 .return:
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 RedBlackNode.getRoot:
 	mov	eax,	[esp+4]	; eax = this
@@ -340,8 +340,8 @@ RedBlackNode.getSibling:
 .return:
 	ret
 	
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	inline bool isLeft(){
 		if(this==RedBlackNullNode)
 		#ifdef _EXCEPTION_H_
@@ -370,7 +370,7 @@ RedBlackNode.getSibling:
 		return (this == RedBlackNullNode) ||
 			((reinterpret_cast<unsigned>(parent) & 1) == 0);
 	}
-<AssemblyX64 Compiler="fasm">
+<assemblyX64 compiler="fasm">
 
 RedBlackNode.isLeft:
 	mov	rax,	rcx
@@ -408,8 +408,8 @@ RedBlackNode.isBlack:
 .return:
 	btc	rax,	0
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 RedBlackNode.isLeft:
 	mov	eax,	[esp+4]	; eax = this
@@ -447,18 +447,18 @@ RedBlackNode.isBlack:
 .return:
 	btc	eax,	0
 	retn	4
-</AssemblyX86>
-<Comment Language="Chinese">
+</assemblyX86>
+<comment language="Chinese">
 --	获取红黑树中大小不比本节点大/小的最大/小节点
 --	以不比本节点大的最大节点为例：若本节点有左子树，
 	这个节点应该是左子树的最右节点；若本节点没有左
 	子树，那么往树根方向查找，只要发现本节点属于某
 	节点的右子树，那么该节点就是所要找的节点
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 	
 	RedBlackNode *getPrevNode(){
 		if(getLeft() != RedBlackNullNode)
@@ -481,8 +481,8 @@ RedBlackNode.isBlack:
 		}
 		return RedBlackNullNode;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 
 RedBlackNode.getPrevNode:
 	mov	rax,	rcx
@@ -527,8 +527,8 @@ RedBlackNode.getNextNode:
 	jmp	@B
 .return:
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 RedBlackNode.getPrevNode:
 	mov	eax,	[esp+4]	; eax = this
@@ -579,14 +579,14 @@ RedBlackNode.getNextNode:
 	jmp	@B
 @@:	pop	ebx		; ##
 	retn	4
-</AssemblyX86>
-<Comment Language="Chinese">
+</assemblyX86>
+<comment language="Chinese">
 
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 protected:
 	#define RedBlackNodeX	left
 	#define RedBlackNodeY	right
@@ -607,8 +607,8 @@ protected:
 		#endif
 		
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 RedBlackNode.X	EQU	RedBlackNode.LEFT
 RedBlackNode.Y	EQU	RedBlackNode.RIGHT
 
@@ -622,8 +622,8 @@ RedBlackNode.X	EQU	RedBlackNode.RIGHT
 RedBlackNode.rotateRight:
 	
 	retn	4
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 RedBlackNode.X	EQU	RedBlackNode.LEFT
 RedBlackNode.Y	EQU	RedBlackNode.RIGHT
 
@@ -636,8 +636,8 @@ RedBlackNode.X	EQU	RedBlackNode.RIGHT
 RedBlackNode.rotateRight:
 	
 	ret
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 }; // class RedBlackNode<T>
 #define RedBlackNullNode	((RedBlackNode<T>*)0)
@@ -658,35 +658,35 @@ public:
 	RedBlack(T firstElement){
 		root = new RedBlackNode<T>(firstElement)
 	}
-</Cpp>
-<Comment Language="Chinese">
+</cpp>
+<comment language="Chinese">
 
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 
-</Comment>
+</comment>
 
-<Cpp>
+<cpp>
 	
 	
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 
 RedBlack.:
 	
 .return:
 
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 RedBlack.:
 
 .return:
 
 	retn	12
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 }; // class RedBlack<T>
 #endif // _RED_BLACK_H_
-</Cpp>
+</cpp>

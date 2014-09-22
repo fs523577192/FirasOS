@@ -1,31 +1,31 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 单向循环链表
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 Bi-directional Circular LinkedList
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 #ifndef _LINKED_LIST_O_H_
 #define _LINKED_LIST_O_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_O_H_
 _LINKED_LIST_O_H_	EQU	1
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_O_H_
 _LINKED_LIST_O_H_	EQU	1
-</AssemblyX86>
-<Include>LinkedListNode</Include>
-<Cpp>
+</assemblyX86>
+<include>LinkedListNode</include>
+<cpp>
 template <typename T> class LinkedListO : public List<T>{
 private:
 	LinkedListNode<T> *head;
@@ -50,8 +50,8 @@ public:
 		#endif
 		return head == LinkedListNullNode;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedListO.isEmpty:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -62,8 +62,8 @@ LinkedListO.isEmpty:
 	ret
 @@:	mov	rax,	1
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedListO.isEmpty:
 ; stack: |ret |this|
 	mov	eax,	[esp+4]	; eax = this
@@ -76,8 +76,8 @@ LinkedListO.isEmpty:
 	retn	4
 @@:	mov	eax,	1
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	unsigned getSize(){	// inherited from Collection
 		if(isEmpty()) return 0;
@@ -87,8 +87,8 @@ LinkedListO.isEmpty:
 			temp = temp->next) size++;
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedListO.getSize:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -108,8 +108,8 @@ LinkedListO.getSize:
 	jmp	.loop1
 @@:	pop	rbx		; ##
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedListO.getSize:
 	push	ebx			; ##
 	push	ecx			; %%
@@ -133,8 +133,8 @@ LinkedListO.getSize:
 @@:	pop	ecx			; %%
 	pop	ebx			; ##
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()){
@@ -285,4 +285,4 @@ LinkedListO.getSize:
 	
 }; // class LinkedListO<T>
 #endif // _LINKED_LIST_O_H_
-</Cpp>
+</cpp>

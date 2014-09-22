@@ -1,31 +1,31 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统内核
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Executable and Linkable Format
 Author: Firas
 BelongsTo: the OS kernel
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 #ifndef _ELF_H_
 #define _ELF_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _ELF_H_
 _ELF_H_	EQU	1
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _ELF_H_
 _ELF_H_	EQU	1
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 class ELF{
 public:
 	BYTE	magic[4];
@@ -39,18 +39,18 @@ public:
 	UINT16	machine;
 	UINT32	ELF_version4;
 	void*	entry;
-	void*	programHeader;
-	void*	sectionHeader;
+	void*	programheader;
+	void*	sectionheader;
 	
 }; // class ELF
-</Cpp>
+</cpp>
 
-<Cpp>
+<cpp>
 #endif // _ELF_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 END IF ; _ELF_H_
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 END IF ; _ELF_H_
-</AssemblyX86>
+</assemblyX86>

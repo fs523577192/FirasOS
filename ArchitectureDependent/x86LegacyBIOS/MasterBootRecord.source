@@ -1,25 +1,25 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统引导启动
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Loader of the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 --	关于主引导记录的介绍，请见
 	http://en.wikipedia.org/wiki/Master_boot_record
 	http://wiki.osdev.org/MBR_(x86)
 	http://blog.csdn.net/firas/article/details/8665366
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 --	For information about the master boot record (MBR),
 	please see
 	http://en.wikipedia.org/wiki/Master_boot_record
 	http://wiki.osdev.org/MBR_(x86)
 	http://blog.csdn.net/firas/article/details/8665366
-</Comment>
-<AssemblyX86 Compiler="fasm">
+</comment>
+<assemblyX86 compiler="fasm">
 
 
-</AssemblyX86>
+</assemblyX86>

@@ -1,12 +1,12 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Cpp>
+</head>
+<cpp>
 class SegmentDescriptor{
 protected:
 
@@ -14,4 +14,4 @@ public:
 
 
 }; // class SegmentDescriptor
-</Cpp>
+</cpp>

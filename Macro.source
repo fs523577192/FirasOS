@@ -1,5 +1,5 @@
 
-<Comment Language=Chinese>
+<comment language=Chinese>
 --	在MBR、VBR之类的对代码占用的空间要小的地方，
 	用xor指令清零再用or 1或inc指令比但用一条
 	mov 1指令所需空间更少
@@ -13,8 +13,8 @@
 	32位模式中inc eax的机器码为0x40
 	64位模式中inc eax的机器码为0xFF 0xC0
 	or al, 1的机器码为0x0C 0x01
-</Comment>
-<AssemblyX86 Compiler=fasm>
+</comment>
+<assemblyX86 compiler=fasm>
 IF ~DEFINED _MACRO_H_
 _MACRO_H_	EQU	1
 ; reg can be a 32-bit general register
@@ -26,8 +26,8 @@ ELSE
 	mov	reg,	1
 END IF ; DEFINED _LIMITED_SPACE_
 } ; MACRO MOV1TO
-</AssemblyX86>
-<AssemblyX64 Compiler=fasm>
+</assemblyX86>
+<assemblyX64 compiler=fasm>
 ; reg can be a 64-bit or 32-bit general register
 MACRO	MOV1TO	reg{
 IF DEFINED _LIMITED_SPACE_
@@ -50,8 +50,8 @@ ELSE
 	mov	reg,	1
 END IF ; DEFINED _LIMITED_SPACE_
 } ; MACRO MOV1TO
-</AssemblyX64>
-<Cpp>
+</assemblyX64>
+<cpp>
 #ifndef _MACRO_H_
 #define _MACRO_H_
 
@@ -80,13 +80,13 @@ typedef long double 	REAL10;
 typedef unsigned int	BOOLEAN;
 #define TRUE	((BOOLEAN)1)
 #define FALSE	((BOOLEAN)0)
-</Cpp>
-<AssemblyX86 Compiler=fasm>
+</cpp>
+<assemblyX86 compiler=fasm>
 END IF ; ~DEFINED _MACRO_H_
-</AssemblyX86>
-<AssemblyX86 Compiler=fasm>
+</assemblyX86>
+<assemblyX86 compiler=fasm>
 END IF ; ~DEFINED _MACRO_H_
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 #endif // _MACRO_H_
-</Cpp>
+</cpp>

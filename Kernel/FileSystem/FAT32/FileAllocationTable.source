@@ -1,12 +1,12 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统内核
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: the OS kernel
-</Head>
-<Cpp>
+</head>
+<cpp>
 class FAT32{
 protected:
 	
@@ -14,4 +14,4 @@ protected:
 public:
 	
 }; // class FAT32
-</Cpp>
+</cpp>

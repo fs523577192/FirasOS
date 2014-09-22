@@ -1,31 +1,31 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Cpp>
+</head>
+<cpp>
 #ifndef _LINKED_LIST_NODE_H_
 #define _LINKED_LIST_NODE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_NODE_H_
 _LINKED_LIST_NODE_H_	EQU	1
 
 LINKED_LIST_NEXT	EQU	0
 LINKED_LIST_KEY		EQU	8
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_NODE_H_
 _LINKED_LIST_NODE_H_	EQU	1
 
 LINKED_LIST_NEXT	EQU	0
 LINKED_LIST_KEY		EQU	4
-</AssemblyX86>
-<Include>Collection</Include>
-<Cpp>
+</assemblyX86>
+<include>Collection</include>
+<cpp>
 template <typename T> class LinkedList;
 template <typename T> class LinkedListO;
 template <typename T> class LinkedStack;
@@ -74,8 +74,8 @@ public:
 #undef LinkedListNullNode
 #define LinkedListNullNode ((LinkedListNode<T>*)0)
 #endif // _LINKED_LIST_NODE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 
 LinkedListNode.getTail:
 	;test	rcx,	rcx
@@ -89,8 +89,8 @@ LinkedListNode.getTail:
 	ret
 
 END IF ; _LINKED_LIST_NODE_H_
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 LinkedListNode.getTail:
 	;cmp	DWORD [esp+4],	0
@@ -103,4 +103,4 @@ LinkedListNode.getTail:
 @@:	retn	4
 
 END IF ; _LINKED_LIST_NODE_H_
-</AssemblyX86>
+</assemblyX86>

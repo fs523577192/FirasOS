@@ -1,18 +1,18 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统引导启动
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Loader of the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 #define _ADDR_BDA_	0x400
 
 #define _STACK_TOP_	0x7000
@@ -30,8 +30,8 @@ BelongsTo: Loader of the OS
 #define _MEMORY_MAP_	
 
 #define _TEXT_MEMORY_	0xB8000
-</Cpp>
-<AssemblyX86 Compiler="fasm">
+</cpp>
+<assemblyX86 compiler="fasm">
 _ADDR_BDA_	EQU	400h
 
 _STACK_TOP_	EQU	7000h
@@ -50,4 +50,4 @@ _MEMORY_MAP_	EQU
 
 _TEXT_MEMORY_	EQU	0B8000h
 
-</AssemblyX86>
+</assemblyX86>

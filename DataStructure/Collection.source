@@ -1,13 +1,13 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Include>../Macro</Include>
-<Cpp>
+</head>
+<include>../Macro</include>
+<cpp>
 template <typename T> class Collection{
 public:
 	
@@ -128,17 +128,17 @@ public:
 	/***
 	 * Return: the element at the head of the queue
 	 */
-	virtual T getHeadElement() = 0;
+	virtual T getheadElement() = 0;
 	
 	/***
 	 * Adds the element e to the head of the queue
 	 */
-	virtual bool addElementToHead(T e) = 0;
+	virtual bool addElementTohead(T e) = 0;
 	
 	/***
 	 * Removes the element at the head of the queue
 	 */
-	virtual bool removeHeadElement() = 0;
+	virtual bool removeheadElement() = 0;
 	
 	/***
 	 * Return: the element at the tail of the queue
@@ -213,4 +213,4 @@ public:
 			T toElement, bool toInclusive) = 0;
 	
 }; // class SortedCollection<T>
-</Cpp>
+</cpp>

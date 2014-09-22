@@ -1,12 +1,12 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统引导启动
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Loader of the OS
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 --	关于A20地址线的介绍，请见
 	http://wiki.osdev.org/A20_Line
 	http://www.win.tue.nl/~aeb/linux/kbd/A20.html
@@ -15,8 +15,8 @@ BelongsTo: Loader of the OS
 	http://www.ctyme.com/intr/rb-1335.htm
 	http://www.ctyme.com/intr/rb-1336.htm
 	http://www.ctyme.com/intr/rb-1337.htm
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 --	For information on A20 address line, please see
 	http://wiki.osdev.org/A20_Line
 	http://www.win.tue.nl/~aeb/linux/kbd/A20.html
@@ -26,8 +26,8 @@ BelongsTo: Loader of the OS
 	http://www.ctyme.com/intr/rb-1335.htm
 	http://www.ctyme.com/intr/rb-1336.htm
 	http://www.ctyme.com/intr/rb-1337.htm
-</Comment>
-<AssemblyX86 Compiler="fasm">
+</comment>
+<assemblyX86 compiler="fasm">
 USE16
 A20.enable:
 	call	A20.check
@@ -103,4 +103,4 @@ A20.disable:
 	
 	ret
 
-</AssemblyX86>
+</assemblyX86>

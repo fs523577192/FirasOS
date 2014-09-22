@@ -1,25 +1,25 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Cpp>
+</head>
+<cpp>
 #ifndef _LINKED_QUEUE_H_
 #define _LINKED_QUEUE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 IF ~DEFINED _LINKED_QUEUE_H_
 _LINKED_QUEUE_H_	EQU	1
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _LINKED_QUEUE_H_
 _LINKED_QUEUE_H_	EQU	1
-</AssemblyX86>
-<Include>LinkedList2Node</Include>
-<Cpp>
+</assemblyX86>
+<include>LinkedList2Node</include>
+<cpp>
 template <typename T> class LinkedQueue : public Queue<T> {
 private:
 	LinkedList2Node<T> *head;
@@ -55,8 +55,8 @@ public:
 		}
 		return size;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 
 LinkedQueue.isEmpty:
 	;test	rcx,	rcx
@@ -84,8 +84,8 @@ LinkedQueue.getSize:
 @@:	pop	rbx		; ##
 .return:
 	ret
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 
 LinkedQueue.isEmpty:
 	mov	eax,	[esp+4]		; eax = this
@@ -118,8 +118,8 @@ LinkedQueue.getSize:
 	pop	ecx		; @@
 	pop	ebx		; ##
 	retn	4
-</AssemblyX86>
-<Cpp>
+</assemblyX86>
+<cpp>
 	
 	bool addElement(T e){	// inherited from Collection
 		if(isEmpty()){
@@ -171,8 +171,8 @@ LinkedQueue.getSize:
 		head = (LinkedList2Node<T>*)0;
 		return true;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedQueue.removeAllElement:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
@@ -190,16 +190,16 @@ LinkedQueue.removeAllElement:
 .false:	xor	rax,	rax
 	pop	rbx		; ##
 	ret
-</AssemblyX64>
-<AssemblyX86>
+</assemblyX64>
+<assemblyX86>
 LinkedQueue.removeAllElement:
 	
 	xor	eax,	eax
 	retn	4
-</AssemblyX86 Compiler="fasm">
-<Cpp>
+</assemblyX86 compiler="fasm">
+<cpp>
 	
-	T getHeadElement(){	// inherited from Queue
+	T getheadElement(){	// inherited from Queue
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedQueue*)0 || head == (LinkedList2Node<T>*)0)
 			throw NullPointerException();
@@ -207,11 +207,11 @@ LinkedQueue.removeAllElement:
 		return head->key;
 	}
 	
-	bool addElementToHead(T e){	// inherited from Queue
+	bool addElementTohead(T e){	// inherited from Queue
 		return addElement(e);
 	}
 	
-	bool removeHeadElement(){	// inherited from Queue
+	bool removeheadElement(){	// inherited from Queue
 		if(isEmpty()) return false;
 		if(head == head->prev){
 			delete head;
@@ -222,16 +222,16 @@ LinkedQueue.removeAllElement:
 		}
 		return true;
 	}
-</Cpp>
-<AssemblyX64 Compiler="fasm">
-LinkedQueue.removeHeadElement:
+</cpp>
+<assemblyX64 compiler="fasm">
+LinkedQueue.removeheadElement:
 
-</AssemblyX64>
-<AssemblyX86>
-LinkedQueue.removeHeadElement:
+</assemblyX64>
+<assemblyX86>
+LinkedQueue.removeheadElement:
 
-</AssemblyX86 Compiler="fasm">
-<Cpp>
+</assemblyX86 compiler="fasm">
+<cpp>
 	
 	T getTailElement(){	// inherited from Queue
 		#ifdef _EXCEPTION_H_
@@ -267,14 +267,14 @@ LinkedQueue.removeHeadElement:
 	
 }; // class LinkedQueue<T>
 #endif // _LINKED_QUEUE_H_
-</Cpp>
-<AssemblyX64 Compiler="fasm">
+</cpp>
+<assemblyX64 compiler="fasm">
 LinkedQueue.removeTailElement:
 
 END IF ; _LINKED_QUEUE_H_
-</AssemblyX64>
-<AssemblyX86 Compiler="fasm">
+</assemblyX64>
+<assemblyX86 compiler="fasm">
 LinkedQueue.removeTailElement:
 
 END IF ; _LINKED_QUEUE_H_
-</AssemblyX86>
+</assemblyX86>

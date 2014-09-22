@@ -1,10 +1,10 @@
-<Head Language="Chinese">
+<head language="Chinese">
 
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 
-</Head>
-<AssemblyX86 Compiler="fasm" Platform="Windows">
+</head>
+<assemblyX86 compiler="fasm" Platform="Windows">
 format PE console
 entry start
 include "C:\FASM\INCLUDE\win32a.inc"
@@ -12,8 +12,8 @@ include "C:\FASM\INCLUDE\win32a.inc"
 section '.code' code readable executable
 start:
 	
-</AssemblyX86>
-<AssemblyX64 Compiler="fasm" Platform="Windows">
+</assemblyX86>
+<assemblyX64 compiler="fasm" Platform="Windows">
 format PE64 GUI
 entry start
 
@@ -23,13 +23,13 @@ start:
 	sub	rsp,	8*5 	; reserve stack for API use and make stack dqword aligned
 	
 
-</AssemblyX64>
-<Cpp>
+</assemblyX64>
+<cpp>
 #include <iostream>
-</Cpp>
-<Include>Exception</Include>
-<Include>LinkedQueue</Include>
-<Cpp>
+</cpp>
+<include>Exception</include>
+<include>LinkedQueue</include>
+<cpp>
 int main(){
 	LinkedQueue<double> *queue = new LinkedQueue<double>();
 	printf("%d %d\n", queue->isEmpty(), queue->getSize());
@@ -51,18 +51,18 @@ int main(){
 	queue = new LinkedQueue<double>(1.5);
 	printf("%d %d\n", queue->isEmpty(), queue->getSize());
 	// 0 1
-	printf("%d ", queue->addElementToHead(0.5));
-	printf("%d ", queue->addElementToHead(2.5));
+	printf("%d ", queue->addElementTohead(0.5));
+	printf("%d ", queue->addElementTohead(2.5));
 	printf("%d ", queue->addElementToTail(4.5));
 	printf("%d\n", queue->addElementToTail(3.5));
 	// 1 1 1 1
 	printf("%d %d\n", queue->isEmpty(), queue->getSize());
 	// 0 5
-	printf("%lf %lf\n", queue->getHeadElement(), queue->getTailElement());
+	printf("%lf %lf\n", queue->getheadElement(), queue->getTailElement());
 	// 2.5000 3.5000
-	printf("%d %d\n", queue->removeHeadElement(), queue->removeTailElement());
+	printf("%d %d\n", queue->removeheadElement(), queue->removeTailElement());
 	// 1 1
-	printf("%lf %lf\n", queue->getHeadElement(), queue->getTailElement());
+	printf("%lf %lf\n", queue->getheadElement(), queue->getTailElement());
 	// 0.5000 4.5000
 	printf("%d %d\n", queue->isEmpty(), queue->getSize());
 	// 0 3
@@ -73,4 +73,4 @@ int main(){
 	
 	return 0;
 }
-</Cpp>
+</cpp>

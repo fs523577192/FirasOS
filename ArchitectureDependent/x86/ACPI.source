@@ -1,14 +1,14 @@
-<Head Language="Chinese">
+<head language="Chinese">
 高级配置和电源管理接口
 作者：伍裕平
 归属：操作系统内核
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Advanced Configuration and Power Management Interface
 Author: Firas
 BelongsTo: OS Kernel
-</Head>
-<Comment Language="Chinese">
+</head>
+<comment language="Chinese">
 --	关于ACPI系统表，请见《ACPI规范5.0a》。ACPI规范可从ACPI官网
 	（http://acpi.info）免费下载。
 --	ACPI系统表的缩写的意义如下：
@@ -21,8 +21,8 @@ DSDT	-	差异化系统描述表
 SSDT	-	二级系统描述表
 MADT	-	多APIC描述表
 
-</Comment>
-<Comment Language="English">
+</comment>
+<comment language="English">
 --	For details of ACPI system tables, please see ACPI Specification,
 	Revision 5.0a. The ACPI specification can be downloaded for free
 	from the official website of ACPI (http://acpi.info).
@@ -36,8 +36,8 @@ DSDT	-	Differentiated System Description Table
 SSDT	-	Secondary System Description Table
 MADT	-	Multiple APIC Description Table
 
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 namespace ACPI{
 
 class RSDP{
@@ -56,7 +56,7 @@ public:
 	
 }; // class RSDP
 
-class Head{
+class head{
 public:
 	char	signature[4];
 	UINT32	length;
@@ -67,23 +67,23 @@ public:
 	UINT32	oemRevision;
 	UINT32	creatorID;
 	UINT32	creatorRevision;
-}; // Head
+}; // head
 
 class RSDT{
 public:
-	Head	head;
+	head	head;
 	// 32-bit entries (pointers to other ACPI tables)
 }; // class RSDT
 
 class XSDT{
 public:
-	Head	head;
+	head	head;
 	// 64-bit entries (pointers to other ACPI tables)
 }; // class XSDT
 
 class FADT{
 public:
-	Head	head;
+	head	head;
 	
 	UINT32	addressFACS;
 	UINT32	addressDSDT;
@@ -202,17 +202,17 @@ public:
 }; // class FACS
 
 class DSDT{
-	Head	head;
+	head	head;
 	
 }; // class DSDT
 
 class SSDT{
-	Head	head;
+	head	head;
 	
 }; // class SSDT
 
 class MADT{
-	Head	head;
+	head	head;
 	UINT32	addressLIC;
 	struct{
 		UINT32 PCAT_COMPAT	:1;
@@ -372,4 +372,4 @@ class GIC_Distributor{
 }; // class GIC_Distributor
 
 } // namespace ACPI
-</Cpp>
+</cpp>

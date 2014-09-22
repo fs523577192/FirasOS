@@ -1,20 +1,20 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统内核
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: the OS kernel
-</Head>
-<Include>../../../Macro</Include>
-<Comment Language="Chinese">
+</head>
+<include>../../../Macro</include>
+<comment language="Chinese">
 --	关于微软的文件分配表（FAT）系列文件系统，请参考
 	http://zh.wikipedia.org/wiki/FAT
 --	关于FAT系列文件系统的引导扇区中的数据结构，请参考
 	http://blog.csdn.net/firas/article/details/8787506
 	
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 class FAT32VBR{
 protected:
 	BYTE jumpCode[3];
@@ -33,4 +33,4 @@ protected:
 public:
 	
 }; // class FAT32VBR
-</Cpp>
+</cpp>

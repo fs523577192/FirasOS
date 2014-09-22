@@ -1,13 +1,13 @@
-<Head Language="Chinese">
+<head language="Chinese">
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Include>../Macro</Include>
-<Cpp>
+</head>
+<include>../Macro</include>
+<cpp>
 #ifndef _EXCEPTION_H_
 #define _EXCEPTION_H_
 class Exception{
@@ -67,4 +67,4 @@ public:
 }; // class IllegalArgumentException
 const char *IllegalArgumentException::illegalArgumentMessage = "Illegal Argument";
 #endif // _EXCEPTION_H_
-</Cpp>
+</cpp>

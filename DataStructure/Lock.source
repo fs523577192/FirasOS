@@ -1,22 +1,22 @@
-<Head Language="Chinese">
+<head language="Chinese">
 自旋锁、互斥量和信号量
 作者：伍裕平
 归属：操作系统数据结构
-</Head>
-<Head Language="English">
+</head>
+<head language="English">
 Spin Lock, Mutex and Semaphore
 Author: Firas
 BelongsTo: Data Structure in the OS
-</Head>
-<Cpp>
+</head>
+<cpp>
 class SpinLock{
 private:
 
 public:
 
 }; // SpinLock
-</Cpp>
-<Cpp>
+</cpp>
+<cpp>
 class Semaphore{
 private:
 	int value;
@@ -31,8 +31,8 @@ public:
 		value = initialValue;
 		return true;
 	}
-</Cpp>
-<AssemblyX86 Compiler="fasm">
+</cpp>
+<assemblyX86 compiler="fasm">
 ; bool initializeSemaphore(Semaphore *s, int initialValue);
 initializeSemaphore:
 	mov	eax,	[esp+4]	; initial value
@@ -46,8 +46,8 @@ initializeSemaphore:
 @@:	sbb	eax,	eax
 	neg	eax
 	retn	8
-</AssemblyX86>
-<AssemblyX64 Compiler="fasm">
+</assemblyX86>
+<assemblyX64 compiler="fasm">
 initializeSemaphore:
 	bt	rdx,	63
 	jnc	@F
@@ -56,14 +56,14 @@ initializeSemaphore:
 @@:	sbb	rax,	rax
 	neg	rax
 	ret
-</AssemblyX64>
-<Cpp Compiler="gcc">
+</assemblyX64>
+<cpp compiler="gcc">
 	
 
 	
 }; // class Semaphore
-</Cpp>
-<AssemblyX86 Compiler="fasm">
+</cpp>
+<assemblyX86 compiler="fasm">
 requireSemaphore:
 	
 	lock	dec	[]
@@ -73,8 +73,8 @@ releaseSemaphore:
 
 	lock	inc	[]
 	
-</AssemblyX86>
-<AssemblyX64 Compiler="fasm">
+</assemblyX86>
+<assemblyX64 compiler="fasm">
 requireSemaphore:
 	
 	lock	dec	[]
@@ -84,15 +84,15 @@ releaseSemaphore:
 	
 	lock	inc	[]
 	
-</AssemblyX64>
-<Comment Language=Chinese>
+</assemblyX64>
+<comment language=Chinese>
 以下是派生的有提供者和消费者队列的信号量
-</Comment>
-<Comment Language=English>
+</comment>
+<comment language=English>
 The following is the derived class with providers queue and
 consumers queue
-</Comment>
-<Cpp>
+</comment>
+<cpp>
 class BigSemaphore : public Semaphore{
 private:
 	LinkedQueue<Thread*> providers, consumers;
@@ -109,9 +109,9 @@ public:
 	}
 	
 }; // class BigSemaphore
-</Cpp>
+</cpp>
 
-<Cpp>
+<cpp>
 class Mutex : public Semaphore{
 public:
 	Mutex(){
@@ -119,4 +119,4 @@ public:
 	}
 	
 }; // class Mutex
-</Cpp>
+</cpp>
