@@ -7,12 +7,37 @@ Common Object File Format
 Author: Firas
 BelongsTo: the OS kernel
 </Head>
+<Comment Language="Chinese">
+
+</Comment>
+<Comment Language="English">
+
+</Comment>
 <Cpp>
-
+#ifndef _COFF_H_
+#define _COFF_H_
 </Cpp>
-<AssemblyX86 Compiler="fasm">
-
-</AssemblyX86>
 <AssemblyX64 Compiler="fasm">
-
+IF ~DEFINED _COFF_H_
+_COFF_H_	EQU	1
 </AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _COFF_H_
+_COFF_H_	EQU	1
+</AssemblyX86>
+<Cpp>
+class COFF{
+public:
+	
+}; // class COFF
+</Cpp>
+
+<Cpp>
+#endif // _COFF_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+END IF ; _COFF_H_
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+END IF ; _COFF_H_
+</AssemblyX86>

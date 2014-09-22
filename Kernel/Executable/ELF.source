@@ -7,12 +7,50 @@ Executable and Linkable Format
 Author: Firas
 BelongsTo: the OS kernel
 </Head>
+<Comment Language="Chinese">
+
+</Comment>
+<Comment Language="English">
+
+</Comment>
 <Cpp>
-
+#ifndef _ELF_H_
+#define _ELF_H_
 </Cpp>
-<AssemblyX86 Compiler="fasm">
-
-</AssemblyX86>
 <AssemblyX64 Compiler="fasm">
-
+IF ~DEFINED _ELF_H_
+_ELF_H_	EQU	1
 </AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _ELF_H_
+_ELF_H_	EQU	1
+</AssemblyX86>
+<Cpp>
+class ELF{
+public:
+	BYTE	magic[4];
+	BYTE	operandSize;
+	BYTE	endian;
+	BYTE	ELF_version1;
+	BYTE	targetOS_ABI;
+	BYTE	ABI_version;
+	BYTE	reserved[7];
+	UINT16	type;
+	UINT16	machine;
+	UINT32	ELF_version4;
+	void*	entry;
+	void*	programHeader;
+	void*	sectionHeader;
+	
+}; // class ELF
+</Cpp>
+
+<Cpp>
+#endif // _ELF_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+END IF ; _ELF_H_
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+END IF ; _ELF_H_
+</AssemblyX86>

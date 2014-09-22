@@ -7,12 +7,37 @@ Portable Executable
 Author: Firas
 BelongsTo: the OS kernel
 </Head>
+<Comment Language="Chinese">
+http://msdn.microsoft.com/en-us/windows/hardware/gg463119.aspx
+</Comment>
+<Comment Language="English">
+http://msdn.microsoft.com/en-us/windows/hardware/gg463119.aspx
+</Comment>
 <Cpp>
-
+#ifndef _PE_H_
+#define _PE_H_
 </Cpp>
-<AssemblyX86 Compiler="fasm">
-
-</AssemblyX86>
 <AssemblyX64 Compiler="fasm">
-
+IF ~DEFINED _PE_H_
+_PE_H_	EQU	1
 </AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+IF ~DEFINED _PE_H_
+_PE_H_	EQU	1
+</AssemblyX86>
+<Cpp>
+class PE{
+public:
+	
+}; // class PE
+</Cpp>
+
+<Cpp>
+#endif // _PE_H_
+</Cpp>
+<AssemblyX64 Compiler="fasm">
+END IF ; _PE_H_
+</AssemblyX64>
+<AssemblyX86 Compiler="fasm">
+END IF ; _PE_H_
+</AssemblyX86>

@@ -17,7 +17,7 @@ RSDT	-	根系统描述表
 XSDT	-	拓展（根）系统描述表
 FADT	-	固定ACPI描述表
 FACS	-	固件ACPI控制结构
-DSDT	-	Differentiated系统描述表
+DSDT	-	差异化系统描述表
 SSDT	-	二级系统描述表
 MADT	-	多APIC描述表
 
@@ -52,6 +52,7 @@ public:
 	UINT64	addressXSDT;
 	BYTE	extendedChecksum;
 	BYTE	reserved[3];
+	
 	
 }; // class RSDP
 
@@ -89,6 +90,10 @@ public:
 	
 	BYTE	INT_MODEL;
 	BYTE	Prefered_PM_Profile;
+	const static BYTE PM_UNSPECIFIED = 0, PM_DESKTOP = 1, PM_MOBILE = 2,
+			PM_WORKSTATION = 3, PM_ENTERPRISE_SERVER = 4,
+			PM_SOHO_SERVER = 5, PM_APPLIANCE_PC = 6,
+			PM_PERFORMANCE_SERVER = 7, PM_TABLET = 8;
 	UINT16	SCI_INT;
 	UINT32	SMI_CMD;
 	BYTE	ACPI_ENABLE;
@@ -120,9 +125,41 @@ public:
 	BYTE	DAY_ALARM;
 	BYTE	MONTH_ALARM;
 	BYTE	CENTURY;
-	UINT16	IAPC_BOOT_ARCH;
+	struct{
+		UINT16	LEGACY_DEVICES	:1;
+		UINT16	HAS_8042	:1;
+		UINT16	NO_VGA		:1;
+		UINT16	NO_MSI		:1;
+		UINT16	ASPM_CONTROL	:1;
+		UINT16	NO_RTC		:1;
+	}IAPC_BOOT_ARCH;
+	
 	BYTE	reserved0;
-	UINT32	flags;
+	struct{
+		UINT32	HAS_WBINVD	:1;
+		UINT32	WBINVD_FLUSH	:1;
+		UINT32	PROC_C1		:1;
+		UINT32	P_LVL2_UP	:1;
+		UINT32	PWR_BUTTON	:1;
+		UINT32	SLP_BUTTON	:1;
+		UINT32	FIX_RTC		:1;
+		UINT32	RTC_S4		:1;
+		UINT32	TMR_VAL_EXT	:1;
+		UINT32	DCK_CAP		:1;
+		UINT32	RESET_REG_SUP	:1;
+		UINT32	SEALED_CASE	:1;
+		UINT32	HEADLESS	:1;
+		UINT32	CPU_SW_SLP	:1;
+		UINT32	PCI_EXP_WAK	:1;
+		UINT32	USE_PLATFORM_CLOCK	:1;
+		UINT32	S4_RTC_STS_VALID	:1;
+		UINT32	REMOTE_POWER_ON_CAPABLE	:1;
+		UINT32	FORCE_APIC_CLUSTER_MODEL:1;
+		UINT32	FORCE_APIC_PHYSICAL_DESTINATION_MODE:1;
+		UINT32	HW_REDUCED_ACPI	:1;
+		UINT32	LOW_POWER_S0_IDLE_CAPABLE:1;
+	}flags;
+	
 	UINT32	RESET_REG0, RESET_REG1, RESET_REG2;
 	BYTE	RESET_VALUE;
 	BYTE	reserved1, reserved2, reserved3;
@@ -146,12 +183,20 @@ public:
 	UINT32	length;
 	char	hardwareSignature[4];
 	UINT32	firmwareWakingVector;
-	UINT32	globalLock;
-	UINT32	flags;
+	struct{
+		UINT32	pending	:1;
+		UINT32	owned	:1;
+	}globalLock;
+	struct{
+		UINT32	S4BIOS_F:1;
+		UINT32	64BIT_WAKE_SUPPORTED_F:1;
+	}flags;
 	UINT64	XfirmwareWakingVector;
 	BYTE	version;
 	BYTE	reserved0[3];
-	UINT32	OSPM_Flags;
+	struct{
+		UINT32	64BIT_WAKE_F:1;
+	}OSPM_Flags;
 	BYTE	reserved1[24];
 	
 }; // class FACS
@@ -169,17 +214,20 @@ class SSDT{
 class MADT{
 	Head	head;
 	UINT32	addressLIC;
-	UINT32	flags;
-	const static UINT32 PCAT_COMPAT = 1;
+	struct{
+		UINT32 PCAT_COMPAT	:1;
+	}flags;
+	
 	
 }; // class MADT
 class EntryLAPIC{
 	BYTE	type;
 	BYTE	length;
 	BYTE	processorID;
-	BYTE	APIC_ID;
-	UINT32	flags;
-	const static UINT32 ENABLED = 1;
+	BYTE	id;
+	struct{
+		UINT32	enabled	:1;
+	}flags;
 }; // class EntryLAPIC
 class EntryIOAPIC{
 	BYTE	type;
@@ -195,15 +243,133 @@ class InterruptSourceOverride{
 	BYTE	bus;
 	BYTE	source;
 	UINT32	globalSystemInterrupt;
-	UINT16	flags;
-	
+	struct{
+		UINT16	polarity	:2;
+		UINT16	triggerMode	:2;
+	}flags;
+	const static UINT16 conforming = 0,
+		activeHigh = 1, activeLow = 3,
+		edgeTriggered = 1, levelTriggered = 3;
 }; // class InterruptSourceOverride
-class {
-
-}; // 
-class {
-
-}; // 
+class NMI_Source{
+	BYTE	type;
+	BYTE	length;
+	struct{
+		UINT16	polarity	:2;
+		UINT16	triggerMode	:2;
+	}flags;
+	const static UINT16 conforming = 0,
+		activeHigh = 1, activeLow = 3,
+		edgeTriggered = 1, levelTriggered = 3;
+	UINT32	globalSystemInterrupt;
+}; // class NMI_Source
+class LAPIC_NMI{
+	BYTE	type;
+	BYTE	length;
+	BYTE	processorID;
+	struct{
+		UINT16	polarity	:2;
+		UINT16	triggerMode	:2;
+	}flags;
+	const static UINT16 conforming = 0,
+		activeHigh = 1, activeLow = 3,
+		edgeTriggered = 1, levelTriggered = 3;
+	BYTE	LINT;
+}; // class LAPIC_NMI
+class LAPIC_AddressOverride
+	BYTE	type;
+	BYTE	length;
+	BYTE	reserved[2];
+	UINT64	address;
+}; // class LAPIC_AddressOverride
+class EntryIOSAPIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	id;
+	BYTE	reserved;
+	UINT32	interruptBase;
+	UINT64	address;
+}; // class EntryIOSAPIC
+class EntryLSAPIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	processorID;
+	BYTE	id;
+	BYTE	eid;
+	BYTE	reserved[3];
+	struct{
+		UINT32	enabled	:1;
+	}flags;
+	UINT32	uidValue;
+	// uidString
+}; // class EntryLSAPIC
+class PlatformInterruptSource{
+	BYTE	type;
+	BYTE	length;
+	struct{
+		UINT16	polarity	:2;
+		UINT16	triggerMode	:2;
+	}flags;
+	const static UINT16 conforming = 0,
+		activeHigh = 1, activeLow = 3,
+		edgeTriggered = 1, levelTriggered = 3;
+	BYTE	interruptType;
+	BYTE	processorID;
+	BYTE	processorEID;
+	BYTE	IOSAPIC_vector;
+	UINT32	globalSystemInterrupt;
+	struct{
+		UINT32	processorOverride;
+	}interruptSourceFlags;
+}; // class PlatformInterruptSource
+class EntryX2APIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	reserved[2];
+	UINT32	id;
+	struct{
+		UINT32	enabled	:1;
+	}flags;
+	UINT32	processorUID;
+}; // class EntryX2APIC
+class X2APIC_NMI{
+	BYTE	type;
+	BYTE	length;
+	struct{
+		UINT16	polarity	:2;
+		UINT16	triggerMode	:2;
+	}flags;
+	const static UINT16 conforming = 0,
+		activeHigh = 1, activeLow = 3,
+		edgeTriggered = 1, levelTriggered = 3;
+	UINT32	processorUID;
+	BYTE	LINT;
+	BYTE	reserved[3];
+}; // class X2APIC_NMI
+class EntryGIC{
+	BYTE	type;
+	BYTE	length;
+	BYTE	reserved[2];
+	UINT32	id;
+	UINT32	processorUID;
+	struct{
+		UINT32	enabled		:1;
+		UINT32	interruptMode	:1;
+	}flags;
+	UINT32	protocolVersion;
+	UINT32	GSIV;
+	UINT64	parkedAddress;
+	UINT64	address;
+}; // class EntryGIC
+class GIC_Distributor{
+	BYTE	type;
+	BYTE	length;
+	BYTE	reserved0[2];
+	UINT32	id;
+	UINT64	address;
+	UINT32	vectorBase;
+	BYTE	reserved1[4];
+}; // class GIC_Distributor
 
 } // namespace ACPI
 </Cpp>
