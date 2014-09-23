@@ -1,0 +1,63 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统引导启动
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Loader of the OS
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	BIOS service -- get SuperVGA information
+	int 10h, ax = 4F00h
+	http://www.ctyme.com/intr/rb-0273.htm
+--	BIOS service -- get SuperVGA mode information
+	int 10h, ax = 4F01h
+	http://www.ctyme.com/intr/rb-0274.htm
+--	BIOS service -- set SuperVGA video mode
+	int 10h, ax = 4F02h
+	http://www.ctyme.com/intr/rb-0275.htm
+</comment>
+<cpp>
+#ifndef _SVGA_16_H_
+#define _SVGA_16_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _SVGA_16_H_
+_SVGA_16_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<cpp>
+namespace SVGA16{
+class Information{
+public:
+
+}; // class Information
+class ModeInformation{
+public:
+
+}; // class ModeInformation
+} // namespace SVGA16
+#endif // _SVGA_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+USE16
+SVGA16.getInfo:
+	
+	mov	ax,	4F00h
+	int	10h
+	
+SVGA16.getModeInfo:
+	
+	mov	ax,	4F01h
+	int	10h
+	
+
+SVGA16.setMode:
+	mov	ax,	4F02h
+	int	10h
+	
+END IF ; _SVGA_16_H_
+</assemblyX86>

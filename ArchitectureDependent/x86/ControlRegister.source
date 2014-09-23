@@ -1,0 +1,115 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _CONTROL_REGISTER_H_
+#define _CONTROL_REGISTER_H_	1
+class CR0{
+public:
+	struct{
+		UINT32	PE:1;
+		UINT32	MP:1;
+		UINT32	EM:1;
+		UINT32	TS:1;
+		UINT32	ET:1;
+		UINT32	NE:1;
+		UINT32	reserved0:10;
+		UINT32	WP:1;
+		UINT32	reserved1:1;
+		UINT32	AM:1;
+		UINT32	reserved2:10;
+		UINT32	NW:1;
+		UINT32	CD:1;
+		UINT32	PG:1;
+	}value;
+
+}; // class CR0
+class CR3{
+public:
+	struct{
+		UINT32	unused:2
+		UINT32	PWT:1;
+		UINT32	PCD:1;
+		UINT32	reserved:5;
+		UINT32	pageDirectoryBase:1;
+	}value;
+	
+}; // class CR3
+class CR4{
+public:
+	struct{
+		UINT32	VME:1;
+		UINT32	PVI:1;
+		UINT32	TSD:1;
+		UINT32	DE:1;
+		UINT32	PSE:1;
+		UINT32	PAE:1;
+		UINT32	MCE:1;
+		UINT32	PGE:1;
+		
+	}value;
+	
+}; // class CR4
+#endif // _CONTROL_REGISTER_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _CONTROL_REGISTER_H_
+_CONTROL_REGISTER_H_	EQU	1
+
+; CR0
+CR0.PE	EQU         1h	; Protection Enable
+CR0.MP	EQU         2h	; Monitor Coprocessor for FPU
+CR0.EM	EQU         4h	; Emulation for FPU
+CR0.TS	EQU         8h	; Task Switch Flag for FPU
+CR0.ET	EQU        10h	; Extension Type for FPU
+CR0.NE	EQU        20h	; Numeric Error for FPU
+CR0.WP	EQU     10000h	; Write Protect
+CR0.AM	EQU     40000h	; Alignment Mask
+CR0.NW	EQU  20000000h	; Not Write Through
+CR0.CD	EQU  40000000h	; Cache Disable
+CR0.PG	EQU  80000000h	; Paging
+
+; CR1 is reserved
+; CR2 is for Page-Fault Linear Address
+
+; CR3 (PDBR)
+CR3.PWT		EQU                 8h	; Write Through
+CR3.PCD		EQU                10h	; Cache Disable
+CR3.PDBASE	EQU         0FFFFF000h
+CR3.PML4BASE	EQU  7FFFFFFFFFFFF000h	; For PAE Paging
+
+; CR4
+CR4.VME		EQU          1h	; Virtual-8086 Mode Extension
+CR4.PVI		EQU          2h	; Protected-Mode Virtual Interrupt
+CR4.TSD		EQU          4h	; Time Stamp Disable
+CR4.DE		EQU          8h	; Debugging Extensions
+CR4.PSE		EQU         10h	; Page Size Extensions
+CR4.PAE		EQU         20h	; Physical Address Extension
+CR4.MCE		EQU         40h	; Machine-Check Enable
+CR4.PGE		EQU         80h	; Page Global Enable
+CR4.PCE		EQU        100h	; Performance-Monitoring Counter Enable
+CR4.OSFXSR	EQU        200h	; Operating System Support for FXSAVE and FXRSTOR instructions
+CR4.OSXMMEXCPT	EQU        400h	; Operating System Support for Unmasked SIMD Floating-Point Exceptions
+CR4.VMXE	EQU       2000h	; VMX-Enable
+CR4.SMXE	EQU       4000h	; SMX-Enable
+CR4.FSGSBASE	EQU      10000h	; FSGSBASE-Enable
+CR4.PCIDE	EQU      20000h	; PCID-Enable
+CR4.OSXSAVE	EQU      40000h	; XSAVE and Processor Extended States-Enable
+CR4.SMEP	EQU     100000h	; SMEP-Enable
+
+; CR8
+CR8.TPL		EQU	0Fh	; Task Priority Level
+
+END IF ; _CONTROL_REGISTER_H_
+</assemblyX86>

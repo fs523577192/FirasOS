@@ -9,8 +9,8 @@ Author: Firas
 BelongsTo: OS Kernel
 </head>
 <comment language="Chinese">
---	关于ACPI系统表，请见《ACPI规范5.0a》。ACPI规范可从ACPI官网
-	（http://acpi.info）免费下载。
+--	关于ACPI系统表，请见《ACPI规范5.0a》第5章第2节。
+	ACPI规范可从ACPI官网（http://acpi.info）免费下载。
 --	ACPI系统表的缩写的意义如下：
 RSDP	-	根系统描述指针
 RSDT	-	根系统描述表
@@ -23,9 +23,10 @@ MADT	-	多APIC描述表
 
 </comment>
 <comment language="English">
---	For details of ACPI system tables, please see ACPI Specification,
-	Revision 5.0a. The ACPI specification can be downloaded for free
-	from the official website of ACPI (http://acpi.info).
+--	For details of ACPI system tables, please see the section 5.2 of the
+	ACPI Specification, Revision 5.0a. The ACPI specification can be
+	downloaded for free from the official website of ACPI
+	(http://acpi.info).
 --	The meaning of the abbreviations of ACPI system tables are as follows:
 RSDP	-	Root System Description Pointer
 RSDT	-	Root System Description Table

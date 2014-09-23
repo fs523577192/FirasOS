@@ -25,7 +25,7 @@ the parent pointer stores whether the node is red or black.
 </comment>
 <cpp>
 #ifndef _RED_BLACK_H_
-#define _RED_BLACK_H_
+#define _RED_BLACK_H_	1
 </cpp>
 <assemblyX64 compiler="fasm">
 IF ~DEFINED _RED_BLACK_H_
@@ -35,12 +35,15 @@ _RED_BLACK_H_	EQU	1
 IF ~DEFINED _RED_BLACK_H_
 _RED_BLACK_H_	EQU	1
 </assemblyX86>
-<include>BinaryTreeNode</include>
 <include>SortedBinaryTree</include>
 <cpp>
 template <typename T> class RedBlack;
-template <typename T> class RedBlackNode : public BinaryTreeNode<T>{
+template <typename T> class RedBlackNode{
 protected:
+	
+	RedBlackNode *left, *right, *parent;
+	
+	T key;
 	
 	static const int ADDR_MASK = -2;	// ~1
 	// -2 = 0FFFFFFFEh	2 bytes (16 bits) align  2×Ö½Ú£¨16Î»£©¶ÔÆë

@@ -17,6 +17,8 @@ BelongsTo: Data Structure in the OS
 <cpp>
 class CPUID{
 protected:
+	char oem[12];
+	UINT32 maxStd, maxExt;
 	
 public:
 	const static unsigned 

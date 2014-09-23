@@ -1,8 +1,10 @@
 <head language="Chinese">
-
+作者：伍裕平
+归属：操作系统内核
 </head>
 <head language="English">
-
+Author: Firas
+BelongsTo: OS Kernel
 </head>
 <comment language="Chinese">
 	http://stanislavs.org/helppc/8042.html
@@ -20,7 +22,7 @@ public:
 	const static BYTE  DATA_PORT = 0x60;
 	const static BYTE  STATUS_PORT = 0x64, COMMAND_PORT = 0x64;
 	
-	void wait(){
+	void waitForOutput(){
 	
 	}
 	
@@ -39,8 +41,12 @@ KC8042.BYTE DATA_PORT	EQU	0x60
 KC8042.STATUS_PORT	EQU	0x64
 KC8042.COMMAND_PORT	EQU	0x64
 
-KC8042.wait:
-	
+KC8042.waitForOutput:
+	push	ax
+@@:	in	al,	KC8042.STATUS_PORT
+	test	al,	1
+	jz	@B	; wait until 8042 has output
+	pop	ax
 	ret
 
 KC8042.enablePS2:

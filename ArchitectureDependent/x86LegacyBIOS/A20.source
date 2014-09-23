@@ -28,6 +28,8 @@ BelongsTo: Loader of the OS
 	http://www.ctyme.com/intr/rb-1337.htm
 </comment>
 <assemblyX86 compiler="fasm">
+IF ~DEFINED _A20_H_
+_A20_H_	EQU	1
 USE16
 A20.enable:
 	call	A20.check
@@ -103,4 +105,5 @@ A20.disable:
 	
 	ret
 
+END IF ; _A20_H_
 </assemblyX86>

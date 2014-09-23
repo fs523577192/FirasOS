@@ -8,6 +8,7 @@ BelongsTo: the OS kernel
 </head>
 <include>../../../Macro</include>
 <cpp>
+#pragma pack(1)
 class NTFS_VBR{
 protected:
 	BYTE jumpCode[3];
@@ -16,4 +17,5 @@ protected:
 public:
 	
 }; // class NTFS_VBR
+#pragma pack()
 </cpp>

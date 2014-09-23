@@ -15,6 +15,7 @@ BelongsTo: the OS kernel
 	
 </comment>
 <cpp>
+#pragma pack(1)
 class FAT32VBR{
 protected:
 	BYTE jumpCode[3];
@@ -33,4 +34,5 @@ protected:
 public:
 	
 }; // class FAT32VBR
+#pragma pack()
 </cpp>

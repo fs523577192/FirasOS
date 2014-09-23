@@ -19,6 +19,33 @@ BelongsTo: Loader of the OS
 	http://wiki.osdev.org/MBR_(x86)
 	http://blog.csdn.net/firas/article/details/8665366
 </comment>
+<include>../../Macro</include>
+<cpp>
+class VolumeTable{
+public:
+	BYTE	active;
+	BYTE	startHead;
+	BYTE	startSector;
+	BYTE	startCylinder;
+	BYTE	type;
+	BYTE	endHead;
+	BYTE	endSector;
+	BYTE	endCylinder;
+	UINT32	startTotalSector;
+	UINT32	totalSectors;
+}; // class VolumeTable
+#pragma pack(1)
+class MBR{
+public:
+	BYTE	bootCode[0x1B8];
+	UINT32	signature;
+	BYTE	reserved[2];
+	VolumeTable	table[4];
+	UINT16	magic;
+	const static UINT16 validMagic = 0xAA55;
+}; // class MBR
+#pragma pack()
+</cpp>
 <assemblyX86 compiler="fasm">
 
 

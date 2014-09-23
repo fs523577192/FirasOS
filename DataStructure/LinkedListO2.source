@@ -14,7 +14,7 @@ Bi-directional Circular LinkedList
 </comment>
 <cpp>
 #ifndef _LINKED_LIST_O2_H_
-#define _LINKED_LIST_O2_H_
+#define _LINKED_LIST_O2_H_	1
 </cpp>
 <assemblyX64 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_O2_H_

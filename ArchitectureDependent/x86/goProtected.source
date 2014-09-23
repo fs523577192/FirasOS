@@ -6,12 +6,33 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
-<cpp>
-class SegmentDescriptor{
-protected:
+<comment language="Chinese">
 
-public:
+</comment>
+<comment language="English">
 
+</comment>
+<include>Driver/PIC8259</include>
+<include>../x86LegacyBIOS/A20</include>
+<include>SegmentDescriptor</include>
+<include>ControlRegister</include>
+<assemblyX86 compiler="fasm">
 
-}; // class SegmentDescriptor
-</cpp>
+	;disable all interrupt
+	
+	;enable A20
+	
+	;prepare GDT and IDT
+	
+	mov	eax,	cr0
+	or	al,	CR0.PE	; 开启保护模式
+	and	eax,	9FFFFFFFh	; 开启分段数据结构缓存
+	mov	cr0,	eax
+.jumping:
+	db	66h, 0EAh
+.destination:
+	dd	0
+	dw	KERNEL_TSS
+	;jmp	PWORD INT_CODE:CODE32	; 远跳转进入32位保护模式
+	
+</assemblyX86>

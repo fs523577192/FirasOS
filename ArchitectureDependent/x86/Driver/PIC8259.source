@@ -1,0 +1,76 @@
+<head language="Chinese">
+8259可编程中断控制器
+作者：伍裕平
+归属：操作系统内核
+</head>
+<head language="English">
+Programmable Interrupt Controller 8259
+Author: Firas
+BelongsTo: OS Kernel
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+class PIC8259{
+public:
+	const static BYTE PIC1_COMMAND = 0x20, PIC1_DATA = 0x21,
+		PIC2_COMMAND = 0xA0, PIC2_DATA = 0xA1,
+		ICW1_ICW4 = 0x01,	// ICW4 (not) needed
+		ICW1_SINGLE = 0x02,	// Single (cascade) mode
+		ICW1_INTERVAL4 = 0x04,	// Call address interval 4 (8)
+		ICW1_LEVEL = 0x08,	// Level triggered (edge) mode
+		ICW1_INIT = 0x10,	// Initialization - required!
+		ICW4_8086 = 0x01,	// 8086/88 (MCS-80/85) mode
+		ICW4_AUTO = 0x02,	// Auto EOI
+		ICW4_BUF_SLAVE = 0x08,	// Buffered mode/slave
+		ICW4_BUF_MASTER = 0x0C,	// Buffered mode/master
+		ICW4_SFNM = 0x10,	// Special fully nested (not)
+		PIC_EOI = 0x20;
+}; // class PIC8259
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _PIC_8259_H_
+_PIC_8259_H_	EQU	1
+
+PIC1_COMMAND	EQU	020h
+PIC1_DATA	EQU	021h
+PIC2_COMMAND	EQU	0A0h
+PIC2_DATA	EQU	0A1h
+
+ICW1_ICW4	EQU	1	; ICW4 (not) needed
+ICW1_SINGLE	EQU	2	; Single (cascade) mode
+ICW1_INTERVAL4	EQU	4	; Call address interval 4 (8)
+ICW1_LEVEL	EQU	8	; Level triggered (edge) mode
+ICW1_INIT	EQU	10h	; Initialization - required!
+
+ICW4_8086	EQU	1	; 8086/88 (MCS-80/85) mode
+ICW4_AUTO	EQU	2	; Auto EOI
+ICW4_BUF_SLAVE	EQU	8	; Buffered mode/slave
+ICW4_BUF_MASTER	EQU	0Ch	; Buffered mode/master
+ICW4_SFNM	EQU	10h	; Special fully nested (not)
+
+PIC_EOI		EQU	20h	; non-specific End Of Interrupt Command
+
+PIC8259.maskAllInterrupt:
+	push	ax
+	mov	al,	0FFh
+	out	PIC2_DATA,	al	; mask all interrupts on slave PIC
+	mov	al,	0FBh
+	out	PIC1_DATA,	al	; mask all but cascading on master PIC
+	pop	ax
+	ret
+
+PIC8259.unmaskAllInterrupt:
+	push	ax
+	xor	al,	al
+	out	PIC1_DATA,	al	; unmask all interrupts on master PIC
+	out	PIC2_DATA,	al	; unmask all interrupts on slave PIC
+	pop	ax
+	ret
+
+END IF ; _PIC_8259_H_
+</assemblyX86>
