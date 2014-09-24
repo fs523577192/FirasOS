@@ -7,12 +7,15 @@ Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-Intel 64和IA 32架构软件开发者手册
-章节2.5、4.3、4.4、4.5
+--	《Intel 64和IA 32架构软件开发者手册》
+	第3卷章节2.5、4.3、4.4、4.5
+--	《AMD64架构程序员手册卷3：一般和系统指令》章节3.1
 </comment>
 <comment language="English">
-Intel 64 and IA 32 Architechture Software Developer Manual
-Section 2.5, 4.3, 4.4, 4.5
+--	Intel 64 and IA 32 Architechture Software Developer Manual
+	Section 2.5, 4.3, 4.4, 4.5 in Volume 3
+--	AMD64 Architecture Programmer’s Manual Volume 2:
+	System Programming, Section 3.1
 </comment>
 <cpp>
 #ifndef _CONTROL_REGISTER_H_

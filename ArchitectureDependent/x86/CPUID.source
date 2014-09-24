@@ -9,26 +9,205 @@ Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-
+--	《Intel 64和IA 32架构软件开发者手册》
+	第2卷章节3.2 CPUID指令
+--	Intel处理器识别CPUID指令
+--	《AMD64架构程序员手册卷3：一般和系统指令》第3章中的CPUID指令
+--	AMD CPUID规范
 </comment>
 <comment language="English">
-
+--	Intel 64 and IA 32 Architechture Software Developer Manual
+	Section 2.5, 4.3, 4.4, 4.5 in Volume 3
+--	Intel Processor Identification CPUID Instruction Note
+--	AMD64 Architecture Programmer’s Manual Volume 3:
+	General-Purpose and System Instructions
+	Chapter 3, CPUID
+--	AMD CPUID Specification
 </comment>
 <cpp>
 class CPUID{
 protected:
-	char oem[12];
+	char oem[16];	// last 4 bits are 0
 	UINT32 maxStd, maxExt;
-	
+	union{
+		struct{
+			UINT32	SSE3	:1;	// bit 0
+			UINT32	PCLMULDQ:1;
+			UINT32	DTES64	:1;
+			UINT32	MONITOR	:1;
+			UINT32	DSCPL	:1;	// bit 4
+			UINT32	VMX	:1;
+			UINT32	SMX	:1;
+			UINT32	EIST	:1;
+			UINT32	TM2	:1;	// bit 8
+			UINT32	SSSE3	:1;
+			UINT32	CNXTID	:1;
+			UINT32	reserved0	:1;
+			UINT32	FMA	:1;	// bit 12
+			UINT32	CX16	:1;
+			UINT32	xTPR	:1;
+			UINT32	PDCM	:1;
+			UINT32	reserved1	:1;	// bit 16
+			UINT32	PCID	:1;
+			UINT32	DCA	:1;
+			UINT32	SSE41	:1;
+			UINT32	SSE42	:1;	// bit 20
+			UINT32	x2APIC	:1;
+			UINT32	MOVBE	:1;
+			UINT32	POPCNT	:1;
+			UINT32	TSCDEADLINE	:1;	// bit 24
+			UINT32	AES	:1;
+			UINT32	XSAVE	:1;
+			UINT32	OSXSAVE	:1;
+			UINT32	AVX	:1;	// bit 28
+			UINT32	F16C	:1;
+			UINT32	RDRAND	:1;
+			UINT32	reserved2	:1;
+		}bits;
+		UINT32	value;
+	}cpuid1ecx;
+	union{
+		struct{
+			UINT32	FPU	:1;	// bit 0
+			UINT32	VME	:1;
+			UINT32	DE	:1;
+			UINT32	PSE	:1;
+			UINT32	TSC	:1;	// bit 4
+			UINT32	MSR	:1;
+			UINT32	PAE	:1;
+			UINT32	MCE	:1;
+			UINT32	CX8	:1;	// bit 8
+			UINT32	APIC	:1;
+			UINT32	reserved0	:1;
+			UINT32	SEP	:1;
+			UINT32	MTRR	:1;	// bit 12
+			UINT32	PGE	:1;
+			UINT32	MCA	:1;
+			UINT32	CMOV	:1;
+			UINT32	PAT	:1;	// bit 16
+			UINT32	PSE36	:1;
+			UINT32	PSN	:1;
+			UINT32	CLFSH	:1;
+			UINT32	reserved1	:1;	// bit 20
+			UINT32	DS	:1;
+			UINT32	ACPI	:1;
+			UINT32	MMX	:1;
+			UINT32	FXSR	:1;	// bit 24
+			UINT32	SSE	:1;
+			UINT32	SSE2	:1;
+			UINT32	SS	:1;
+			UINT32	HTT	:1;	// bit 28
+			UINT32	TM	:1;
+			UINT32	reserved2	:1;
+			UINT32	PBE	:1;
+		}bits;
+		UINT32	value;
+	}cpuid1edx;
+	union{
+		struct{
+			UINT32	LAHF	:1;	// bit 0
+		}bits;
+		UINT32	value;
+	}cpuid81ecx;
+	union{
+		struct{
+			UINT32	reserved0	:11;	// bit 0-10
+			UINT32	SYSCALL	:1;		// bit 11
+			UINT32	reserved1	:8;	// bit 12-19
+			UINT32	NX	:1;		// bit 20
+			UINT32	reserved2	:5;	// bit 21-25
+			UINT32	PAGE1GB	:1;		// bit 26
+			UINT32	RDTSCP	:1;		// bit 27
+			UINT32	reserved3	:1;
+			UINT32	X64	:1;		// bit 29
+			UINT32	reserved4	:2;
+		}bits;
+		UINT32	value;
+	}cpuid81edx;
+	struct{
+		BYTE	physicalAddressSize;
+		BYTE	virtualAddressSize;
+	}cpuid88eax;
 public:
-	const static unsigned 
-	
+		
 	void cpuid0(){
 		
 	}
-}; // class APIC
+}; // class CPUID
 </cpp>
 <assemblyX86 compiler="fasm">
+; cpuid(1)
+; ecx:
+CPUID.SSE3	=	1
+CPUID.PCLMULDQ	=	2
+CPUID.DTES64	=	4
+CPUID.MONITOR	=	8
+CPUID.DSCPL	=	10h
+CPUID.VMX	=	20h
+CPUID.SMX	=	40h
+CPUID.EIST	=	80h
+CPUID.TM2	=	100h
+CPUID.SSSE3	=	200h
+CPUID.CNXTID	=	400h
+CPUID.FMA	=	1000h
+CPUID.CX16	=	2000h
+CPUID.xTPR	=	4000h
+CPUID.PDCM	=	8000h
+CPUID.PCID	=	20000h
+CPUID.DCA	=	40000h
+CPUID.SSE41	=	80000h
+CPUID.SSE42	=	100000h
+CPUID.x2APIC	=	200000h
+CPUID.MOVBE	=	400000h
+CPUID.POPCNT	=	800000h
+CPUID.TSCDEADLINE	=	1000000h
+CPUID.AES	=	2000000h
+CPUID.XSAVE	=	4000000h
+CPUID.OSXSAVE	=	8000000h
+CPUID.AVX	=	10000000h
+CPUID.F16C	=	20000000h
+CPUID.RDRAND	=	40000000h
+; edx:
+CPUID.FPU	=	1
+CPUID.VME	=	2
+CPUID.DE	=	4
+CPUID.PSE	=	8
+CPUID.TSC	=	10h
+CPUID.MSR	=	20h
+CPUID.PAE	=	40h
+CPUID.MCE	=	80h
+CPUID.CX8	=	100h
+CPUID.APIC	=	200h
+CPUID.SEP	=	800h
+CPUID.MTRR	=	1000h
+CPUID.PGE	=	2000h
+CPUID.MCA	=	4000h
+CPUID.CMOV	=	8000h
+CPUID.PAT	=	10000h
+CPUID.PSE36	=	20000h
+CPUID.PSN	=	40000h
+CPUID.CLFSH	=	80000h
+CPUID.DS	=	200000h
+CPUID.ACPI	=	400000h
+CPUID.MMX	=	800000h
+CPUID.FXSR	=	1000000h
+CPUID.SSE	=	2000000h
+CPUID.SSE2	=	4000000h
+CPUID.SS	=	8000000h
+CPUID.HTT	=	10000000h
+CPUID.TM	=	20000000h
+CPUID.PBE	=	80000000h
+
+; cpuid(80000001h)
+; ecx:
+CPUID.LAHF	=	1
+; edx:
+CPUID.SYSCALL	=	800h
+CPUID.NX	=	100000h		; No Execution is the same as
+CPUID.XD	=	100000h		; Execution Disable
+CPUID.PAGE1GB	=	4000000h
+CPUID.RDTSCP	=	8000000h
+CPUID.X64	=	20000000h
 
 cpuid0:
 	xor	eax,	eax

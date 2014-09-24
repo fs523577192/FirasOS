@@ -15,17 +15,47 @@ BelongsTo: Data Structure in the OS
 
 </comment>
 <cpp>
+#ifndef _APIC_H_
+#define _APIC_H_	1
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _APIC_H_
+_APIC_H_	EQU	1
+</assemblyX86>
+<include>CPUID</include>
+<cpp>
 class APIC{
 protected:
 
 public:
 	
-
+	bool hasLAPIC(){
+	
+	}
+	
+	bool hasX2APIC(){
+	
+	}
+	
+	unsigned getAPIC_ID(){
+	
+	}
 }; // class APIC
+#endif // _APIC_H_
 </cpp>
 <assemblyX86 compiler="fasm">
 hasLAPIC:
-	mov	eax,	
-	cpuid
-	test	
+	mov	eax,	[]
+	test	eax,	
+	ret
+
+hasX2APIC:
+	mov	eax,	[]
+	test	eax,	
+	ret
+
+getAPIC_ID:
+	
+	ret
+END IF ; _APIC_H_
 </assemblyX86>

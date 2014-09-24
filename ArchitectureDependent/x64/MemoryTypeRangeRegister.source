@@ -1,22 +1,29 @@
 <head language="Chinese">
 内存类型范围寄存器（MTRR）
-
+作者：伍裕平
+归属：操作系统数据结构
 </head>
 <head language="English">
 Memory Type Range Register (MTRR)
-
+Author: Firas
+BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-
+--	《Intel 64和IA 32架构软件开发者手册》
+	
 </comment>
 <comment language="English">
-
+--	Intel 64 and IA 32 Architechture Software Developer Manual
+	
 </comment>
 <cpp>
 #ifndef _MTRR_H_
 #define _MTRR_H_	1
 
-
+class MTRR{
+public:
+	
+}; // class MTRR
 #endif // _MTRR_H_
 </cpp>
 <assemblyX64 compiler="fasm">
