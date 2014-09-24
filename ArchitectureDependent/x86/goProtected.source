@@ -25,8 +25,8 @@ BelongsTo: Data Structure in the OS
 	;prepare GDT and IDT
 	
 	mov	eax,	cr0
-	or	al,	CR0.PE	; 开启保护模式
-	and	eax,	9FFFFFFFh	; 开启分段数据结构缓存
+	or	al,	CR0.PE			; Protected Mode Enable
+	and	eax,	NOT (CR0.CD OR CR0.NW)	; Enable Cache
 	mov	cr0,	eax
 .jumping:
 	db	66h, 0EAh

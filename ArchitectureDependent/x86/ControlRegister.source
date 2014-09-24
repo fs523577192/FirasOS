@@ -7,10 +7,12 @@ Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-
+Intel 64和IA 32架构软件开发者手册
+章节2.5、4.3、4.4、4.5
 </comment>
 <comment language="English">
-
+Intel 64 and IA 32 Architechture Software Developer Manual
+Section 2.5, 4.3, 4.4, 4.5
 </comment>
 <cpp>
 #ifndef _CONTROL_REGISTER_H_
@@ -38,11 +40,11 @@ public:
 class CR3{
 public:
 	struct{
-		UINT32	unused:2
+		UINT32	ignored0:2;
 		UINT32	PWT:1;
 		UINT32	PCD:1;
-		UINT32	reserved:5;
-		UINT32	pageDirectoryBase:1;
+		UINT32	ignored1:7;
+		UINT32	pageDirectoryBase:20;
 	}value;
 	
 }; // class CR3
@@ -57,10 +59,27 @@ public:
 		UINT32	PAE:1;
 		UINT32	MCE:1;
 		UINT32	PGE:1;
-		
+		UINT32	PCE:1;
+		UINT32	OSFXSR:1;
+		UINT32	OSXMMEXCPT:1;
+		UINT32	reserved0:2;
+		UINT32	VMXE:1;
+		UINT32	SMXE:1;
+		UINT32	reserved1:1;
+		UINT32	FSGSBASE:1;
+		UINT32	PCIDE:1;
+		UINT32	OSXSAVE:1;
+		UINT32	reserved2:1;
+		UINT32	SMEP:1;
 	}value;
 	
 }; // class CR4
+class CR8{
+public:
+	struct{
+		UINT32	TPL:4;
+	}value;
+}; // class CR8
 #endif // _CONTROL_REGISTER_H_
 </cpp>
 <assemblyX86 compiler="fasm">
@@ -87,7 +106,6 @@ CR0.PG	EQU  80000000h	; Paging
 CR3.PWT		EQU                 8h	; Write Through
 CR3.PCD		EQU                10h	; Cache Disable
 CR3.PDBASE	EQU         0FFFFF000h
-CR3.PML4BASE	EQU  7FFFFFFFFFFFF000h	; For PAE Paging
 
 ; CR4
 CR4.VME		EQU          1h	; Virtual-8086 Mode Extension
