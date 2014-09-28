@@ -46,7 +46,7 @@ public:
 	
 	inline bool isEmpty(){	// inherited from Collection
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedList2*)0) throw NullPointerException();
+		if(this == (LinkedListO2*)0) throw NullPointerException();
 		#endif
 		return head == (LinkedList2Node<T>*)0;
 	}
@@ -166,6 +166,7 @@ LinkedListO.getSize:
 				delete temp;
 				return true;
 			}
+			temp = temp->next;
 		}
 		return false;
 	}
@@ -245,19 +246,41 @@ LinkedListO.getSize:
 	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		if(isEmpty()) return true;
-		
+		if(head->key != l->getElementAtIndex(0)) return false;
+		LinkedList2Node<T> *temp = head->next;
+		for(unsigned i = 1; temp != head; i++, temp = temp->next){
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		}
 		return true;
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 	// inherited from List
+		register unsigned size = getSize();
+		if(fromIndex >= size || toIndex > size)
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedListO2*)0) throw NullPointerException();
-		if(fromIndex >= getSize() || toIndex > getSize())
 			throw IndexOutOfBoundsException();
+		#else
+			return new LinkedListO2();
 		#endif
 		LinkedListO2 *list = new LinkedListO2();
-		
+		if(fromIndex >= toIndex) return list;
+		LinkedList2Node<T> *temp1 = head;
+		while(fromIndex > 0){
+			temp1 = temp1->next;
+			fromIndex--;
+			toIndex--;
+		}
+		list->head = new LinkedList2Node<T>(temp1->key);
+		LinkedList2Node<T> *temp2 = list->head;
+		while(toIndex > 1){
+			temp1 = temp1->next;
+			temp2 = new LinkedList2Node<T>(temp1->key,
+					LinkedList2NullNode, temp2);
+			toIndex--;
+		}
+		temp2->next = list->head;
+		list->head->prev = temp2;
 		return list;
 	}
 	

@@ -265,6 +265,7 @@ LinkedListO._addNode:
 		if(index == 0){
 			for(temp1 = head; temp1->next != head;
 				temp1 = temp1->next);
+			// Let temp1 be the last node in the linked list
 			if(temp1 != head) temp1->next = head->next;
 			delete head;
 			head = temp1->next;
@@ -286,19 +287,38 @@ LinkedListO._addNode:
 	bool isEqual(List<T> *l){	// inherited from List
 		if(getSize() != l->getSize()) return false;
 		if(isEmpty()) return true;
-		
+		if(head->key != l->getElementAtIndex(0)) return false;
+		LinkedListNode<T> *temp = head->next;
+		for(unsigned i = 1; temp != head; i++, temp = temp->next){
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		}
 		return true;
 	}
 	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 	// inherited from List
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedListO*)0) throw NullPointerException();
-		if(fromIndex >= getSize() || toIndex > getSize())
+		register unsigned size = getSize();
+		if(fromIndex >= size || toIndex > size)
 			throw IndexOutOfBoundsException();
 		#endif
 		LinkedListO *list = new LinkedListO();
-		
+		if(fromIndex >= toIndex) return list;
+		LinkedListNode<T> *temp1 = head;
+		while(fromIndex > 0){
+			temp1 = temp1->next;
+			fromIndex--;
+			toIndex--;
+		}
+		list->head = new LinkedListNode<T>(temp1->key);
+		LinkedListNode<T> *temp2 = list->head;
+		while(toIndex > 1){
+			temp1 = temp1->next;
+			temp2->next = new LinkedListNode<T>(temp1->key);
+			temp2 = temp2->next;
+			toIndex--;
+		}
+		temp2->next = list->head;
 		return list;
 	}
 	

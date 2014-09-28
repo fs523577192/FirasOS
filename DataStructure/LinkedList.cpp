@@ -138,6 +138,16 @@ public:
 		return true;
 	}
 	
+	bool isEqual(List<T> *l){	// inherited from List
+		if(getSize() != l->getSize()) return false;
+		LinkedListNode<T> *temp = head;
+		for(unsigned i = 0;
+				temp != LinkedListNullNode;
+				i++, temp = temp->next)
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 	// inherited from List
 		#ifdef _EXCEPTION_H_
@@ -165,14 +175,5 @@ public:
 		return list;
 	}
 	
-	bool isEqual(List<T> *l){	// inherited from List
-		if(getSize() != l->getSize()) return false;
-		LinkedListNode<T> *temp = head;
-		for(unsigned i = 0;
-				temp != LinkedListNullNode;
-				i++, temp = temp->next)
-			if(temp->key != l->getElementAtIndex(i)) return false;
-		return true;
-	}
 }; // class LinkedList<T>
 #endif // _LINKED_LIST_H_

@@ -14,6 +14,7 @@ protected:
 	
 	#define LinkedList2NullNode ((LinkedList2Node*)0)
 	friend class LinkedList2<T>;
+	friend class LinkedListO2<T>;
 	friend class LinkedQueue<T>;
 	
 public:

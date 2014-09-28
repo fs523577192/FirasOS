@@ -281,13 +281,24 @@ LinkedList.removeElement:
 		return true;
 	}
 	
+	bool isEqual(List<T> *l){	// inherited from List
+		if(getSize() != l->getSize()) return false;
+		LinkedListNode<T> *temp = head;
+		for(unsigned i = 0;
+				temp != LinkedListNullNode;
+				i++, temp = temp->next)
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 	// inherited from List
-		#ifdef _EXCEPTION_H_
-		if(this == (LinkedList*)0) throw NullPointerException();
 		register unsigned size = getSize();
 		if(fromIndex >= size || toIndex > size)
+		#ifdef _EXCEPTION_H_
 			throw IndexOutOfBoundsException();
+		#else
+			return new LinkedList();
 		#endif
 		LinkedList *list = new LinkedList();
 		if(fromIndex >= toIndex) return list;
@@ -306,16 +317,6 @@ LinkedList.removeElement:
 			toIndex--;
 		}
 		return list;
-	}
-	
-	bool isEqual(List<T> *l){	// inherited from List
-		if(getSize() != l->getSize()) return false;
-		LinkedListNode<T> *temp = head;
-		for(unsigned i = 0;
-				temp != LinkedListNullNode;
-				i++, temp = temp->next)
-			if(temp->key != l->getElementAtIndex(i)) return false;
-		return true;
 	}
 	
 }; // class LinkedList<T>

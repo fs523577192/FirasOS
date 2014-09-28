@@ -1,16 +1,20 @@
 <head language="Chinese">
 模型特定寄存器（MSR）
-
+作者：伍裕平
+归属：操作系统数据结构
 </head>
 <head language="English">
 Model-Specific Register (MSR)
-
+Author: Firas
+BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-
+--	《Intel 64和IA 32架构软件开发者手册》
+--	《AMD64架构程序员手册卷3：一般和系统指令》
 </comment>
 <comment language="English">
-
+--	Intel 64 and IA 32 Architechture Software Developer Manual
+--	AMD64 Architecture Programmer’s Manual
 </comment>
 <cpp>
 #ifndef _MSR_H_

@@ -199,13 +199,24 @@ LinkedList2.getSize:
 		return true;
 	}
 	
+	bool isEqual(List<T> *l){	// inherited from List
+		if(getSize() != l->getSize()) return false;
+		LinkedList2Node<T> *temp = head;
+		for(unsigned i = 0;
+				temp != LinkedList2NullNode;
+				i++, temp = temp->next)
+			if(temp->key != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
 	List<T>* subList(unsigned fromIndex, unsigned toIndex){
 	// inherited from List
-		#ifdef _EXCEPTION_H_
-		if(this == (LinkedList2*)0) throw NullPointerException();
 		register unsigned size = getSize();
 		if(fromIndex >= size || toIndex > size)
+		#ifdef _EXCEPTION_H_
 			throw IndexOutOfBoundsException();
+		#else
+			return new LinkedList2();
 		#endif
 		LinkedList2 *list = new LinkedList2();
 		if(fromIndex >= toIndex) return list;
@@ -219,21 +230,11 @@ LinkedList2.getSize:
 		LinkedList2Node<T> *temp2 = list->head;
 		while(toIndex > 1){
 			temp1 = temp1->next;
-			new LinkedList2Node<T>(temp1->key, LinkedList2NullNode, temp2);
-			temp2 = temp2->next;
+			temp2 = new LinkedList2Node<T>(temp1->key,
+					LinkedList2NullNode, temp2);
 			toIndex--;
 		}
 		return list;
-	}
-	
-	bool isEqual(List<T> *l){	// inherited from List
-		if(getSize() != l->getSize()) return false;
-		LinkedList2Node<T> *temp = head;
-		for(unsigned i = 0;
-				temp != LinkedList2NullNode;
-				i++, temp = temp->next)
-			if(temp->key != l->getElementAtIndex(i)) return false;
-		return true;
 	}
 	
 }; // class LinkedList2<T>
