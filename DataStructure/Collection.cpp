@@ -168,16 +168,17 @@ public:
 	/***
 	 *
 	 */
-	virtual SortedCollection headSet(T toElement, bool inclusive) = 0;
+	virtual SortedCollection* headSet(T toElement, bool inclusive) = 0;
 	
 	/***
 	 *
 	 */
-	virtual SortedCollection tailSet(T fromElement, bool inclusive) = 0;
+	virtual SortedCollection* tailSet(T fromElement, bool inclusive) = 0;
 	
 	/***
 	 *
 	 */
-	virtual SortedCollection middleSet(T fromElement, bool fromInclusive, T toElement, bool toInclusive) = 0;
+	virtual SortedCollection* middleSet(T fromElement, bool fromInclusive,
+				T toElement, bool toInclusive) = 0;
 	
 }; // class SortedCollection<T>

@@ -12,7 +12,7 @@ BelongsTo: Data Structure in the OS
 </cpp>
 <include>Collection</include>
 <cpp>
-template <typename T> class SortedBinaryTree : public SortedCollection{
+template <typename T> class SortedBinaryTree : public SortedCollection<T>{
 public:
 	
 	

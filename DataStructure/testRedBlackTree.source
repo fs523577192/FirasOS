@@ -26,6 +26,9 @@ start:
 <Include>RedBlackTree</Include>
 <cpp>
 int main(){
-	RedBlack
+	RedBlack<double> *tree = new RedBlack<double>();
+	printf("%d %d\n", tree->isEmpty(), tree->getSize());
+	
+	return 0;
 }
 </cpp>
