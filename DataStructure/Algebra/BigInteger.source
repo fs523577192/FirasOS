@@ -1,0 +1,190 @@
+
+<cpp>
+class BigInteger{
+protected:
+	unsigned *array;
+public:
+	
+	BigInteger(){
+		array = new unsigned[2];
+		array[0] = 1; array[1] = 0;
+	}
+	
+	BigInteger(int initial){
+		array = new unsigned[2];
+		array[0] = 1; array[1] = initial;
+	}
+	
+	BigInteger(BigInteger origin){
+		register unsigned size = origin.array[0]+1;
+		array = new unsigned[size];
+		do{
+			--size;
+			array[size] = origin.array[size];
+		}while(size > 0);
+	}
+	
+	BigInteger(String str, unsigned radix){
+		
+	}
+	
+	~BigInteger(){
+		delete array;
+	}
+</cpp>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+protected:
+	BigInteger* trim(){
+		
+		return this;
+	}
+	
+	BigInteger* expand(){
+		
+		return this;
+	}
+public:
+	BigInteger* _absolute(){
+		
+		return this;
+	}
+	BigInteger* absolute(){
+		
+		
+	}
+	
+	BigInteger* _negate(){
+		
+		return this;
+	}
+	
+	BigInteger* negate(){
+	
+	}
+	
+	int getSign(){
+	
+	}
+	
+	int compareTo(BigInteger bi){
+	
+	}
+	
+	BigInteger* _not(){
+		
+		return this;
+	}
+	
+	BigInteger* not(){
+	
+	}
+	
+	BigInteger* _and(BigInteger bi){
+		
+		return this;
+	}
+	BigInteger* and(BigInteger bi){
+	
+	}
+	
+	BigInteger* _or(BigInteger bi){
+		
+		return this;
+	}
+	BigInteger* or(BigInteger bi){
+	
+	}
+	
+	BigInteger* _xor(BigInteger bi){
+		
+		return this;
+	}
+	BigInteger* xor(BigInteger bi){
+	
+	}
+	
+	BigInteger* _add(BigInteger bi){
+		
+		return this;
+	}
+	BigInteger* add(BigInteger bi){
+		
+	}
+	
+	BigInteger* _subtract(BigInteger bi){
+		
+		return this;
+	}
+	BigInteger* subtract(BigInteger bi){
+		
+	}
+	
+	BigInteger* _shiftLeftLogical(){
+		
+		return this;
+	}
+	BigInteger* shiftLeftLogical(){
+	
+	}
+	BigInteger* shiftLeftArithmetic(){
+	
+	}
+	
+	BigInteger* _shiftRightLogical(){
+		
+		return this;
+	}
+	BigInteger* shiftRightLogical(){
+	
+	}
+	BigInteger* _shiftRightArithmetic(){
+		
+		return this;
+	}
+	BigInteger* shiftRightArithmetic(){
+		
+	}
+protected:
+	
+	double* FFT(){
+		
+	}
+	
+	void IFFT(double* fft){
+		
+	}
+	
+	void round(unsigned *dest, double *src, unsigned num){
+		
+	}
+public:
+	
+	BigInteger* multiply(int num){
+	
+	}
+	
+	BigInteger* multiplySimple(BigInteger bi){
+	
+	}
+	
+	BigInteger* multiply(BigInteger bi){
+	
+	}
+	
+	BigInteger* divideSimple(BigInteger bi){
+	
+	}
+	
+	BigInteger* gcd(BigInteger bi){
+	
+	}
+	
+	
+}; // class BigInteger
+</cpp>

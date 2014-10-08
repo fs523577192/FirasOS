@@ -1,0 +1,68 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _TRIANGLE_H_
+#define _TRIANGLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _TRIANGLE_H_
+_TRIANGLE_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _TRIANGLE_H_
+_TRIANGLE_H_	EQU	1
+</assemblyX86>
+<include>Geometry</include>
+<include>Point2D</include>
+<cpp>
+
+template <typename T> class Triangle : public Shape2D{
+protected:
+	
+	Point2D<T> p1, p2, p3;
+public:
+	
+	Triangle(Point2D<T> point1, Point2D<T> point2, Point2D<T> point3){
+		p1 = point1; p2 = point2; p3 = point3;
+	}
+	
+	Triangle(T x1, T y1, T x2, T y2, T x3, T y3){
+		Point2D<T> point1(x1, y1);
+		Point2D<T> point2(x2, y2);
+		Point2D<T> point3(x3, y3);
+		p1 = point1; p2 = point2; p3 = point3;
+	}
+	
+	T getPerimeter(){
+		return p1.getDistance(p2) + p2.getDistance(p3) +
+			p3.getDistance(p1);
+	}
+	
+	T getArea(){
+		
+	}
+	
+}; // class Triangle<T>
+</cpp>
+
+<cpp>
+#endif // _TRIANGLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+
+END IF ; _TRIANGLE_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+END IF ; _TRIANGLE_H_
+</assemblyX86>

@@ -1,0 +1,317 @@
+<head language="Chinese">
+浮点函数
+作者：伍裕平
+</head>
+<head language="English">
+Floating Point Functions
+Author: Firas
+</head>
+<comment language="Chinese">
+--	http://zh.wikipedia.org/wiki/IEEE_754
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _FPU_H_
+_FPU_H_	EQU	1
+</assemblyX86>
+<assemblyX86 compiler="fasm">
+FPU.ROUND_MODE	EQU	0C00h
+FPU.ROUND_EVEN	EQU	0
+FPU.ROUND_DOWN	EQU	400h
+FPU.ROUND_UP	EQU	800h
+FPU.ROUND_ZERO	EQU	0C00h
+
+Float64.EXPONENT	EQU	7FF0000000000000h
+Float64.SIGNIFICAND	EQU	0FFFFFFFFFFFFFh
+Float64.POSITIVE_INFINITY:
+	dq	7FF0000000000000h
+Float64.NEGATIVE_INFINITY:
+	dq	0FFF0000000000000h
+Float64.HALF:		; 1/2
+	dq	3FE0000000000000h
+Float64.INT32MAX:	; 2147483647
+	dq	41DFFFFFFFC00000h
+Float64.INT32MIN:	; -2147483648
+	dq	0C1E0000000000000h
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数做舍入
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = round/floor/ceiling(d)
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] round(double d, enum RoundType type)
+Float64.round:
+; stack: |ret |d       |type|
+	
+	
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数开算术平方根
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = 算术平方根
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] sqrt(double d)
+Float64.sqrt:
+; stack: |ret |d       |
+	mov	eax,	80000000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	jnz	.fail		; negative
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	; Positive Infinity
+	fld	QWORD [esp+4]
+	mov	eax,	1	; true
+	retn	8
+.normal:
+	fld	QWORD [esp+4]
+	fsqrt
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数做幂运算
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = d^p
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] power(double d, double power)
+Float64.power:
+	
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数求自然对数
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = ln(d)
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] ln(double d)
+Float64.ln:
+
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数求以10为底的对数
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = lg(d)
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] lg(double d)
+Float64.lg:
+
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数求自然对数
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = log b(d)
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] log(double d, double base)
+Float64.log:
+	
+</assemblyX86>
+<comment language="Chinese">
+对（堆栈传入的）双精度浮点数做正弦运算
+返回：转换失败eax = 0；转换成功eax = 1且st(0) = sin(d)
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+; [bool,double] sin(double d)
+Float64.sin:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fsin
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] cos(double d)
+Float64.cos:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fcos
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] tan(double d)
+Float64.tan:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fptan			; st(0) = 1, st(1) = tan(d)
+	fstp	QWORD [esp+4]	; 1
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] cot(double d)
+Float64.cot:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fptan			; st(0) = 1, st(1) = tan(d)
+	fdivrp	st1,	st0	; st(0) = cot(d)
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] sec(double d)
+Float64.sec:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fcos
+	fld1
+	fdivrp	st1,	st0	; st(0) = 1/cos(d) = sec(d)
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] csc(double d)
+Float64.csc:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	je	.fail		; jump if Infinity/NaN
+	fld	QWORD [esp+4]
+	fsin
+	fld1
+	fdivrp	st1,	st0	; st(0) = 1/sin(d) = csc(d)
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] arcsin(double d)
+Float64.arcsin:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] arccos(double d)
+Float64.arccos:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] arctan(double d)
+Float64.arctan:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	; Infinity
+.normal:
+	fld	QWORD [esp+4]
+	fld1			; st(0) = 1, st(1) = d
+	fpatan			; st(0) = arctan(st(1)/st(0))
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+
+; [bool,double] arccot(double d)
+Float64.arccot:
+; stack: |ret |d       |
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	; Infinity
+.normal:
+	fld1
+	fld	QWORD [esp+4]	; st(0) = d, st(1) = 1
+	fpatan			; st(0) = arctan(st(1)/st(0))
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
+</assemblyX86>
+<assemblyX86 compiler="fasm">
+END IF ; _FPU_H_
+</assemblyX86>

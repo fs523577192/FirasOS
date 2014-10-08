@@ -1,0 +1,45 @@
+
+<cpp>
+class Number{
+protected:
+	enum NumberType{
+		INTEGER, DOUBLE, BIG_INTEGER, RATIONAL, REAL, COMPLEX}type;
+	union{
+		int integer;
+		double floating;
+		BigInteger *bigInteger;
+		Rational *rational;
+		Real *real;
+		Complex *complex;
+	}value;
+	
+	Number(int num){
+		type = INTEGER;
+		value.integer = num;
+	}
+	
+	Number(BigInteger *num){
+		type = BIG_INTEGER;
+		value.bigInteger = num;
+	}
+	
+	Number(Rational *num){
+		type = RATIONAL;
+		value.bigInteger = num;
+	}
+	
+	Number(Real *num){
+		type = REAL;
+		value.bigInteger = num;
+	}
+	
+	Number(Complex *num){
+		type = COMPLEX;
+		value.bigInteger = num;
+	}
+	
+	inline enum NumberType getType(){
+		return type;
+	}
+}; // 
+</cpp>

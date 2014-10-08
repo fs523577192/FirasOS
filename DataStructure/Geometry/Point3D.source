@@ -1,0 +1,65 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _POINT_3D_H_
+#define _POINT_3D_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _POINT_3D_H_
+_POINT_3D_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _POINT_3D_H_
+_POINT_3D_H_	EQU	1
+</assemblyX86>
+<comment language="Chinese">
+--	模板参数T可以是各种数字的类型（int, unsigned,
+	float, double, Real等）
+--	要调用getDistance的话，当T不能是整数类型如int, unsigned等，
+	因为getDistance会用到sqrt函数
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+template <typename T> class Point3D{
+public:
+	
+	T x, y, z;
+	
+	Point3D(){
+		x = y = z = 0;
+	}
+	
+	Point3D(T x, T y, T z){
+		this.x = x; this.y = y; this.z = z;
+	}
+	
+	T getDistance(Point3D p){
+		T dx = x - p.x, dy = y - p.y, dz = z - p.z;
+		return sqrt(dx * dx + dy * dy + dz * dz);
+	}
+}; // class Point3D<T>
+</cpp>
+
+<cpp>
+#endif // _POINT_3D_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+
+END IF ; _POINT_3D_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+END IF ; _POINT_3D_H_
+</assemblyX86>

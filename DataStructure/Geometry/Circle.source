@@ -1,0 +1,88 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _CIRCLE_H_
+#define _CIRCLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _CIRCLE_H_
+_CIRCLE_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _CIRCLE_H_
+_CIRCLE_H_	EQU	1
+</assemblyX86>
+<include>Geometry</include>
+<include>Point2D</include>
+<cpp>
+
+template <typename T> class Circle : public Shape2D{
+protected:
+	
+	Point2D<T> p;
+	
+	T r;
+public:
+	
+	Circle(Point2D<T> center, T radius){
+		#ifdef _EXCEPTION_H_
+		if(r < 0) throw IllegalArgumentException();
+		#endif
+		p = center; r = radius;
+	}
+	
+	Circle(T x, T y, T r){
+		#ifdef _EXCEPTION_H_
+		if(r < 0) throw IllegalArgumentException();
+		#endif
+		Point2D<T> center(x, y);
+		p = center; r = radius;
+	}
+	
+	inline Point2D<T> getCenter(){
+		return p;
+	}
+	
+	inline T getRadius(){
+		return r;
+	}
+	
+	T getPerimeter(){
+		return 2 * 3.141592653589793 * r;
+	}
+	
+	T getArea(){
+		return 3.141592653589793 * r * r;
+	}
+	
+	enum ShapeRelationship2D getRelationship(Circle cir){
+		
+	}
+	
+	bool intersect(Circle cir){	// œ‡«–
+		
+	}
+}; // class Circle<T>
+</cpp>
+
+<cpp>
+#endif // _CIRCLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+
+END IF ; _CIRCLE_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+END IF ; _CIRCLE_H_
+</assemblyX86>

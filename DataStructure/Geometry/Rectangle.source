@@ -1,0 +1,88 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _RECTANGLE_H_
+#define _RECTANGLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _RECTANGLE_H_
+_RECTANGLE_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _RECTANGLE_H_
+_RECTANGLE_H_	EQU	1
+</assemblyX86>
+<include>Geometry</include>
+<include>Point2D</include>
+<cpp>
+
+template <typename T> class Rectangle : public Shape2D{
+protected:
+	
+	Point2D<T> p;
+	
+	T w, h;
+public:
+	
+	Rectangle(Point2D<T> corner, T weight, T height){
+		#ifdef _EXCEPTION_H_
+		if(weight < 0 || height < 0) throw IllegalArgumentException();
+		#endif
+		p = corner; w = weight; h = height;
+	}
+	
+	Rectangle(T x, T y, T weight, T height){
+		#ifdef _EXCEPTION_H_
+		if(weight < 0 || height < 0) throw IllegalArgumentException();
+		#endif
+		Point2D<T> corner(x, y);
+		p = corner; w = weight; h = height;
+	}
+	
+	inline Point2D<T> getCorner(){
+		return p;
+	}
+	
+	inline T getWidth(){
+		return w;
+	}
+	
+	inline T getHeight(){
+		return h;
+	}
+	
+	T getPerimeter(){
+		return 2 * (w + h);
+	}
+	
+	T getArea(){
+		return w * h;
+	}
+	
+	enum ShapeRelationship2D getRelationship(Rectangle rect){
+		
+	}
+}; // class Rectangle<T>
+</cpp>
+
+<cpp>
+#endif // _RECTANGLE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+
+END IF ; _RECTANGLE_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+END IF ; _RECTANGLE_H_
+</assemblyX86>
