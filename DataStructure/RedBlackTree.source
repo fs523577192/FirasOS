@@ -47,7 +47,6 @@ template <typename T> class RedBlack : public SortedBinaryTree<T>{
 protected:
 	
 	RedBlackNode<T> *root;
-	static int (*compareKey)(T *k1, T *k2);
 	#define	RedBlackNull	((RedBlack*)0)
 	
 public:

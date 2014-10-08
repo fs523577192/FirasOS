@@ -10,7 +10,7 @@ BelongsTo: Data Structure in the OS
 双向不循环链表
 </comment>
 <comment language="English">
-Bi-directional Not-circular LinkedList
+Not-circular Doubly Linked List
 </comment>
 <include>LinkedList2Node</include>
 <cpp>

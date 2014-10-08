@@ -10,7 +10,7 @@ BelongsTo: Data Structure in the OS
 单向不循环链表
 </comment>
 <comment language="English">
-Uni-directional Not-circular LinkedList
+Not-circular Singly Linked List
 </comment>
 <include>LinkedListNode</include>
 <cpp>

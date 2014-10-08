@@ -57,14 +57,20 @@ public:
 		return key;
 	}
 	inline LinkedListNode *getNext(){
+		if(this == LinkedListNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedListNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedListNullNode
 		#endif
 		return next;
 	}
 	LinkedListNode *getTail(){
+		if(this == LinkedListNullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedListNullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedListNullNode
 		#endif
 		register LinkedListNode *temp = this;
 		while(temp->next != LinkedListNullNode) temp = temp->next;

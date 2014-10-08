@@ -12,16 +12,21 @@ Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
 <comment language="Chinese">
-将是否左/右子和红黑颜色的信息保存在指针的0位中，故强制红黑树节点2字节对齐。
-左子指针保存是否左子，右子指针保存是否右子，父指针保存红色还是黑色。
+--	将是否左/右子和红黑颜色的信息保存在指针的0位中，
+	故强制红黑树节点2字节对齐。
+--	左子指针保存是否左子，右子指针保存是否右子，
+	父指针保存红色还是黑色。
+--	http://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91
 </comment>
 <comment language="English">
-The information about whether the node is a left child or a right child,
-and whether the node is red or black is stored in the bit 0 of the pointers,
-so the node must be aligned to 2-byte boundaries.
-The left child pointer stores whether the node is a left child;
-the right child pointer stores whether the node is a right child;
-the parent pointer stores whether the node is red or black.
+--	The information about whether the node is a left child or a
+	right child, and whether the node is red or black is stored
+	in the bit 0 of the pointers, so the node must be aligned to
+	2-byte boundaries.
+--	The left child pointer stores whether the node is a left child;
+	the right child pointer stores whether the node is a right child;
+	the parent pointer stores whether the node is red or black.
+--	http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 </comment>
 <cpp>
 #ifndef _RED_BLACK_NODE_H_
@@ -177,7 +182,25 @@ RedBlackNode.getWeight:
 	retn	4
 	
 RedBlackNode.removeSubTree:
-	
+	push	eax		; %%
+; stack: |eax |ret |this|
+	mov	eax,	[esp+8]	; eax = this
+	test	eax,	eax
+	jz	.return		; TODO: NullPointerException
+	push	eax		; ##
+	mov	eax,	[eax+RedBlackNode.LEFT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	jz	@F
+	push	eax
+	call	RedBlackNode.removeSubTree
+@@:	mov	eax,	[esp]	; ##
+	mov	eax,	[eax+RedBlackNode.RIGHT]
+	and	eax,	RedBlackNode.ADDR_MASK
+	jz	@F
+	push	eax
+	call	RedBlackNode.removeSubTree
+@@:	;call	delete		; ##
+	pop	eax		; %%
 	retn	4
 </assemblyX86>
 <cpp>
@@ -725,7 +748,8 @@ RedBlackNode.getNextNode:
 	retn	4
 </assemblyX86>
 <comment language="Chinese">
---	返回：
+--	返回：本节点的新父节点（若左旋则为原右子，若右旋则为
+	原左子）
 --	
 </comment>
 <comment language="English">
@@ -1099,10 +1123,24 @@ RedBlackNode.rotateRight:
 	retn	4
 </assemblyX86>
 <comment language="Chinese">
-
+--	关于红黑树的插入的步骤，维基百科上有详细的说明
+--	分为五种情况：插入新根、向黑节点插入、
+	向兄弟节点为红的红节点插入、
+	向兄弟节点为黑的左/右红节点插入右/左叶节点
+	向兄弟节点为黑的左/右红节点插入左/右叶节点
+--	此函数不考虑插入新根。遇到向红节点插入的情况，
+	维护红黑树性质的工作交给doubleRed函数
+--	此函数只应被RedBlack类调用
 </comment>
 <comment language="English">
-
+--	There are details about insertion of red-black tree on Wikipedia
+--	There are 5 cases: insert a new root, insert a child to a black node,
+	insert a child to a red node with a red sibling,
+	insert a right/left child to a left/right red node, and
+	insert a left/right child to a left/right red node
+--	This function won't insert a new root. When inserting to a red node,
+	this function calls doubleRed to maintain the red black tree
+--	This function should be called only by RedBlack class
 </comment>
 <cpp>
 	RedBlackNode addElementUnsafe(T e){
@@ -1118,7 +1156,7 @@ RedBlackNode.rotateRight:
 					reinterpret_cast<unsigned>(temp));
 				temp->parent = reinterpret_cast<RedBlackNode*>(
 					1 | reinterpret_cast<unsigned>(this));
-				if(isRed()) 
+				if(isRed()) doubleRed(true);
 			}
 		}else{
 			temp = getRightUnsafe();
@@ -1131,7 +1169,7 @@ RedBlackNode.rotateRight:
 					reinterpret_cast<unsigned>(temp));
 				temp->parent = reinterpret_cast<RedBlackNode*>(
 					1 | reinterpret_cast<unsigned>(this));
-				if(isRed()) 
+				if(isRed()) doubleRed(false);
 			}
 		}
 		return temp;
@@ -1252,7 +1290,10 @@ RedBlackNode.doubleRed:
 
 </assemblyX86>
 <comment language="Chinese">
-
+--	关于红黑树的删除的步骤，维基百科上有详细的说明
+--	若删除的不是叶子，则需要先与邻近的叶子交换
+--	
+--	删除叶子分为六种情况：删除新树根、
 </comment>
 <comment language="English">
 
@@ -1260,7 +1301,37 @@ RedBlackNode.doubleRed:
 <cpp>
 protected:
 	RedBlackNode* deleteNodeUnsafe(){
-		
+		T tempKey = key;
+		RedBlackNode *temp = getLeftUnsafe();
+		if(temp != RedBlackNullNode){
+			while(temp->getRightUnsafe() != RedBlackNullNode)
+				temp = temp->getRightUnsafe();
+			if(temp->getLeftUnsafe() != RedBlackNullNode){
+				key = temp->key;
+				temp->key = temp->getLeftUnsafe()->key;
+				temp->getLeftUnsafe()->key = tempKey;
+				
+				
+			}else{
+				key = temp->key;
+				temp->key = tempKey;
+				
+			}
+		}else{	// left child is null
+			temp = getRightUnsafe();
+			if(temp != RedBlackNullNode){
+			// right child must be a leaf because
+			// left child is null
+				key = temp->key;
+				temp->key = tempKey;
+				
+				
+			}else{
+				
+				return this;
+			}
+		}
+		return temp;
 	}
 </cpp>
 <assemblyX64 compiler="fasm">

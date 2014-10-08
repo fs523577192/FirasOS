@@ -1,8 +1,10 @@
 <head language="Chinese">
+双向链表节点
 作者：伍裕平
 归属：操作系统数据结构
 </head>
 <head language="English">
+Doubly Linked List Node
 Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
@@ -64,26 +66,38 @@ public:
 	}
 	
 	inline T getKey(){
+		#ifdef _EXCEPTION_H_
+		if(this == LinkedList2NullNode) throw NullPointerException();
+		#endif
 		return key;
 	}
 	
 	inline LinkedList2Node *getNext(){
+		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedList2NullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedList2NullNode;
 		#endif
 		return next;
 	}
 	
 	inline LinkedList2Node *getPrev(){
+		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedList2NullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedList2NullNode;
 		#endif
 		return prev;
 	}
 	
 	LinkedList2Node *getTail(){
+		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedList2NullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedList2NullNode;
 		#endif
 		register LinkedList2Node *temp = this;
 		while(temp->next != LinkedList2NullNode) temp = temp->next;
@@ -91,8 +105,11 @@ public:
 	}
 	
 	LinkedList2Node *gethead(){
+		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
-		if(this == LinkedList2NullNode) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return LinkedList2NullNode;
 		#endif
 		register LinkedList2Node *temp = this;
 		while(temp->prev != LinkedList2NullNode) temp = temp->prev;

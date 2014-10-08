@@ -15,6 +15,9 @@ BelongsTo: OS Kernel
 
 </comment>
 <cpp>
+#ifndef _PIC_8259_H_
+#define _PIC_8259_H_	1
+
 class PIC8259{
 public:
 	const static BYTE PIC1_COMMAND = 0x20, PIC1_DATA = 0x21,
@@ -31,6 +34,7 @@ public:
 		ICW4_SFNM = 0x10,	// Special fully nested (not)
 		PIC_EOI = 0x20;
 }; // class PIC8259
+#endif // _PIC_8259_H_
 </cpp>
 <assemblyX86 compiler="fasm">
 IF ~DEFINED _PIC_8259_H_

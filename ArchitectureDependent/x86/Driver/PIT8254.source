@@ -1,0 +1,53 @@
+<head language="Chinese">
+8254可编程定时器
+作者：伍裕平
+归属：操作系统内核
+</head>
+<head language="English">
+Programmable Interval Timer 8254
+Author: Firas
+BelongsTo: OS Kernel
+</head>
+<comment language="Chinese">
+--	
+</comment>
+<comment language="English">
+--	
+</comment>
+<cpp>
+#ifndef _PIT_8254_H_
+#define _PIT_8254_H_	1
+
+class PIT8254{
+	struct{
+		BYTE	BCD	:1;
+			// 0 Binary Counter 16-bits, 
+			// 1 Binary Coded Decimal (BCD) Counter (4 Decades)
+		BYTE	Mode	:3;
+			// 000 - mode 0: interrupt on terminal count
+			// 001 - mode 1: hardware retriggerable one-shot
+			// x10 - mode 2: rate generator
+			// x11 - mode 3: square wave mode
+			// 100 - mode 4: software triggered strobe
+			// 101 - mode 5: hardware triggered strobe
+			//		(retriggerable)
+		BYTE	RW	:2;
+			// 00 Counter Latch Command
+			// 01 Read/Write least significant byte only
+			// 10 Read/Write most significant byte only
+			// 11 Read/Write least significant byte first,
+			//    then most significant byte
+		BYTE	SC	:2;	// 00 Select Counter 0
+					// 01 Select Counter 1
+					// 10 Select Counter 2
+					// 11 Read-Back Command
+	}controlWord;
+}; // class PIT8254
+#endif // _PIT_8254_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _PIT_8254_H_
+_PIT_8254_H_	EQU	1
+
+END IF ; _PIT_8254_H_
+</assemblyX86>

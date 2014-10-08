@@ -1,0 +1,68 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+--	
+	http://wiki.osdev.org/ATA_PIO_Mode
+	http://forum.osdev.org/viewtopic.php?t=12268
+	http://stanislavs.org/helppc/ports.html
+</comment>
+<comment language="English">
+--	
+	http://wiki.osdev.org/ATA_PIO_Mode
+	http://forum.osdev.org/viewtopic.php?t=12268
+	http://stanislavs.org/helppc/ports.html
+</comment>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _PIO_H_
+_PIO_H_	EQU	1
+
+DISK0_PORT.DATA			EQU	1F0h
+DISK0_PORT.ERROR		EQU	1F1h
+DISK0_PORT.SECTOR_COUNT		EQU	1F2h
+DISK0_PORT.SECTOR_NUM		EQU	1F3h
+DISK0_PORT.CYLINDER_LOW		EQU	1F4h
+DISK0_PORT.CYLINDER_HIGH	EQU	1F5h
+DISK0_PORT.DRIVE_HEAD		EQU	1F6h
+DISK0_PORT.STATUS		EQU	1F7h
+
+DISK1_PORT.DATA			EQU	170h
+DISK1_PORT.ERROR		EQU	171h
+DISK1_PORT.SECTOR_COUNT		EQU	172h
+DISK1_PORT.SECTOR_NUM		EQU	173h
+DISK1_PORT.CYLINDER_LOW		EQU	174h
+DISK1_PORT.CYLINDER_HIGH	EQU	175h
+DISK1_PORT.DRIVE_HEAD		EQU	176h
+DISK1_PORT.STATUS		EQU	177h
+
+
+</assemblyX86>
+<cpp>
+#ifndef _PIO_H_
+define _PIO_H_ 1
+</cpp>
+<include>../../../Macro</include>
+<cpp>
+class DiskPort{
+public:
+	const static UINT16 DATA0 = 0x1F0, ERROR0 = 0x1F1,
+		SECTOR_COUNT0 = 0x1F2, SECTOR_NUM0 = 0x1F3,
+		CYLINDER_LOW0 = 0x1F4, CYLINDER_HIGH0 = 0x1F5,
+		DRIVE_HEAD0 = 0x1F6, STATUS0 = 0x1F7,
+		DATA1 = 0x170, ERROR1 = 0x171,
+		SECTOR_COUNT1 = 0x172, SECTOR_NUM1 = 0x173,
+		CYLINDER_LOW1 = 0x174, CYLINDER_HIGH1 = 0x175,
+		DRIVE_HEAD1 = 0x176, STATUS1 = 0x177;
+}; // class DiskPort
+</cpp>
+<assemblyX86 compiler="fasm">
+
+END IF ; _PIO_H_
+</assemblyX86>
+<cpp>
+
+#endif // _PIO_H_
+</cpp>

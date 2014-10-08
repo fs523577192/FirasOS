@@ -10,7 +10,7 @@ BelongsTo: Data Structure in the OS
 Ë«ÏòÑ­»·Á´±í
 </comment>
 <comment language="English">
-Bi-directional Circular LinkedList
+Circular Doubly Linked List
 </comment>
 <cpp>
 #ifndef _LINKED_LIST_O2_H_

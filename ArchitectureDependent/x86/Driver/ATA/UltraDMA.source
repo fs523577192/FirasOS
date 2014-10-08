@@ -1,0 +1,30 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _UDMA_H_
+_UDMA_H_	EQU	1
+
+</assemblyX86>
+<cpp>
+#ifndef _UDMA_H_
+define _UDMA_H_ 1
+
+</cpp>
+<assemblyX86 compiler="fasm">
+
+END IF ; _UDMA_H_
+</assemblyX86>
+<cpp>
+
+#endif // _UDMA_H_
+</cpp>
