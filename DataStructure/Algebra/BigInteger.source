@@ -1,5 +1,8 @@
 
 <cpp>
+const unsigned UINT_MAX = ~0;
+const int INT_MAX = (UINT_MAX >> 1), INT_MIN = ~INT_MAX;
+
 class BigInteger{
 protected:
 	unsigned *array;
@@ -11,11 +14,19 @@ public:
 	}
 	
 	BigInteger(int initial){
-		array = new unsigned[2];
-		array[0] = 1; array[1] = initial;
+		if(initial == INT_MIN){
+			array = new unsigned[3];
+			array[0] = 2; array[1] = INT_MIN; array[2] = ~0;
+		}else{
+			array = new unsigned[2];
+			array[0] = 1; array[1] = initial;
+		}
 	}
 	
 	BigInteger(BigInteger origin){
+		#ifdef _EXCEPTION_H_
+		if(this == BigIntegerNull) throw NullPointerException();
+		#endif
 		register unsigned size = origin.array[0]+1;
 		array = new unsigned[size];
 		do{
@@ -41,7 +52,23 @@ public:
 <cpp>
 protected:
 	BigInteger* trim(){
-		
+		if(this == BigIntegerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
+		register unsigned size = array[0];
+		while(size > 1 && array[size] == 0 && reinterpret_cast<int>(
+				array[size-1]) >= 0){
+			size--;
+		}
+		while(size > 1 && reinterpret_cast<int>(array[size]) == -1 &&
+				reinterpret_cast<int>(array[size-1]) < 0 &&
+				array[size-1] == INT_MIN){
+			size--;
+		}
+		array[0] = size;
 		return this;
 	}
 	
@@ -50,16 +77,15 @@ protected:
 		return this;
 	}
 public:
-	BigInteger* _absolute(){
-		
-		return this;
-	}
-	BigInteger* absolute(){
-		
-		
-	}
 	
 	BigInteger* _negate(){
+		if(this == BigIntegerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
+		register unsigned size = array[0];
 		
 		return this;
 	}
@@ -68,12 +94,37 @@ public:
 	
 	}
 	
-	int getSign(){
+	BigInteger* _absolute(){
+		
+		
+		return this;
+	}
+	BigInteger* absolute(){
+		if(this == BigIntegerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
+		
+	}
 	
+	int getSign(){
+		if(this == BigIntegerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return 2;
+		#endif
+		if(reinterpret_cast<int>(array[array[0]]) < 0) return -1;
+		for(register unsigned size = array[0]; size > 0; size--){
+			if(array[size] > 0) return 1;
+		}
+		return 0;
 	}
 	
 	int compareTo(BigInteger bi){
-	
+		
 	}
 	
 	BigInteger* _not(){
