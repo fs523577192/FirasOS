@@ -1,0 +1,141 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: OS
+</head>
+<cpp>
+#ifndef _DISK_H_
+#define _DISK_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _DISK_H_
+_DISK_H_	EQU	1
+</assemblyX86>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Enhanced Disk Drive - 4 (EDD-4) (Draft)
+	http://t13.org/Documents/UploadedDocuments/docs2009/d2132r1-Enhanced_Disk_Drive_-_4_EDD-4.pdf
+--	AH = 41h, BX = 55AAh - Installation Check
+	http://www.cytme.com/intr/rb-0706.htm
+--	AH = 42h - Extended Read
+	http://www.cytme.com/intr/rb-0708.htm
+--	AH = 43h - Extended Write
+	http://www.cytme.com/intr/rb-0710.htm
+--	AH = 44h - Verify Sectors
+	http://www.cytme.com/intr/rb-0711.htm
+--	AH = 45h - Lock/Unlock Drive
+	http://www.ctyme.com/intr/rb-0712.htm
+--	AH = 46h - Eject Media
+	http://www.ctyme.com/intr/rb-0713.htm
+--	AH - 47h - Extended Seek
+	http://www.ctyme.com/intr/rb-0714.htm
+--	AH = 48h - Get Parameters
+	http://www.ctyme.com/intr/rb-0715.htm
+</comment>
+<cpp>
+class DiskAddress{
+public:
+	BYTE	size;
+	BYTE	reserved0;
+	BYTE	blocks8;	// number of blocks to transfer
+	BYTE	reserved1;
+	struct{
+		WORD	offset;
+		WORD	segment;
+	}transfer_buffer;
+	QWORD	block_address;
+	// Starting logical block address on the target device of the data to
+	// be transferred. This is a 64-bit unsigned linear address.
+	QWORD	transfer_buffer64;
+	// 64-bit unsigned linear address of the host transfer buffer.
+	// This is the host buffer that Read/Write operations shall use to
+	// transfer the data if transfer_buffer is set to 0FFFFh:0FFFFh,
+	// or the blocks8 is set to 0FFh
+	DWORD	blocks32;
+	// number of blocks to transfer if blocks8 = 0FFh
+	DWORD	reserved2;
+}; // class DiskAddress
+
+class DriveParameter{
+public:
+	WORD	size;
+	struct{
+		WORD	transparent_error:1;
+		// DMA boundary errors handled transparently
+		WORD	track_chs_valid:1;
+		// cylinder/head/sectors-per-track information is valid
+		WORD	removable:1;	// removable drive
+		WORD	verify:1;	// write with verify supported
+		WORD	change_line:1;	// drive with change-line support
+		// (required if drive >= 80h is removable)
+		WORD	lockable:1;	// drive can be locked
+		// required if drive >= 80h is removable
+		WORD	no_media:1;
+		// CHS information set to maximum supported values
+		// not current media
+	}info;
+	DWORD	cylinders;	// number of physical cylinders on drive
+	DWORD	heads;		// number of physical heads on drive
+	DWORD	sectorsPerTrack;// number of physical sectors per track
+	QWORD	sectors;	// total number of sectors on drive
+	WORD	bytesPerSector;
+	
+	struct{
+		WORD	offset;
+		WORD	segment;
+	}edd_parameter;
+	
+	WORD	bedd;
+	BYTE	path_length;
+	BYTE	reserved0[3];
+	char	host_bus[4];
+	char	interface[8];
+	char	interface_path[8];
+	char	device_path[8];
+	BYTE	reserved1;
+	BYTE	checksum;
+}; // class DriveParameter
+</cpp>
+<cpp>
+#endif // _DISK_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+USE16
+MACRO ReadDisk sectors, address, lba_l, lba_h{
+	push	DWORD lba_h
+	push	DWORD lba_l
+	push	DWORD address
+	push	WORD sectors
+	push	WORD 0010h
+	mov	ax,	ss
+	mov	ds,	ax
+	mov	si,	sp
+	mov	ah,	42h
+	int	13h
+	jnc	@F
+	jmp	Dead
+@@:	
+}
+
+MACRO WriteDisk sectors, address, lba_l, lba_h{
+	push	DWORD lba_h
+	push	DWORD lba_l
+	push	DWORD address
+	push	WORD sectors
+	push	WORD 0010h
+	mov	ax,	ss
+	mov	ds,	ax
+	mov	si,	sp
+	mov	ax,	4300h
+	int	13h
+	jnc	@F
+	jmp	Dead
+@@:	
+}
+END IF ; _DISK_H_
+</assemblyX86>

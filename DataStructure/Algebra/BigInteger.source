@@ -1,19 +1,43 @@
+<head language="Chinese">
 
+</head>
+<head language="English">
+
+</head>
 <cpp>
-const unsigned UINT_MAX = ~0;
-const int INT_MAX = (UINT_MAX >> 1), INT_MIN = ~INT_MAX;
+#ifndef _BIG_INTEGER_H_
+#define _BIG_INTEGER_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _BIG_INTEGER_H_
+_BIG_INTEGER_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _BIG_INTEGER_H_
+_BIG_INTEGER_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<cpp>
 
 class BigInteger{
 protected:
+	
 	unsigned *array;
+	
+	BigInteger(unsigned* theArray){
+		array = theArray;
+	}
 public:
+	
+	BigInteger*const BigIntegerNull = reinterpret_cast<BigInteger*>(0);
+	unsigned*const NullArray = reinterpret_cast<unsigned*>(0);
 	
 	BigInteger(){
 		array = new unsigned[2];
 		array[0] = 1; array[1] = 0;
 	}
 	
-	BigInteger(int initial){
+	BigInteger(const int initial){
 		if(initial == INT_MIN){
 			array = new unsigned[3];
 			array[0] = 2; array[1] = INT_MIN; array[2] = ~0;
@@ -25,7 +49,8 @@ public:
 	
 	BigInteger(BigInteger origin){
 		#ifdef _EXCEPTION_H_
-		if(this == BigIntegerNull) throw NullPointerException();
+		if(origin.getArray() == NullArray)
+			throw NullPointerException();
 		#endif
 		register unsigned size = origin.array[0]+1;
 		array = new unsigned[size];
@@ -34,13 +59,61 @@ public:
 			array[size] = origin.array[size];
 		}while(size > 0);
 	}
+</cpp>
+<assemblyX64 compiler="fasm">
+BigInteger.fromInt:
+	push	rcx
+	cmp	rcx,	8000000000000000h
+	je	@F
+	;invoke	new,	2*8
+	pop	QWORD [rax+8]
+	mov	QWORD [rax],	1
+	ret
+@@:	;invode	new,	3*8
+	mov	QWORD [rax+16],	-1
+	pop	QWORD [rax+8]
+	mov	QWORD [rax],	2
+	ret
+
+BigInteger.clone:
 	
-	BigInteger(String str, unsigned radix){
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+BigInteger.fromInt:
+	push	ebx
+; stack: |ebx |ret |int |
+	cmp	DWORD [esp+8],	80000000h
+	je	@F
+	;invode	new,	2*4
+	mov	ebx,	eax
+	mov	eax,	[esp+8]
+	mov	[ebx+4],	eax
+	mov	DWORD [ebx],	1
+	jmp	.return
+@@:	;invoke	new,	3*4
+	mov	ebx,	eax
+	mov	eax,	[esp+8]
+	mov	DWORD [ebx+8],	-1
+	mov	[ebx+4],	eax
+	mov	DWORD [ebx],	2
+.return:
+	mov	eax,	ebx
+	pop	ebx
+	retn	4
+	
+BigInteger.clone:
+	
+	retn	4
+</assemblyX86>
+<cpp>
+	
+	BigInteger(cosnt String& str, const unsigned radix){
 		
 	}
 	
 	~BigInteger(){
-		delete array;
+		if(array != NullArray) delete array;
 	}
 </cpp>
 <comment language="Chinese">
@@ -51,120 +124,248 @@ public:
 </comment>
 <cpp>
 protected:
-	BigInteger* trim(){
+	
+	inline unsigned* getArray(){
 		if(this == BigIntegerNull)
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
 		#else
-			return BigIntegerNull;
+			return NullArray;
 		#endif
-		register unsigned size = array[0];
-		while(size > 1 && array[size] == 0 && reinterpret_cast<int>(
-				array[size-1]) >= 0){
-			size--;
-		}
-		while(size > 1 && reinterpret_cast<int>(array[size]) == -1 &&
-				reinterpret_cast<int>(array[size-1]) < 0 &&
-				array[size-1] == INT_MIN){
-			size--;
-		}
-		array[0] = size;
-		return this;
+		return array;
 	}
 	
-	BigInteger* expand(){
-		
-		return this;
+	BigInteger trim(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned size = array[0];
+		while(size > 1 && array[size] == 0 && (signed)(
+				array[size-1]) >= 0) size--;
+		while(size > 1 && (signed)(array[size]) == -1 &&
+				(signed)(array[size-1]) < 0 &&
+				array[size-1] == INT_MIN) size--;
+		array[0] = size;
+		return *this;
 	}
+	
+	BigInteger expand(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		
+		return *this;
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+BigInteger._trim:
+	test	rcx,	rcx
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	ret
+@@:	
+	ret
+
+BigInteger._expand:
+	
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+BigInteger._trim:
+	
+	retn	4
+
+BigInteger._expand:
+	
+	retn	4
+</assemblyX86>
+<cpp>
 public:
 	
-	BigInteger* _negate(){
-		if(this == BigIntegerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		register unsigned size = array[0];
-		
-		return this;
+	BigInteger _negate(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned i = 1;
+		while(i < array[0] && array[i] == 0) i++;
+		array[i] = -array[i];
+		i++;
+		while(i <= array[0]){
+			array[i] = ~array[i];
+			i++;
+		}
+		return *this;
+	}
+	BigInteger negate(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register BigInteger *temp = new BigInteger(*this);
+		return temp->_negate();
 	}
 	
-	BigInteger* negate(){
+	BigInteger _absolute(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		if((signed)(array[array[0]]) >= 0) return *this;
+		return this->_negate();
+	}
+	BigInteger absolute(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		if((signed)(array[array[0]]) >= 0) return *this;
+		return this->negate();
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+BigInteger._negate:
 	
-	}
+	ret
+
+BigInteger.negate:
 	
-	BigInteger* _absolute(){
-		
-		
-		return this;
-	}
-	BigInteger* absolute(){
-		if(this == BigIntegerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		
-	}
+	ret
+
+BigInteger._absolute:
+	
+	ret
+
+BigInteger.absolute:
+	
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+BigInteger._negate:
+	
+	retn	4
+
+BigInteger.negate:
+	
+	retn	4
+
+BigInteger._absolute:
+	
+	retn	4
+
+BigInteger.absolute:
+	
+	retn	4
+</assemblyX86>
+<cpp>
 	
 	int getSign(){
-		if(this == BigIntegerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
+		if(getArray() == NullArray)
 			return 2;
-		#endif
-		if(reinterpret_cast<int>(array[array[0]]) < 0) return -1;
-		for(register unsigned size = array[0]; size > 0; size--){
+		if((signed)(array[array[0]]) < 0) return -1;
+		for(register unsigned size = array[0]; size > 0; size--)
 			if(array[size] > 0) return 1;
-		}
 		return 0;
 	}
 	
 	int compareTo(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray)
+			return 2;
 		
 	}
 	
-	BigInteger* _not(){
-		
-		return this;
+	BigInteger _not(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		for(register unsigned size = array[0]; size > 0; size--)
+			array[size] = ~array[size];
+		return *this;
 	}
 	
-	BigInteger* not(){
-	
+	BigInteger not(){
+		if(getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register BigInteger temp = new BigInteger(*this);
+		return temp->_not();
 	}
 	
 	BigInteger* _and(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned size = array[0], size1 = bi.array[0];
 		
 		return this;
 	}
 	BigInteger* and(BigInteger bi){
-	
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		
 	}
 	
 	BigInteger* _or(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
 		
 		return this;
 	}
 	BigInteger* or(BigInteger bi){
-	
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		
 	}
 	
 	BigInteger* _xor(BigInteger bi){
+		if(this == BigIntegerNull || bi == BigIntergerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
 		
 		return this;
 	}
 	BigInteger* xor(BigInteger bi){
-	
+		if(this == BigIntegerNull || bi == BigIntergerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
+		
 	}
 	
 	BigInteger* _add(BigInteger bi){
+		if(this == BigIntegerNull || bi == BigIntergerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
 		
 		return this;
 	}
 	BigInteger* add(BigInteger bi){
+		if(this == BigIntegerNull || bi == BigIntergerNull)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return BigIntegerNull;
+		#endif
 		
 	}
 	
@@ -176,29 +377,29 @@ public:
 		
 	}
 	
-	BigInteger* _shiftLeftLogical(){
+	BigInteger _shiftLeftLogical(const signed n){
 		
 		return this;
 	}
-	BigInteger* shiftLeftLogical(){
+	BigInteger shiftLeftLogical(const signed n){
 	
 	}
-	BigInteger* shiftLeftArithmetic(){
+	BigInteger shiftLeftArithmetic(const signed n){
 	
 	}
 	
-	BigInteger* _shiftRightLogical(){
+	BigInteger _shiftRightLogical(const signed n){
 		
 		return this;
 	}
-	BigInteger* shiftRightLogical(){
+	BigInteger* shiftRightLogical(const signed n){
 	
 	}
-	BigInteger* _shiftRightArithmetic(){
+	BigInteger* _shiftRightArithmetic(const signed n){
 		
 		return this;
 	}
-	BigInteger* shiftRightArithmetic(){
+	BigInteger* shiftRightArithmetic(const signed n){
 		
 	}
 protected:
@@ -216,26 +417,35 @@ protected:
 	}
 public:
 	
-	BigInteger* multiply(int num){
+	BigInteger multiply(int num){
 	
 	}
 	
-	BigInteger* multiplySimple(BigInteger bi){
+	BigInteger multiplySimple(BigInteger bi){
 	
 	}
 	
-	BigInteger* multiply(BigInteger bi){
+	BigInteger multiply(BigInteger bi){
 	
 	}
 	
-	BigInteger* divideSimple(BigInteger bi){
+	BigInteger divideSimple(BigInteger bi){
 	
 	}
 	
-	BigInteger* gcd(BigInteger bi){
+	BigInteger gcd(BigInteger bi){
 	
 	}
 	
 	
 }; // class BigInteger
+BigInteger*const BigInteger::BigIntegerNull = reinterpret_cast<BigInteger*>(0);
+unsigned*const BigInteger::NullArray = reinterpret_cast<unsigned*>(0);
+#endif // _BIG_INTEGER_H_
 </cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _BIG_INTEGER_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _BIG_INTEGER_H_
+</assemblyX86>

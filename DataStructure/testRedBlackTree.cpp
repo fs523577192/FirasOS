@@ -2,7 +2,7 @@
 #include "RedBlackTree.cpp"
 int main(){
 	RedBlack<double> *tree = new RedBlack<double>();
-	printf("%d %d\n", tree->isEmpty(), tree->getSize());
+	std::cout << tree->isEmpty() << '\t' << tree->getSize() << '\n';
 	
 	return 0;
 }

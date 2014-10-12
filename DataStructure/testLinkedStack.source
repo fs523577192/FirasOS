@@ -32,39 +32,44 @@ start:
 <cpp>
 int main(){
 	LinkedStack<float> *stack = new LinkedStack<float>();
-	printf("%d %d\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty(), stack->getSize() << '\n';
 	// 1 0
-	printf("%d ", stack->addElement(2.5f));
-	printf("%d ", stack->addElement(0.5f));
-	printf("%d\n", stack->addElement(0.25f));
+	std::cout << stack->addElement(2.5f) << ' ';
+	std::cout << stack->addElement(0.5f) << ' ';
+	std::cout << stack->addElement(0.25f) << '\n';
 	// 1 1 1
-	printf("%d %d\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 3
-	printf("%d %d\n", stack->hasElement(0.5f), stack->hasElement(1.0f));
+	std::cout << stack->hasElement(0.5f) << ' ';
+	std::cout << stack->hasElement(1.0f) << '\n';
 	// 1 0
-	printf("%d %d\n", stack->removeElement(0.5f), stack->removeElement(1.0f));
+	std::cout << stack->removeElement(0.5f) << ' ';
+	std::cout << stack->removeElement(1.0f) << '\n';
 	// 1 0
-	printf("%d %d\n\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty() << ' ' << stack->getSize();
+	std::cout << '\n' << '\n';
 	// 0 2
 	delete stack;
 	
 	stack = new LinkedStack<float>(1.5f);
-	printf("%d %d\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 1
-	printf("%d ", stack->pushElement(0.5f));
-	printf("%d ", stack->pushElement(0.25f));
-	printf("%d\n", stack->pushElement(2.0f));
+	std::cout << stack->pushElement(0.5f) << ' ';
+	std::cout << stack->pushElement(0.25f) << ' ';
+	std::cout << stack->pushElement(2.0f) << '\n';
 	// 1 1 1
-	printf("%d %d\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 4
-	printf("%d %d\n", stack->hasElement(0.5f), stack->hasElement(1.0f));
+	std::cout << stack->hasElement(0.5f) << ' ';
+	std::cout << stack->hasElement(1.0f) << '\n';
 	// 1 0
-	printf("%f ", stack->popElement());
-	printf("%f\n", stack->popElement());
-	// 2.0000 0.2500
-	printf("%d\n", stack->removeAllElement());
+	std::cout << stack->popElement() << '\t';
+	std::cout << stack->popElement() << '\n';
+	// 2	0.25
+	std::cout << stack->removeAllElement() << '\n';
 	// 1
-	printf("%d %d\n\n", stack->isEmpty(), stack->getSize());
+	std::cout << stack->isEmpty() << ' ' << stack->getSize();
+	std::cout << '\n' << '\n';
 	// 1 0
 	
 	return 0;

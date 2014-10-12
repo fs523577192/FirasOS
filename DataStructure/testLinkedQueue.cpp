@@ -3,46 +3,48 @@
 #include "LinkedQueue.cpp"
 int main(){
 	LinkedQueue<double> *queue = new LinkedQueue<double>();
-	printf("%d %d\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 1 0
-	printf("%d ", queue->addElement(0.5));
-	printf("%d ", queue->addElement(2.5));
-	printf("%d\n", queue->addElement(1.5));
+	std::cout << queue->addElement(0.5) << ' ';
+	std::cout << queue->addElement(2.5) << ' ';
+	std::cout << queue->addElement(1.5) << '\n';
 	// 1 1 1
-	printf("%d %d\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 0 3
-	printf("%d %d\n", queue->hasElement(0.5), queue->hasElement(0.25));
+	std::cout << queue->hasElement(0.5) << ' ';
+	std::cout << queue->hasElement(0.25) << '\n';
 	// 1 0
-	printf("%d %d\n", queue->removeElement(0.5), queue->removeElement(0.25));
+	std::cout << queue->removeElement(0.5) << ' ';
+	std::cout << queue->removeElement(0.25) << '\n';
 	// 1 0
-	printf("%d ", queue->addElement(2.5));
-	printf("%d\n", queue->removeElement(2.5));
-	// 1 1
-	printf("%d %d\n\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 0 2
 	delete queue;
 	
 	queue = new LinkedQueue<double>(1.5);
-	printf("%d %d\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 0 1
-	printf("%d ", queue->addElementToHead(0.5));
-	printf("%d ", queue->addElementToHead(2.5));
-	printf("%d ", queue->addElementToTail(4.5));
-	printf("%d\n", queue->addElementToTail(3.5));
+	std::cout << queue->addElementToHead(0.5) << ' ';
+	std::cout << queue->addElementToHead(2.5) << ' ';
+	std::cout << queue->addElementToTail(4.5) << ' ';
+	std::cout << queue->addElementToTail(3.5) << '\n';
 	// 1 1 1 1
-	printf("%d %d\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 0 5
-	printf("%lf %lf\n", queue->getHeadElement(), queue->getTailElement());
-	// 2.5000 3.5000
-	printf("%d %d\n", queue->removeHeadElement(), queue->removeTailElement());
+	std::cout << queue->getHeadElement() << '\t';
+	std::cout << queue->getTailElement() << '\n';
+	// 2.5	3.5
+	std::cout << queue->removeHeadElement() << ' ';
+	std::cout <<queue->removeTailElement() << '\n';
 	// 1 1
-	printf("%lf %lf\n", queue->getHeadElement(), queue->getTailElement());
-	// 0.5000 4.5000
-	printf("%d %d\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->getHeadElement() << '\t';
+	std::cout << queue->getTailElement() << '\n';
+	// 0.5	4.5
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 0 3
-	printf("%d\n", queue->removeAllElement());
+	std::cout << queue->removeAllElement() << '\n';
 	// 1
-	printf("%d %d\n\n", queue->isEmpty(), queue->getSize());
+	std::cout << queue->isEmpty() << ' ' <<queue->getSize() << '\n';
 	// 1 0
 	
 	return 0;
