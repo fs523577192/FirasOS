@@ -43,9 +43,12 @@ int main(){
 	std::cout << list->getElementAtIndex(1) << '\t';
 	std::cout << list->getElementAtIndex(2) << '\n';
 	// 0.5	2.5	1.5
+	List<float> *list0 = list->subList(4, 4);
+	std::cout << list0->isEmpty() << ' ' << list0->getSize() << '\n';
+	// 1 0
 	List<float> *list2 = list->subList(0, 2);
 	List<float> *list3 = list->subList(1, 4);
-	std::cout << list->isEmpty() << ' ' << list->getSize() << '\n';
+	std::cout << list2->getSize() << ' ' << list3->getSize() << '\n';
 	// 2 3
 	std::cout << list->removeElementAtIndex(0) << ' ';
 	std::cout << list->removeElementAtIndex(1) << ' ';

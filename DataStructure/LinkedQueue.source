@@ -39,10 +39,13 @@ public:
 	}
 	
 	inline bool isEmpty(){	// inherited from Collection
+		if(this == (LinkedQueue*)0)
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedQueue*)0) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return true;
 		#endif
-		return head == (LinkedList2Node<T>*)0;
+		return head == LinkedList2NullNode;
 	}
 	
 	unsigned getSize(){	// inherited from Collection
@@ -59,18 +62,22 @@ public:
 <assemblyX64 compiler="fasm">
 
 LinkedQueue.isEmpty:
-	;test	rcx,	rcx
+	test	rcx,	rcx
+	jz	.true		; if this==null, return true
 	; TODO: NullPointerException
 	mov	rax,	[rcx]
 	test	rax,	rax
-	jz	@F
-	mov	rax,	1
-@@:	ret
+	jz	.true
+	xor	rax,	rax
+	ret
+.true:	mov	rax,	1
+	ret
 
 LinkedQueue.getSize:
-	;test	rcx,	rcx
-	; TODO: NullPointerException
 	xor	rax,	rax	; rax = 0
+	test	rcx,	rcx
+	jz	.return		; if this==null, return 0
+	; TODO: NullPointerException
 	mov	rcx,	[rcx]	; rcx = head
 	test	rcx,	rcx
 	jz	.return		; jump if head == null
@@ -89,40 +96,50 @@ LinkedQueue.getSize:
 
 LinkedQueue.isEmpty:
 	mov	eax,	[esp+4]		; eax = this
-	;test	eax,	eax
+	test	eax,	eax
+	jz	.true		; if this==null, return true
 	; TODO: NullPointerException
 	mov	eax,	[eax]		; eax = this->head
 	test	eax,	eax
-	jz	@F
-	mov	eax,	1
-@@:	retn	4
+	jz	.true
+	xor	eax,	eax
+	retn	4
+.true	mov	eax,	1
+	retn	4
 
 LinkedQueue.getSize:
-	push	ebx		; ##
-	push	ecx		; @@
+	push	ebx			; ##
+	push	ecx			; @@
 ; stack: |ecx |ebx |ret |this|
 	mov	ecx,	[esp+12]	; ecx = this
-	;test	ecx,	ecx
-	; TODO: NullPointerException
-	xor	eax,	eax	; eax = 0
-	mov	ecx,	[ecx]	; ecx = this->head
+	xor	eax,	eax		; eax = 0
 	test	ecx,	ecx
-	jz	.return		; jump if this == null
-	mov	ebx,	ecx	; ebx = this->head
+	jz	.return
+	; TODO: NullPointerException
+	mov	ecx,	[ecx]		; ecx = this->head
+	test	ecx,	ecx
+	jz	.return			; jump if this == null
+	mov	ebx,	ecx		; ebx = this->head
 @@:	cmp	ebx,	[ecx]
-	je	.return		; jump if ecx->next == head
+	je	.return			; jump if ecx->next == head
 	inc	eax
 	mov	ecx,	[ecx]
 	jmp	@B
 .return:
-	pop	ecx		; @@
-	pop	ebx		; ##
+	pop	ecx			; @@
+	pop	ebx			; ##
 	retn	4
 </assemblyX86>
 <cpp>
 	
 	bool addElement(T e){	// inherited from Collection
-		if(isEmpty()){
+		if(this == (LinkedQueue*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		if(head == LinkedList2NullNode){
 			head = new LinkedList2Node<T>(e);
 			head->prev = head->next = head;
 		}else{
@@ -199,7 +216,7 @@ LinkedQueue.removeAllElement:
 </assemblyX86 compiler="fasm">
 <cpp>
 	
-	T getheadElement(){	// inherited from Queue
+	T getHeadElement(){	// inherited from Queue
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedQueue*)0 || head == (LinkedList2Node<T>*)0)
 			throw NullPointerException();
@@ -207,11 +224,22 @@ LinkedQueue.removeAllElement:
 		return head->key;
 	}
 	
-	bool addElementTohead(T e){	// inherited from Queue
+	bool setHeadElement(T e){
+		if(this == (LinkedQueue*)0 || head == (LinkedList2Node<T>*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		head->key = e;
+		return true;
+	}
+	
+	bool addElementToHead(T e){	// inherited from Queue
 		return addElement(e);
 	}
 	
-	bool removeheadElement(){	// inherited from Queue
+	bool removeHeadElement(){	// inherited from Queue
 		if(isEmpty()) return false;
 		if(head == head->prev){
 			delete head;
@@ -241,9 +269,23 @@ LinkedQueue.removeheadElement:
 		return head->prev->key;
 	}
 	
-	bool addElementToTail(T e){
+	bool setTailElement(T e){
+		if(this == (LinkedQueue*)0 || head == (LinkedList2Node<T>*)0)
 		#ifdef _EXCEPTION_H_
-		if(this == (LinkedQueue*)0) throw NullPointerException();
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		head->prev->key = e;
+		return true;
+	}
+	
+	bool addElementToTail(T e){
+		if(this == (LinkedQueue*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
 		#endif
 		if(head == (LinkedList2Node<T>*)0){
 			head = new LinkedList2Node<T>(e);

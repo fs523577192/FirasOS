@@ -1,0 +1,413 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<cpp>
+#ifndef _ARRAY_H_
+#define _ARRAY_H_	1
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINE _ARRAY_H_
+_ARRAY_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINE _ARRAY_H_
+_ARRAY_H_	EQU	1
+</assemblyX86>
+<include>Collection</include>
+<cpp>
+template <typename T> class StaticArray : public List<T>{
+protected:
+	unsigned size;
+	T *array;
+public:
+	
+	StaticArray(unsigned capacity){
+		size = capacity;
+		if(capacity > 0) array = new T[capacity];
+		else array = (T*)0;
+	}
+	
+	~StaticArray(){
+		delete array;
+	}
+	
+	inline bool isEmpty(){		// inherited from Collection
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return true;
+		#endif
+		return size == 0;
+	}
+	
+	inline unsigned getSize(){	// inherited from Collection
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return 0;
+		#endif
+		return size;
+	}
+</cpp>
+<comment language="Chinese">
+--	对静态数组调用插入元素方法是没有意义的
+--	在此，加入元素函数相当于设置数组首个元素
+</comment>
+<comment language="English">
+--	It is meaningless to call function of adding element
+	in static arrays
+--	This addElement function set the first element in the array
+</comment>
+<cpp>
+	
+	bool addElement(T e){		// inherited from Collection
+		if(this == (StaticArray*)0 || size == 0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		array[0] = e;
+		return true;
+	}
+	
+	bool hasElement(T e){		// inherited from Collection
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		for(register unsigned i = 0; i < size; i++)
+			if(array[i] == e) return true;
+		return false;
+	}
+</cpp>
+<comment language="Chinese">
+--	对静态数组调用移除元素方法是没有意义的，故方法总返回false
+</comment>
+<comment language="English">
+--	It is meaningless to call functions of removing element
+	in static arrays, so the functions always return false
+</comment>
+<cpp>
+	
+	inline bool removeElement(T e){	// inherited from Collection
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#endif
+		return false;
+	}
+	
+	inline bool removeAllElement(){	// inherited from Collection
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#endif
+		return false;
+	}
+	
+	inline T getElementAtIndex(unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (StaticArray*)0) throw NullPointerException();
+		if(index >= size) throw IndexOutOfBoundsException();
+		#endif
+		return array[index];
+	}
+	
+	inline bool setElementAtIndex(T e, unsigned index){
+	// inherited from List
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		if(index >= size)
+		#ifdef _EXCEPTION_H_
+			throw IndexOutOfBoundsException();
+		#else
+			return false;
+		#endif
+		array[index] = e;
+		return true;
+	}
+</cpp>
+<comment language="Chinese">
+--	对静态数组调用插入元素方法是没有意义的
+--	在此，调用插入元素函数相当于调用设置元素函数
+</comment>
+<comment language="English">
+--	It is meaningless to call function of adding element
+	in static arrays
+--	This insertElementAtIndex function just call the
+	setElementAtIndex function
+</comment>
+<cpp>
+	
+	inline bool insertElementAtIndex(T e, unsigned index){
+	// inherited from List
+		return setElementAtIndex(e, index);
+	}
+	
+	inline bool removeElementAtIndex(unsigned index){
+	// inherited from List
+		return false;
+	}
+	
+	bool isEqual(List<T> *l){	// inherited from List
+		if(getSize() != l->getSize()) return false;
+		if(size == 0) return true;
+		for(register unsigned i = 0; i < size; i++)
+			if(array[i] != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
+	List* subList(unsigned fromIndex, unsigned toIndex){
+		if(this == (StaticArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return new StaticArray(0);
+		#endif
+		if(fromIndex >= size || toIndex > size)
+		#ifdef _EXCEPTION_H_
+			throw IndexOutOfBoundsException();
+		#else
+			return new StaticArray(0);
+		#endif
+		if(fromIndex >= toIndex || fromIndex == size)
+			return new StaticArray(0);
+		StaticArray *temp = new StaticArray(toIndex-fromIndex);
+		for(register i=fromIndex; i<toIndex; i++)
+			temp->array[i-fromIndex] = array[i];
+		return temp;
+	}
+}; // class StaticArray<T>
+</cpp>
+<assemblyX64 compiler="fasm">
+
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+</assemblyX86>
+<cpp>
+template <typename T> class DynamicArray : public List<T>{
+protected:
+	unsigned capacity, size;
+	T *array;
+public:
+	
+	DynamicArray(unsigned initialSize){
+		size = initialSize;
+		if(initialSize > INT_MAX){
+			capacity = size = 0;
+			array = (T*)0;
+		}else if(initialSize > 16){
+			capacity = (initialSize & ~7) + 8;
+			array = new T[capacity];
+		}else{
+			capacity = 16;
+			array = new T[capacity];
+		}
+	}
+	
+	DynamicArray(unsigned initialSize, unsigned initialCapacity){
+		if(initialCapacity > INT_MAX || initialSize > INT_MAX){
+			capacity = size = 0;
+			array = (T*)0;
+		}else if(initialCapacity < initialSize){
+			size = initialSize;
+			capacity = (initialSize & ~7) + 8;
+			array = new T[capacity];
+		}else{
+			size = initialSize;
+			capacity = initialCapacity;
+			array = new T[initialCapacity];
+		}
+	}
+	
+	~DynamicArray(){
+		delete array;
+	}
+	
+	inline bool isEmpty(){		// inherited from Collection
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return true;
+		#endif
+		return size == 0;
+	}
+	
+	inline unsigned getSize(){	// inherited from Collection
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return 0;
+		#endif
+		return size;
+	}
+	
+	</cpp>
+<comment language="Chinese">
+--	对静态数组调用插入元素方法是没有意义的
+--	在此，加入元素函数相当于设置数组首个元素
+</comment>
+<comment language="English">
+--	It is meaningless to call function of adding element
+	in static arrays
+--	This addElement function set the first element in the array
+</comment>
+<cpp>
+	
+	bool addElement(T e){		// inherited from Collection
+		if(this == (DynamicArray*)0 || size == 0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		array[0] = e;
+		return true;
+	}
+	
+	bool hasElement(T e){		// inherited from Collection
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		for(register unsigned i = 0; i < size; i++)
+			if(array[i] == e) return true;
+		return false;
+	}
+</cpp>
+<comment language="Chinese">
+--	对静态数组调用移除元素方法是没有意义的，故方法总返回false
+</comment>
+<comment language="English">
+--	It is meaningless to call functions of removing element
+	in static arrays, so the functions always return false
+</comment>
+<cpp>
+	
+	inline bool removeElement(T e){	// inherited from Collection
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#endif
+		return false;
+	}
+	
+	inline bool removeAllElement(){	// inherited from Collection
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#endif
+		return false;
+	}
+	
+	inline T getElementAtIndex(unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (DynamicArray*)0) throw NullPointerException();
+		if(index >= size) throw IndexOutOfBoundsException();
+		#endif
+		return array[index];
+	}
+	
+	inline bool setElementAtIndex(T e, unsigned index){
+	// inherited from List
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		if(index >= size)
+			if(index > INT_MAX) return false;
+			if(index < capacity) size = index;
+			else{
+				
+			}
+		}
+		array[index] = e;
+		return true;
+	}
+</cpp>
+<comment language="Chinese">
+--	对数组调用插入元素方法是没有意义的
+--	在此，调用插入元素函数相当于调用设置元素函数
+</comment>
+<comment language="English">
+--	It is meaningless to call function of adding element
+	in static arrays
+--	This insertElementAtIndex function just call the
+	setElementAtIndex function
+</comment>
+<cpp>
+	
+	inline bool insertElementAtIndex(T e, unsigned index){
+	// inherited from List
+		return setElementAtIndex(e, index);
+	}
+	
+	inline bool removeElementAtIndex(unsigned index){
+	// inherited from List
+		return false;
+	}
+	
+	bool isEqual(List<T> *l){	// inherited from List
+		if(getSize() != l->getSize()) return false;
+		if(size == 0) return true;
+		for(register unsigned i = 0; i < size; i++)
+			if(array[i] != l->getElementAtIndex(i)) return false;
+		return true;
+	}
+	
+	List* subList(unsigned fromIndex, unsigned toIndex){
+		if(this == (DynamicArray*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return new DynamicArray(0);
+		#endif
+		if(fromIndex >= size || toIndex > size)
+		#ifdef _EXCEPTION_H_
+			throw IndexOutOfBoundsException();
+		#else
+			return new DynamicArray(0);
+		#endif
+		if(fromIndex >= toIndex || fromIndex == size)
+			return new DynamicArray(0);
+		DynamicArray *temp = new DynamicArray(toIndex-fromIndex);
+		for(register i=fromIndex; i<toIndex; i++)
+			temp->array[i-fromIndex] = array[i];
+		return temp;
+	}
+}; // class DynamicArray<T>
+</cpp>
+<assemblyX64 compiler="fasm">
+
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+</assemblyX86>
+<cpp>
+#endif // _ARRAY_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _ARRAY_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _ARRAY_H_
+</assemblyX86>

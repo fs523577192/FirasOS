@@ -1,0 +1,37 @@
+<head language="Chinese">
+线程调度策略：时间片轮转
+归属：操作系统线程调度
+作者：伍裕平
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _THREAD_ROUND_ROBIN_H_
+#define _THREAD_ROUND_ROBIN_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINE _THREAD_ROUND_ROBIN_H_
+_THREAD_ROUND_ROBIN_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINE _THREAD_ROUND_ROBIN_H_
+_THREAD_ROUND_ROBIN_H_	EQU	1
+</assemblyX86>
+<include>../../../DataStructure/LinkedQueue</include>
+
+<cpp>
+#endif // _THREAD_ROUND_ROBIN_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _THREAD_ROUND_ROBIN_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _THREAD_ROUND_ROBIN_H_
+</assemblyX86>

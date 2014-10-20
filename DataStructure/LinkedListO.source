@@ -227,6 +227,30 @@ LinkedListO._addNode:
 		return temp->key;
 	}
 	
+	bool setElementAtIndex(T e, unsigned index){	// inherited from List
+		#ifdef _EXCEPTION_H_
+		if(this == (LinkedListO*)0 || head == LinkedListNullNode)
+			throw NullPointerException();
+		#endif
+		if(index == 0){
+			head->key = e;
+			return true;
+		}
+		register LinkedListNode<T> *temp = head->next;
+		while(index > 1 && temp != head){
+			temp = temp->next;
+			index--;
+		}
+		if(temp == head)
+		#ifdef _EXCEPTION_H_
+			throw IndexOutOfBoundsException();
+		#else
+			return false;
+		#endif
+		temp->key = e;
+		return true;
+	}
+	
 	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
 		#ifdef _EXCEPTION_H_
 		if(this == (LinkedListO*)0) throw NullPointerException();
@@ -303,7 +327,7 @@ LinkedListO._addNode:
 			throw IndexOutOfBoundsException();
 		#endif
 		LinkedListO *list = new LinkedListO();
-		if(fromIndex >= toIndex) return list;
+		if(fromIndex >= toIndex || fromIndex == size) return list;
 		LinkedListNode<T> *temp1 = head;
 		while(fromIndex > 0){
 			temp1 = temp1->next;

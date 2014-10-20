@@ -238,10 +238,31 @@ LinkedList.removeElement:
 			temp = temp->next;
 			index--;
 		}
-		if(temp != LinkedListNullNode) return temp->key;
 		#ifdef _EXCEPTION_H_
-		throw IndexOutOfBoundsException();
+		if(temp == LinkedListNullNode)
+			throw IndexOutOfBoundsException();
 		#endif
+		return temp->key;
+	}
+	
+	bool setElementAtIndex(T e, unsigned index){	// inherited from List
+	#ifdef _EXCEPTION_H_
+		if(this == (LinkedList*)0 || head == LinkedListNullNode)
+			throw NullPointerException();
+		#endif
+		LinkedListNode<T> *temp = head;
+		while(index > 0 && temp != LinkedListNullNode){
+			temp = temp->next;
+			index--;
+		}
+		if(temp != LinkedListNullNode)
+		#ifdef _EXCEPTION_H_
+			throw IndexOutOfBoundsException();
+		#else
+			return false;
+		#endif
+		temp->key = e;
+		return true;
 	}
 	
 	bool insertElementAtIndex(T e, unsigned index){	// inherited from List
@@ -301,7 +322,7 @@ LinkedList.removeElement:
 			return new LinkedList();
 		#endif
 		LinkedList *list = new LinkedList();
-		if(fromIndex >= toIndex) return list;
+		if(fromIndex >= toIndex || fromIndex == size) return list;
 		LinkedListNode<T> *temp1 = head;
 		while(fromIndex > 0){
 			temp1 = temp1->next;

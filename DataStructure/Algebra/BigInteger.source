@@ -18,6 +18,7 @@ _BIG_INTEGER_H_	EQU	1
 </assemblyX86>
 <include>../../Macro</include>
 <cpp>
+#define TO_SIGNED(x)	((signed)(x))
 
 class BigInteger{
 protected:
@@ -29,8 +30,8 @@ protected:
 	}
 public:
 	
-	BigInteger*const BigIntegerNull = reinterpret_cast<BigInteger*>(0);
-	unsigned*const NullArray = reinterpret_cast<unsigned*>(0);
+	BigInteger*const BigIntegerNull;
+	unsigned*const NullArray;
 	
 	BigInteger(){
 		array = new unsigned[2];
@@ -47,7 +48,7 @@ public:
 		}
 	}
 	
-	BigInteger(BigInteger origin){
+	BigInteger(const BigInteger& origin){
 		#ifdef _EXCEPTION_H_
 		if(origin.getArray() == NullArray)
 			throw NullPointerException();
@@ -141,22 +142,30 @@ protected:
 			return n;
 		}
 		register unsigned size = array[0];
-		while(size > 1 && array[size] == 0 && (signed)(
+		while(size > 1 && array[size] == 0 && TO_SIGNED(
 				array[size-1]) >= 0) size--;
-		while(size > 1 && (signed)(array[size]) == -1 &&
-				(signed)(array[size-1]) < 0 &&
+		while(size > 1 && TO_SIGNED(array[size]) == -1 &&
+				TO_SIGNED(array[size-1]) < 0 &&
 				array[size-1] == INT_MIN) size--;
 		array[0] = size;
 		return *this;
 	}
 	
-	BigInteger expand(){
+	BigInteger expand(unsigned newSize, bool extendSign){
 		if(getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		
-		return *this;
+		if(newSize <= array[0]) return *(new BigInteger(*this));
+		BigInteger nbi(new unsigned[newSize+1]);
+		register unsigned i;
+		for(i = 0; i <= array[0]; i++) nbi.array[i] = array[i];
+		if(extendSign && TO_SIGNED(array[array[0]]) < 0){
+			for(; i <= newSize; i++) nbi.array[i] = -1;
+		}else{
+			for(; i <= newSize; i++) nbi.array[i] = 0;
+		}
+		return nbi;
 	}
 </cpp>
 <assemblyX64 compiler="fasm">
@@ -214,7 +223,7 @@ public:
 			BigInteger n(NullArray);
 			return n;
 		}
-		if((signed)(array[array[0]]) >= 0) return *this;
+		if(TO_SIGNED(array[array[0]]) >= 0) return *this;
 		return this->_negate();
 	}
 	BigInteger absolute(){
@@ -222,7 +231,7 @@ public:
 			BigInteger n(NullArray);
 			return n;
 		}
-		if((signed)(array[array[0]]) >= 0) return *this;
+		if(TO_SIGNED(array[array[0]]) >= 0) return *this;
 		return this->negate();
 	}
 </cpp>
@@ -263,11 +272,11 @@ BigInteger.absolute:
 <cpp>
 	
 	int getSign(){
-		if(getArray() == NullArray)
-			return 2;
-		if((signed)(array[array[0]]) < 0) return -1;
-		for(register unsigned size = array[0]; size > 0; size--)
+		if(getArray() == NullArray) return 2;
+		if(TO_SIGNED(array[array[0]]) < 0) return -1;
+		for(register unsigned size = array[0]; size > 0; size--){
 			if(array[size] > 0) return 1;
+		}
 		return 0;
 	}
 	
@@ -277,7 +286,7 @@ BigInteger.absolute:
 		
 	}
 	
-	BigInteger _not(){
+	BigInteger _bitwiseNot(){
 		if(getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
@@ -287,93 +296,218 @@ BigInteger.absolute:
 		return *this;
 	}
 	
-	BigInteger not(){
+	BigInteger bitwiseNot(){
 		if(getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		register BigInteger temp = new BigInteger(*this);
-		return temp->_not();
+		register BigInteger* temp = new BigInteger(*this);
+		return temp->_bitwiseNot();
 	}
 	
-	BigInteger* _and(BigInteger bi){
+	BigInteger _bitwiseAnd(BigInteger bi, bool extendSign){
 		if(getArray() == NullArray || bi.getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		register unsigned size = array[0], size1 = bi.array[0];
-		
-		return this;
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			for(i = array[0]; i > 0; i--) array[i] &= bi.array[i];
+		}else{
+			for(i = 1; i <= bi.array[0]; i++)
+				array[i] &= bi.array[i];
+			if(!extendSign || TO_SIGNED(bi.array[bi.array[0]]) >= 0)
+				for(; i <= array[0]; i++)
+					array[i] = 0;	// and 0
+		}
+		return *this;
 	}
-	BigInteger* and(BigInteger bi){
+	BigInteger bitwiseAnd(BigInteger bi, bool extendSign){
 		if(getArray() == NullArray || bi.getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		
+		BigInteger nbi;
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			nbi = this->expand(bi.array[0], extendSign);
+			for(i = array[0]; i > 0; i--)
+				nbi.array[i] &= bi.array[i];
+			if(!extendSign || TO_SIGNED(bi.array[bi.array[0]]) >= 0)
+				for(; i <= bi.array[0]; i++)
+					nbi.array[i] = 0;	// and 0
+		}else{
+			nbi = *(new BigInteger(*this));
+			for(i = 1; i <= bi.array[0]; i++)
+				nbi.array[i] &= bi.array[i];
+			if(!extendSign || TO_SIGNED(bi.array[bi.array[0]]) >= 0)
+				for(; i <= array[0]; i++)
+					nbi.array[i] = 0;	// and 0
+		}
+		return nbi;
 	}
 	
-	BigInteger* _or(BigInteger bi){
+	BigInteger _bitwiseOr(BigInteger bi, bool extendSign){
 		if(getArray() == NullArray || bi.getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		
-		return this;
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			for(i = array[0]; i > 0; i--) array[i] &= bi.array[i];
+		}else{
+			for(i = 1; i <= bi.array[0]; i++)
+				array[i] |= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= array[0]; i++)
+					array[i] = -1;	// or -1
+		}
+		return *this;
 	}
-	BigInteger* or(BigInteger bi){
+	BigInteger bitwiseOr(BigInteger bi, bool extendSign){
 		if(getArray() == NullArray || bi.getArray() == NullArray){
 			BigInteger n(NullArray);
 			return n;
 		}
-		
+		BigInteger nbi;
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			nbi = this->expand(bi.array[0], extendSign);
+			for(i = array[0]; i > 0; i--)
+				nbi.array[i] |= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= bi.array[0]; i++)
+					nbi.array[i] = -1;	// or -1
+		}else{
+			nbi = *(new BigInteger(*this));
+			for(i = 1; i <= bi.array[0]; i++)
+				nbi.array[i] |= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= array[0]; i++)
+					nbi.array[i] = -1;	// or -1
+		}
+		return nbi;
 	}
 	
-	BigInteger* _xor(BigInteger bi){
-		if(this == BigIntegerNull || bi == BigIntergerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		
-		return this;
+	BigInteger _bitwiseXor(BigInteger bi, bool extendSign){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			for(i = array[0]; i > 0; i--) array[i] &= bi.array[i];
+		}else{
+			for(i = 1; i <= bi.array[0]; i++)
+				array[i] ^= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= array[0]; i++)
+					array[i] = -1;	// or -1
+		}
+		return *this;
 	}
-	BigInteger* xor(BigInteger bi){
-		if(this == BigIntegerNull || bi == BigIntergerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		
+	BigInteger bitwiseXor(BigInteger bi, bool extendSign){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		BigInteger nbi;
+		register unsigned i;
+		if(array[0] <= bi.array[0]){
+			nbi = this->expand(bi.array[0], extendSign);
+			for(i = array[0]; i > 0; i--)
+				nbi.array[i] ^= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= bi.array[0]; i++)
+					nbi.array[i] = ~bi.array[i];	// xor -1
+			else
+				for(; i <= bi.array[0]; i++)
+					nbi.array[i] = bi.array[i];	// xor 0
+		}else{
+			nbi = *(new BigInteger(*this));
+			for(i = 1; i <= bi.array[0]; i++)
+				nbi.array[i] ^= bi.array[i];
+			if(extendSign && TO_SIGNED(bi.array[bi.array[0]]) < 0)
+				for(; i <= array[0]; i++)
+					nbi.array[i] = ~array[i];	// xor -1
+		}
+		return nbi;
 	}
 	
-	BigInteger* _add(BigInteger bi){
-		if(this == BigIntegerNull || bi == BigIntergerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		
-		return this;
+	BigInteger _add(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned carry = 0, i;
+		if(array[0] <= bi.array[0]){
+			for(i = 1; i <= array[0]; i++){
+				array[i] += bi.array[i] + carry;
+				carry = (carry != 0 &&
+					bi.array[i] == array[i] ||
+					bi.array[i] > array[i]);
+			}
+		}else{
+			for(i = 1; i <= bi.array[0]; i++){
+				array[i] += bi.array[i] + carry;
+				carry = (bi.array[i] + carry > array[i]);
+				carry = (carry != 0 &&
+					bi.array[i] == array[i] ||
+					bi.array[i] > array[i]);
+			}
+			register unsigned sign =
+				TO_SIGNED(bi.array[bi.array[0]]) < 0 ? -1 : 0;
+			for(; i <= array[0]; i++){
+				array[i] += carry + sign;
+				carry = (array[i] < carry + sign);
+			}
+		}
+		return *this;
 	}
-	BigInteger* add(BigInteger bi){
-		if(this == BigIntegerNull || bi == BigIntergerNull)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return BigIntegerNull;
-		#endif
-		
+	BigInteger add(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		return this->expand(array[0] < bi.array[0] ? 1 + bi.array[0] :
+			1 + array[0], true)._add(bi);
 	}
 	
-	BigInteger* _subtract(BigInteger bi){
-		
-		return this;
+	BigInteger _subtract(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
+		register unsigned borrow = 0, i;
+		if(array[0] <= bi.array[0]){
+			for(i = 1; i <= array[0]; i++){
+				array[i] -= bi.array[i] + borrow;
+				borrow = (borrow != 0 &&
+					bi.array[i] == array[i] ||
+					bi.array[i] > array[i]);
+			}
+		}else{
+			for(i = 1; i <= bi.array[0]; i++){
+				array[i] -= bi.array[i] + borrow;
+				borrow = (bi.array[i] + borrow > array[i]);
+				borrow = (borrow != 0 &&
+					bi.array[i] == array[i] ||
+					bi.array[i] > array[i]);
+			}
+			register unsigned sign =
+				TO_SIGNED(bi.array[bi.array[0]]) < 0 ? -1 : 0;
+			for(; i <= array[0]; i++){
+				array[i] += borrow + sign;
+				borrow = (array[i] < borrow + sign);
+			}
+		}
+		return *this;
 	}
-	BigInteger* subtract(BigInteger bi){
+	BigInteger subtract(BigInteger bi){
+		if(getArray() == NullArray || bi.getArray() == NullArray){
+			BigInteger n(NullArray);
+			return n;
+		}
 		
 	}
 	
@@ -382,24 +516,24 @@ BigInteger.absolute:
 		return this;
 	}
 	BigInteger shiftLeftLogical(const signed n){
-	
+		
 	}
 	BigInteger shiftLeftArithmetic(const signed n){
-	
+		
 	}
 	
 	BigInteger _shiftRightLogical(const signed n){
 		
 		return this;
 	}
-	BigInteger* shiftRightLogical(const signed n){
-	
+	BigInteger shiftRightLogical(const signed n){
+		
 	}
-	BigInteger* _shiftRightArithmetic(const signed n){
+	BigInteger _shiftRightArithmetic(const signed n){
 		
 		return this;
 	}
-	BigInteger* shiftRightArithmetic(const signed n){
+	BigInteger shiftRightArithmetic(const signed n){
 		
 	}
 protected:

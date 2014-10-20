@@ -1,0 +1,31 @@
+<head language="Chinese">
+基于链表的内存分配回收策略
+归属：操作系统内核内存管理
+作者：伍裕平
+</head>
+<head language="English">
+
+</head>
+<cpp>
+#ifndef _MEMORY_LINKED_LIST_H_
+#define _MEMORY_LINKED_LIST_H_	1
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _MEMORY_LINKED_LIST_H_
+_MEMORY_LINKED_LIST_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _MEMORY_LINKED_LIST_H_
+_MEMORY_LINKED_LIST_H_	EQU	1
+</assemblyX86>
+<include>../../../DataStructure/LinkedQueue</include>
+
+<cpp>
+#endif // _MEMORY_LINKED_LIST_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _MEMORY_LINKED_LIST_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _MEMORY_LINKED_LIST_H_
+</assemblyX86>
