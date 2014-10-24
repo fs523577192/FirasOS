@@ -19,7 +19,16 @@ IF ~DEFINED _MEMORY_LINKED_LIST_H_
 _MEMORY_LINKED_LIST_H_	EQU	1
 </assemblyX86>
 <include>../../../DataStructure/LinkedQueue</include>
-
+<include>../../../ArchitectureDependent/x86LegacyBIOS/queryMemory</include>
+<cpp>
+#ifdef _E820_H_
+bool parseE820(DWORD *entryHead){
+	DWORD entryLength = *entryHead;
+	E820Entry* entries = (E820Entry*)(entryHead+1);
+	
+}
+#endif // #ifdef _E820_H_
+</cpp>
 <cpp>
 #endif // _MEMORY_LINKED_LIST_H_
 </cpp>

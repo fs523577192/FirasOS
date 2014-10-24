@@ -1,0 +1,89 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统内核
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: OS Kernel
+</head>
+<cpp>
+#ifndef _PAGE64_H_
+#define _PAGE64_H_	1
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _PAGE64_H_
+_PAGE64_H_	EQU	1
+</assemblyX64>
+<include>../../Macro</include>
+<comment language="Chinese">
+--	
+</comment>
+<comment language="English">
+--	Paging Level 4 Entry
+</comment>
+<cpp>
+class PML4E{
+public:
+	struct{
+		QWORD present:1;
+		QWORD writeable:1;
+		QWORD supervisor:1;
+		QWORD writeThrough:1;
+		QWORD cacheDisable:1;
+		QWORD accessed:1;
+		
+	}value;
+	
+}; // class PML4E
+
+class Page1GB{
+public:
+	struct{
+		QWORD present:1;
+		QWORD writeable:1;
+		QWORD supervisor:1;
+		QWORD writeThrough:1;
+		QWORD cacheDisable:1;
+		QWORD accessed:1;
+		
+	}value;
+	
+}; // class Page1GB
+
+class Page2MB{
+public:
+	struct{
+		QWORD present:1;
+		QWORD writeable:1;
+		QWORD supervisor:1;
+		QWORD writeThrough:1;
+		QWORD cacheDisable:1;
+		QWORD accessed:1;
+		
+	}value;
+	
+}; // class Page2MB
+
+class Page4KB{
+public:
+	struct{
+		QWORD present:1;
+		QWORD writeable:1;
+		QWORD supervisor:1;
+		QWORD writeThrough:1;
+		QWORD cacheDisable:1;
+		QWORD accessed:1;
+		
+	}value;
+	
+}; // class Page4KB
+</cpp>
+<cpp>
+
+#endif // _PAGE64_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+
+
+END IF ; _PAGE64_H_
+</assemblyX64>

@@ -1,32 +1,146 @@
 <head language="Chinese">
 作者：伍裕平
-归属：操作系统数据结构
+归属：操作系统内核
 </head>
 <head language="English">
 Author: Firas
-BelongsTo: Data Structure in the OS
+BelongsTo: OS Kernel
 </head>
-<comment language="Chinese">
-
-</comment>
-<comment language="English">
-
-</comment>
 <cpp>
 #ifndef _SEGMENT_DESCRIPTOR_H_
 #define _SEGMENT_DESCRIPTOR_H_	1
-class SegmentDescriptor{
-protected:
-
-public:
-
-
-}; // class SegmentDescriptor
-#endif // _SEGMENT_DESCRIPTOR_H_
 </cpp>
 <assemblyX86 compiler="fasm">
 IF ~DEFINED _SEGMENT_DESCRIPTOR_H_
 _SEGMENT_DESCRIPTOR_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<comment language="Chinese">
+--	段选择子
+</comment>
+<comment language="English">
+--	Segment Selector
+</comment>
+<cpp>
+class SegmentSelector{
+public:
+	struct{
+		WORD index:13;
+		WORD local:1;
+		WORD RPL:2;	// request privilege level
+	}value;
+	
+}; // class SegmentSelector
+</cpp
+<comment language="Chinese">
+--	段描述符
+</comment>
+<comment language="English">
+--	Segment Descriptor
+</comment>
+<cpp>
+class SegmentDescriptor{
+public:
+	WORD	limitLow;
+	WORD	addressLow;
+	BYTE	addressMiddle;
+	struct{
+		WORD	type:4;
+		WORD	system:1;
+		WORD	DPL:2;
+		WORD	present:1;
+		WORD	limitHigh:4;
+		WORD	available:1;
+		WORD	longMode:1;
+		WORD	longOperand:1;
+		WORD	granularity:1;
+	}attribute;
+	BYTE	addressHigh;
+	
+	
+}; // class SegmentDescriptor
+
+class CallGate{
+public:
+	WORD	offsetLow;
+	SegmentSelector	segment;
+	struct{
+		WORD count:5;
+		WORD fix:8;	// 0 1100 000
+		WORD DPL:2;
+		WORD present:1;
+	}attribute;
+	WORD	offsetHigh;
+	
+}; // class CallGate
+
+class InterruptGate{
+public:
+	WORD	offsetLow;
+	WORD	segmentSelector;
+	struct{
+		WORD fix:11;	// 110 000 00000
+		WORD longOperand:1;
+		WORD zero:1;
+		WORD DPL:2;
+		WORD present:1;
+	}attribute;
+	WORD	offsetHigh;
+	
+}; // class InterruptGate
+class TrapGate{
+public:
+	WORD	offsetLow;
+	WORD	segmentSelector;
+	struct{
+		WORD fix:11;	// 111 000 00000
+		WORD longOperand:1;
+		WORD zero:1;
+		WORD DPL:2;
+		WORD present:1;
+	}attribute;
+	WORD	offsetHigh;
+	
+}; // class TrapGate
+
+class TaskGate{
+public:
+	WORD	reserved0;
+	SegmentSelector	segment;
+	BYTE	reserved1;
+	struct{
+		BYTE fix:5;	// 00101
+		BYTE DPL:2;
+		BYTE present:1;
+	}attribute;
+	WORD	reserved2;
+	
+}; // class TaskGate
+</cpp>
+<comment language="Chinese">
+--	全局描述符表寄存器 和
+	中断描述符表寄存器
+</comment>
+<comment language="English">
+--	Global Descriptor Table Register &
+	Interrupt Descriptor Table Register
+</comment>
+<cpp>
+class GDTR{
+public:
+	WORD	limit;
+	DWORD	address;
+	
+}; // class GDTR
+class IDTR{
+public:
+	WORD	limit;
+	DWORD	address;
+	
+}; // class IDTR
+#endif // _SEGMENT_DESCRIPTOR_H_
+</cpp>
+<assemblyX86 compiler="fasm">
 
 
 END IF ; _SEGMENT_DESCRIPTOR_H_

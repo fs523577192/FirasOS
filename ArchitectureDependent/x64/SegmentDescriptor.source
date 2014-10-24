@@ -1,0 +1,28 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统内核
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: OS Kernel
+</head>
+<cpp>
+#ifndef _SEGMENT_DESCRIPTOR_H_
+#define _SEGMENT_DESCRIPTOR_H_	1
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _SEGMENT_DESCRIPTOR_H_
+_SEGMENT_DESCRIPTOR_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+
+<cpp>
+
+
+#endif // _SEGMENT_DESCRIPTOR_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+
+
+END IF ; _SEGMENT_DESCRIPTOR_H_
+</assemblyX86>

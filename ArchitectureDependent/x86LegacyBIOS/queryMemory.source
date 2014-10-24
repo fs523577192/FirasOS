@@ -22,6 +22,15 @@ For detail of the BIOS service int 15h, eax=0E820h,
 please see http://www.ctyme.com/intr/rb-1741.htm
 </comment>
 <cpp>
+#ifndef _E820_H_
+#define _E820_H_	1
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINE _E820_H_
+_E820_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<cpp>
 class E820Entry{
 protected:
 	unsigned long long base, length;
@@ -64,6 +73,7 @@ E820Entry.INITIALIZE:
 		return (type==1 && (acpiAttribute & 1)!=0);
 	}
 }; // class E820Entry
+#endif // _E820_H_
 </cpp>
 <assemblyX86 compiler="fasm">
 E820.beforeFirstCall:
@@ -94,4 +104,5 @@ E820.callE820:
 	
 E820.fail:
 	
+END IF ; _E820_H_
 </assemblyX86>

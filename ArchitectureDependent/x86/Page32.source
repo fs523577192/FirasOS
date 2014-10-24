@@ -1,0 +1,69 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统内核
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: OS Kernel
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef _PAGE32_H_
+#define _PAGE32_H_	1
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _PAGE32_H_
+_PAGE32_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<cpp>
+class PageDirectory{
+public:
+	struct{
+		DWORD present:1;
+		DWORD writeable:1;
+		DWORD supervisor:1;
+		DWORD writeThrough:1;
+		DWORD cacheDisable:1;
+		DWORD accessed:1;
+		DWORD 
+	}value;
+}; // class PageDirectory
+
+class Page4MB{
+public:
+	struct{
+		DWORD present:1;
+		DWORD writeable:1;
+		DWORD supervisor:1;
+		DWORD writeThrough:1;
+		DWORD cacheDisable:1;
+		DWORD accessed:1;
+		
+	}value;
+
+}; // class Page4MB
+
+class Page4KB{
+public:
+	struct{
+		DWORD present:1;
+		DWORD writeable:1;
+		DWORD supervisor:1;
+		DWORD writeThrough:1;
+		DWORD cacheDisable:1;
+		DWORD accessed:1;
+		
+	}value;
+
+}; // class Page4MB
+#endif // _PAGE32_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+END IF ; _PAGE32_H_
+</assemblyX86>
