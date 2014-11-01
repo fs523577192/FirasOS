@@ -1,0 +1,20 @@
+
+<cpp>
+#ifndef _RATIONAL_H_
+#define _RATIONAL_H_	1
+</cpp>
+<include>Number</include>
+<cpp>
+class Rational : public Number{
+public:
+
+	bool isReal(){
+		return true;
+	}
+
+	bool isRational(){
+		return true;
+	}
+}; // class Rational
+#endif // _RATIONAL_H_
+</cpp>

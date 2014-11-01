@@ -1,0 +1,20 @@
+
+<cpp>
+#ifndef _COMPLEX_H_
+#define _COMPLEX_H_	1
+</cpp>
+
+<include>Number</include>
+<cpp>
+class Complex : public Number{
+protected:
+	Number *realPart, *imaginaryPart;
+public:
+
+	bool isNumber(){
+		return true;
+	}
+	
+}; // class Complex
+#endif // _COMPLEX_H_
+</cpp>

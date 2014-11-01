@@ -32,6 +32,9 @@ typedef unsigned int	BOOLEAN;
 #define TRUE	((BOOLEAN)1)
 #define FALSE	((BOOLEAN)0)
 
+#undef UINT_MAX
+#undef INT_MAX
+#undef INT_MIN
 const unsigned	UINT_MAX = ~0;
 const int	INT_MAX = (UINT_MAX >> 1),	INT_MIN = ~INT_MAX;
 

@@ -1,0 +1,117 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<cpp>
+#ifndef _JPEG_H_
+#define _JPEG_H_
+</cpp>
+<include>../Macro</include>
+<cpp>
+class JPEG{
+public:
+</cpp>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+	const static WORD START_OF_IMAGE = 0xD8FF;
+	const static WORD END_OF_IMAGE = 0xD9FF;
+	const static WORD APP0 = 0xE0FF;
+	const static WORD START_OF_FRAME0 = 0xC0FF;
+	const static WORD START_OF_SCAN = 0xDAFF;
+	const static WORD DQT = 0xDBFF;	// Define Quantization Table
+	const static WORD DRI = 0xDDFF;	// Define Restart Interval
+	const static WORD DHT = 0xC4FF;	// Define Huffman Table
+	
+}; // class JPEG
+</cpp>
+<cpp>
+
+class JPEG_APP0{
+protected:
+	WORD marker;		// 0xFF 0xE0
+	WORD length;		// excluding marker
+	char identifier[5];	// "JFIF\0"
+	WORD version;		// usually 0x0101 or 0x0102
+	BYTE unit;		// units = 0: no units, X and Y specify the
+				//            pixel aspect ratio
+				// units = 1: X and Y are dots per inch
+				// units = 2: X and Y are dots per cm
+	WORD densityX;
+	WORD densityY;
+	BYTE thumbnailX;
+	BYTE thumbnailY;
+}; // class JPEG_APP0
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Start Of Frame 0
+</comment>
+<cpp>
+class JPEG_SOF0{
+protected:
+	WORD marker;		// 0xFF 0xC0
+	WORD length;
+	BYTE precision;
+	WORD rows;
+	WORD columns;
+	BYTE colors;		// 1 for grey scale, 3 for YCbCr
+	
+}; // class JPEG_SOF
+
+class JPEG_Color{
+protected:
+	BYTE colorId;
+	BYTE H_V;		// The first 4 bits: H, the second 4 bits: V
+	BYTE QuantizationTable;
+	
+}; // class JPEG_Color
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Define Huffman Table
+</comment>
+<cpp>
+class JPEG_DHT{
+protected:
+	WORD marker;		// 0xFF 0xC4
+	WORD length;
+	
+}; // class JPEG_DHT
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Define Quantization Table
+</comment>
+<cpp>
+class JPEG_DQT{
+protected:
+	WORD marker;		// 0xFF 0xDB
+	WORD length;
+	
+}; // class JPEG_DQT
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Start Of Scan
+</comment>
+<cpp>
+class JPEG_SOS{
+	WORD marker;		// 0xFF 0xDA
+	WORD length;
+	BYTE 
+	
+}; // class JPEG_SOS
+
+#endif // _JPEG_H_
+</cpp>

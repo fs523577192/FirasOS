@@ -1,0 +1,39 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<cpp>
+#ifndef _BMP_H_
+#define _BMP_H_
+</cpp>
+<include></include>
+<cpp>
+class BMP_Head{
+protected:
+</cpp>
+<comment language="Chinese">
+--	用于标识BMP和DIB文件的魔数，一般为0x42 0x4D，即ASCII的'BM'。
+	以下为可能的取值：
+--	BM – Windows 3.1x、95、NT等
+--	BA – OS/2 位图数组
+--	CI – OS/2 颜色图标
+--	CP – OS/2 颜色指针
+--	IC – OS/2 图标
+--	PT – OS/2 指针
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+	char	magic[2];
+	DWORD	fileSize;
+	DWORD	reserved;
+	DWORD	dataOffset;
+	
+</cpp>
+<cpp>
+}; // class BMP_Head
+#endif // _BMP_H_
+</cpp>

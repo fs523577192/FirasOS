@@ -1,0 +1,20 @@
+
+<cpp>
+#ifndef _EXPRESSION_H_
+#define _EXPRESSION_H_	1
+class Expression{
+public:
+	
+	virtual ~Expression(){}
+	
+	virtual bool isPolynomial() = 0;
+	
+	virtual bool isMonomial() = 0;
+	
+	virtual bool isNumber() = 0;
+	
+	virtual Expression *simplify() = 0;
+	
+}; // class Expression
+#endif // _EXPRESSION_H_
+</cpp>

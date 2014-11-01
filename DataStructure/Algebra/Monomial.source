@@ -1,0 +1,24 @@
+
+<cpp>
+#ifndef _MONOMIAL_H_
+#define _MONOMIAL_H_	1
+</cpp>
+<include>Number</include>
+<cpp>
+class Monomial : public Expression{
+protected:
+
+public:
+
+	bool isPolynomial(){
+		return true;
+	}
+
+	bool isMonomial(){
+		return true;
+	}
+
+
+}; // class Monomial
+#endif // _MONOMIAL_H_
+</cpp>

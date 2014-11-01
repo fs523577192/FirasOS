@@ -1,0 +1,18 @@
+
+<cpp>
+#ifndef _SUM_H_
+#define _SUM_H_
+</cpp>
+<include>Expression</include>
+<cpp>
+class Sum : public Expression{
+protected:
+
+public:
+	
+	Expression* factor(){
+		
+	}
+}; // class Sum
+#endif _SUM_H_
+</cpp>

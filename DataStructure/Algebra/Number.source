@@ -1,45 +1,88 @@
 
 <cpp>
-class Number{
-protected:
-	enum NumberType{
-		INTEGER, DOUBLE, BIG_INTEGER, RATIONAL, REAL, COMPLEX}type;
-	union{
-		int integer;
-		double floating;
-		BigInteger *bigInteger;
-		Rational *rational;
-		Real *real;
-		Complex *complex;
-	}value;
-	
-	Number(int num){
-		type = INTEGER;
-		value.integer = num;
-	}
-	
-	Number(BigInteger *num){
-		type = BIG_INTEGER;
-		value.bigInteger = num;
-	}
-	
-	Number(Rational *num){
-		type = RATIONAL;
-		value.bigInteger = num;
-	}
-	
-	Number(Real *num){
-		type = REAL;
-		value.bigInteger = num;
-	}
-	
-	Number(Complex *num){
-		type = COMPLEX;
-		value.bigInteger = num;
-	}
-	
-	inline enum NumberType getType(){
-		return type;
-	}
-}; // 
+#ifndef _NUMBER_H_
+#define _NUMBER_H_	1
 </cpp>
+<include>Expression</include>
+<cpp>
+class Number : public Expression{
+public:
+
+	virtual ~Number(){}
+
+	bool isPolynomial(){
+		return true;
+	}
+
+	bool isMonomial(){
+		return true;
+	}
+
+	bool isNumber(){
+		return true;
+	}
+
+	virtual bool isReal() = 0;
+
+	virtual bool isRational() = 0;
+
+	virtual bool isInteger() = 0;
+
+	virtual bool isNatural() = 0;
+
+	virtual bool isPositive() = 0;
+
+	virtual bool isNegative() = 0;
+
+	virtual bool isZero() = 0;
+}; // class Number
+
+class NumberSum : public Number{
+protected:
+
+public:
+
+}; // class NumberSum
+
+class NumberProduct : public Number{
+protected:
+
+public:
+
+}; // class NumberProduct
+
+class NumberPower : public Number{
+
+}; // class NumberPower
+#endif // _NUMBER_H_
+</cpp>
+<comment>
+
+class Fraction : public Expression{
+protected:
+
+public:
+
+}; // class Fraction
+
+class Limit : public Expression{
+protected:
+
+public:
+
+}; // class Limit
+
+class Derivative : public Expression{
+protected:
+
+public:
+
+}; // class Derivative
+
+class Integral : public Expression{
+protected:
+
+public:
+
+}; // class Integral
+</comment>
