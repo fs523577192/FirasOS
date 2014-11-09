@@ -17,10 +17,11 @@ IF ~DEFINED _BIG_INTEGER_H_
 _BIG_INTEGER_H_	EQU	1
 </assemblyX86>
 <include>../../Macro</include>
+<include>Number</include>
 <cpp>
 #define TO_SIGNED(x)	((signed)(x))
 
-class BigInteger{
+class BigInteger : public Number{
 protected:
 	
 	unsigned *array;

@@ -1,0 +1,49 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Collection</include>
+<cpp>
+template <typename T> class Stack : public Collection<T>{
+public:
+	
+	virtual ~Stack(){};
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Pushes an element to the stack (adds the element
+	to the top of the stack.
+	
+</comment>
+<java>
+public interface Stack<T>{
+	public boolean pushElement(T e);
+</java>
+<cpp>
+	virtual bool pushElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Pops an element from the stack (take the element
+	from the top of the stack).
+	
+</comment>
+<java>
+	public T popElement();
+}
+</java>
+<cpp>
+	virtual T popElement() = 0;
+	
+}; // class Stack<T>
+</cpp>

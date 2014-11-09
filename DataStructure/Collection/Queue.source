@@ -1,0 +1,103 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Collection</include>
+<cpp>
+template <typename T> class Queue : public Collection<T>{
+public:
+	
+	virtual ~Queue(){};
+	
+</cpp>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the element at the head of the queue
+</comment>
+<java>
+public interface Queue<T>{
+	public T getHeadElement();
+</java>
+<cpp>
+	virtual T getHeadElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Adds the element e to the head of the queue
+</comment>
+<java>
+	public boolean addElementToHead(T e);
+	public boolean setHeadElement(T e);
+</java>
+<cpp>
+	virtual bool addElementTohead(T e) = 0;
+	
+	virtual bool setHeadElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Removes the element at the head of the queue
+</comment>
+<java>
+	public boolean removeHeadElement();
+</java>
+<cpp>
+	virtual bool removeHeadElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the element at the tail of the queue
+</comment>
+<java>
+	public T getTailElement();
+</java>
+<cpp>
+	virtual T getTailElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Adds the element e to the tail of the queue
+</comment>
+<java>
+	public boolean addElementToTail(T e);
+	public boolean setTailElement(T e);
+</java>
+<cpp>
+	virtual bool addElementToTail(T e) = 0;
+	
+	virtual bool setTailElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Removes the element at the tail of the queue
+</comment>
+<java>
+	public boolean removeTailElement();
+}
+</java>
+<cpp>
+	virtual bool removeTailElement() = 0;
+	
+}; // class Queue<T>
+</cpp>

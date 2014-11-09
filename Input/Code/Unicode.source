@@ -1,0 +1,32 @@
+<head language="Chinese">
+万国码/国际码/统一码/单一码
+作者：伍裕平
+归属：文字编码
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Text Coding
+</head>
+<cpp>
+#ifndef _UNICODE_H_
+#define _UNICODE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _UNICODE_H_
+_UNICODE_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _UNICODE_H_
+_UNICODE_H_	EQU	1
+</assemblyX86>
+
+
+<cpp>
+#endif // _UNICODE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _UNICODE_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _UNICODE_H_
+</assemblyX86>

@@ -1,0 +1,31 @@
+<head language="Chinese">
+作者：伍裕平
+归属：图形界面
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: GUI
+</head>
+<cpp>
+#ifndef _TRUE_TYPE_H_
+#define _TRUE_TYPE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _TRUE_TYPE_H_
+_TRUE_TYPE_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _TRUE_TYPE_H_
+_TRUE_TYPE_H_	EQU	1
+</assemblyX86>
+
+
+<cpp>
+#endif // _TRUE_TYPE_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _TRUE_TYPE_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _TRUE_TYPE_H_
+</assemblyX86>

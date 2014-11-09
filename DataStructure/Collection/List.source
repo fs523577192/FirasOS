@@ -1,0 +1,97 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Collection</include>
+<cpp>
+template <typename T> class List : public Collection<T>{
+public:
+	
+	virtual ~List(){};
+	
+</cpp>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	The first element in the list has index 0.
+--	Return: null if the index is equal or larger
+	than the size of the list, or the element at
+	the given index.
+</comment>
+<cpp>
+	virtual T getElementAtIndex(unsigned index) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Sets the element in the list at the given index.
+--	Return: false if the index is larger than the
+	size of the list, or true if it successfully
+	sets the element at the given index.
+</comment>
+<cpp>
+	virtual bool setElementAtIndex(T e, unsigned index) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Inserts an element in the list at the given index.
+--	The inserted element will be at the given index,
+	that is getElementAtIndex(index) == e after the
+	insertion.
+--	Return: false if the index is larger than the
+	size of the list, or true if it successfully
+	inserts the element at the given index.
+</comment>
+<cpp>
+	virtual bool insertElementAtIndex(T e, unsigned index) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: false if the index is equal or larger
+	than the size of the list or it fails to remove
+	the element at the given index, or true if it
+	successfully removes the element at the given
+	index.
+</comment>
+<cpp>
+	virtual bool removeElementAtIndex(unsigned index) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: null if fromIndex>=toIndex, or a list
+	containing all the elements of this list from
+	getElementAtIndex(fromIndex) to
+	getElementAtIndex(toIndex-1)
+</comment>
+<cpp>
+	virtual List* subList(unsigned fromIndex, unsigned toIndex) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: true only if the two lists has the same elements
+	at the same indexes (in the same order)
+</comment>
+<cpp>
+	virtual bool isEqual(List *l) = 0;
+	
+}; // class List<T>
+</cpp>

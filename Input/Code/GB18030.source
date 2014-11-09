@@ -1,0 +1,33 @@
+<head language="Chinese">
+国家标准GB 18030-2005《信息技术　中文编码字符集》
+作者：伍裕平
+归属：文字编码
+</head>
+<head language="English">
+Chinese Coding Stardard GB 18030-2005
+Author: Firas
+BelongsTo: Text Coding
+</head>
+<cpp>
+#ifndef _GB18030_H_
+#define _GB18030_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _GB18030_H_
+_GB18030_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _GB18030_H_
+_GB18030_H_	EQU	1
+</assemblyX86>
+
+
+<cpp>
+#endif // _GB18030_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+END IF ; _GB18030_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+END IF ; _GB18030_H_
+</assemblyX86>

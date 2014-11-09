@@ -1,0 +1,142 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Collection</include>
+<cpp>
+template <typename T> class SortedCollection : public Collection<T>{
+public:
+	
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the least element in the sorted collection
+</comment>
+<java>
+public interface SortedCollection<T>{
+	public T getFirstElement();
+</java>
+<cpp>
+	virtual T getFirstElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: true only if it successfully removes the
+	least element in the sorted collection
+</comment>
+<java>
+	public boolean removeFirstElement();
+</java>
+<cpp>
+	virtual bool removeFirstElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the greatest element in the sorted collection
+</comment>
+<java>
+	public T getLastElement();
+</java>
+<cpp>
+	virtual T getLastElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: true only if it successfully removes the
+	greatest element in the sorted collection
+</comment>
+<java>
+	public boolean removeLastElement();
+</java>
+<cpp>
+	virtual bool removeLastElement() = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the element in the sorted collection that
+	is less than or equal to (if inclusive==true) the
+	given element e
+</comment>
+<java>
+	public T getElementByFloor(T e, boolean inclusive);
+</java>
+<cpp>
+	virtual T getElementByFloor(T e, bool inclusive) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	Return: the element in the sorted collection that
+	is greater than or equal to (if inclusive==true) the
+	given element e
+</comment>
+<java>
+	public T getElementByCeiling(T e, boolean inclusive);
+</java>
+<cpp>
+	virtual T getElementByCeiling(T e, bool inclusive) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	
+</comment>
+<java>
+	public SortedCollection<T> headSet(T toElement, boolean inclusive);
+</java>
+<cpp>
+	virtual SortedCollection* headSet(T toElement, bool inclusive) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	
+</comment>
+<java>
+	public SortedCollection<T> tailSet(T fromElement, boolean inclusive);
+</java>
+<cpp>
+	virtual SortedCollection* tailSet(T fromElement, bool inclusive) = 0;
+</cpp>
+
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	
+</comment>
+<java>
+	public SortedCollection<T> middleSet(T fromElement, boolean fromInclusive,
+			T toElement, boolean toInclusive);
+</java>
+<cpp>
+	virtual SortedCollection* middleSet(T fromElement, bool fromInclusive,
+			T toElement, bool toInclusive) = 0;
+	
+}; // class SortedCollection<T>
+</cpp>

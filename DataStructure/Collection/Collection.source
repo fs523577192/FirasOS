@@ -1,0 +1,105 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Macro</include>
+<cpp>
+template <typename T> class Collection{
+public:
+	
+	virtual ~Collection(){};
+	
+</cpp>
+<comment language="Chinese">
+--	返回：true若集合为空（不含任何元素），或false若集合不为空
+</comment>
+<comment language="English">
+--	Return: true if the collection is empty (has no element),
+	or false if the collection is not empty.
+</comment>
+<java>
+public interface Collection<T>{
+	public boolean isEmpty();
+</java>
+<cpp>
+	virtual bool isEmpty() = 0;
+</cpp>
+
+<comment language="Chinese">
+--	返回：集合所含元素的数目（>=0）
+</comment>
+<comment language="English">
+--	Return: the number of elements the collection has (>=0).
+</comment>
+<java>
+	public int getSize();
+</java>
+<cpp>
+	virtual unsigned getSize() = 0;
+</cpp>
+
+<comment language="Chinese">
+--	向集合中插入一个元素e
+--	返回
+</comment>
+<comment language="English">
+--	Adds an element e to the collection.
+--	Return: true if it successes, or false if it fails.
+</comment>
+<java>
+	public boolean addElement(T e);
+</java>
+<cpp>
+	virtual bool addElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+--	返回：
+</comment>
+<comment language="English">
+--	Return: true if the collection has the element e,
+	or false if the collection has not.
+</comment>
+<java>
+	public boolean hasElement(T e);
+</java>
+<cpp>
+	virtual bool hasElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+--	返回：
+</comment>
+<comment language="English">
+--	Return: true if the collection has the element e
+	and successfully removes e from it, or false if
+	the collection has not e or fails to remove e.
+</comment>
+<java>
+	public boolean removeElement(T e);
+</java>
+<cpp>
+	virtual bool removeElement(T e) = 0;
+</cpp>
+
+<comment language="Chinese">
+--	移除集合中的所有元素
+--	返回：
+</comment>
+<comment language="English">
+--	Removes all the elements in the collection
+--	Return: true
+</comment>
+<java>
+	public boolean removeAllElement();
+}
+</java>
+<cpp>
+	virtual bool removeAllElement() = 0;
+	
+}; // class Collection<T>
+</cpp>
