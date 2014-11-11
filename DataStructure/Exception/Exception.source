@@ -1,0 +1,33 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../../Macro</include>
+<java>
+public class Exception{
+	
+	protected String message;
+	
+	public String getMessage(){
+		return message;
+	}
+}
+</java>
+<cpp>
+#ifndef _EXCEPTION_H_
+#define _EXCEPTION_H_
+class Exception{
+protected:
+	const char *message;
+public:
+	char *getMessage(){
+		return message;
+	}
+}; // class Exception
+
+#endif // _EXCEPTION_H_
+</cpp>

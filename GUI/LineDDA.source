@@ -1,0 +1,16 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+Ditital Differential Analyzer (DDA) Line Drawing Algorithm
+
+</head>
+<cpp>
+#ifndef _DDA_LINE_H_
+#define _DDA_LINE_H_
+namespace GUI{
+
+
+} // namespace GUI
+#endif // _DDA_LINE_H_
+</cpp>

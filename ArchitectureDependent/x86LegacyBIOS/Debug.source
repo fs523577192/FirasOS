@@ -1,0 +1,133 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统引导启动
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Loader of the OS
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+--	http://www.ctyme.com/intr/int-10.htm
+--	BIOS Service -- Set Video Mode
+	int 10h, ah = 0
+	http://www.ctyme.com/intr/rb-0069.htm
+--	BIOS Service -- Set Text-mode Cursor Shape
+	int 10h, ah = 1
+	http://www.ctyme.com/intr/rb-0086.htm
+--	BIOS Service -- Set Text-mode Cursor Position
+	int 10h, ah = 2
+	http://www.ctyme.com/intr/rb-0087.htm
+--	BIOS Service -- Get Text-mode Cursor Position and Size
+	int 10h, ah = 3
+	http://www.ctyme.com/intr/rb-0088.htm
+--	BIOS Service -- Scroll Up Window
+	int 10h, ah = 6
+	http://www.ctyme.com/intr/rb-0096.htm
+--	BIOS Service -- Scroll Down Window
+	int 10h, ah = 7
+	http://www.ctyme.com/intr/rb-0097.htm
+--	BIOS Service -- Read Character and Color at Cursor Position
+	int 10h, ah = 8
+	http://www.ctyme.com/intr/rb-0098.htm
+--	BIOS Service -- Write Character and Color at Cursor Position
+	int 10h, ah = 9
+	http://www.ctyme.com/intr/rb-0099.htm
+--	BIOS Service -- Output Character (Advance Cursor)
+	int 10h, ah = 0Eh
+	http://www.ctyme.com/intr/rb-0106.htm
+--	BIOS Service -- Get Current Video Mode
+	int 10h, ah = 0Fh
+	http://www.ctyme.com/intr/rb-0108.htm
+--	BIOS Service -- Write String
+	int 10h, ah = 13h
+	http://www.ctyme.com/intr/rb-0210.htm
+</comment>
+<cpp>
+#ifndef _DEBUG_16_H_
+#define _DEBUG_16_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _DEBUG_16_H_
+_DEBUG_16_H_	EQU	1
+</assemblyX86>
+<include>../../Macro</include>
+<cpp compiler="gcc">
+class Debug16{
+protected:
+	BYTE w=80, h=25, r=0, c=0;
+	// char registers[11] = "ax: 0000  ";
+	// char stack[16] = "0000:0000  0000";
+	char buffer[44] = "0000:0000  20 20 20 20 20 20 20 20         ";
+	
+	WORD getCursorPosition(){
+		
+	}
+public:
+	const static WORD textGraphicMemorySegment = 0xB800;
+	char lineFeed[4] = {13, 10, 0, 0};
+	
+	void die(){
+		while(1);
+	}
+	
+	void clearScreen(){
+		
+	}
+	
+	void printString(WORD offset, WORD segment, WORD endChar_Color){
+		
+	}
+	
+	void printStack(){
+		
+	}
+	
+	void printRegisters(){
+		
+	}
+	
+	void printMemory(WORD offset, WORD segment){
+		
+	}
+	
+	void moveCursor(BYTE column, BYTE row){
+		
+	}
+}; // class Debug16
+#endif // _DEBUG_16_H_
+</cpp>
+<assemblyX86 compiler="fasm">
+USE16
+textGraphicMemorySegment	EQU	0B800h
+Debug16.buffer:
+	db	'0000:0000  20 20 20 20 20 20 20 20         ', 0
+Debug16.lineFeed:
+	db	13, 10, 0, 0
+	
+Debug16.die:
+	jmp	Debug16.die
+
+Debug16.printString:
+	
+	mov	ax,	4F00h
+	int	10h
+	ret
+
+Debug16.printStack:
+	
+	mov	ax,	4F01h
+	int	10h
+	ret
+
+Debug16.printRegisters:
+	mov	ax,	4F02h
+	int	10h
+	
+Debug16.printMemory:
+	
+
+END IF ; _DEBUG_16_H_
+</assemblyX86>

@@ -9,10 +9,10 @@ Author: Firas
 BelongsTo: OS Kernel
 </head>
 <comment language="Chinese">
-
+--	http://wiki.osdev.org/PIC
 </comment>
 <comment language="English">
-
+--	http://wiki.osdev.org/PIC
 </comment>
 <cpp>
 #ifndef _PIC_8259_H_
@@ -33,6 +33,18 @@ public:
 		ICW4_BUF_MASTER = 0x0C,	// Buffered mode/master
 		ICW4_SFNM = 0x10,	// Special fully nested (not)
 		PIC_EOI = 0x20;
+	
+	void maskAllInterrupt(){
+	
+	}
+	
+	void unmaskAllInterrupt(){
+	
+	}
+	
+	void initialize(){
+	
+	}
 }; // class PIC8259
 #endif // _PIC_8259_H_
 </cpp>
@@ -57,14 +69,14 @@ ICW4_BUF_SLAVE	EQU	8	; Buffered mode/slave
 ICW4_BUF_MASTER	EQU	0Ch	; Buffered mode/master
 ICW4_SFNM	EQU	10h	; Special fully nested (not)
 
-PIC_EOI		EQU	20h	; non-specific End Of Interrupt Command
+PIC8259.EOI	EQU	20h	; non-specific End Of Interrupt Command
 
 PIC8259.maskAllInterrupt:
 	push	ax
 	mov	al,	0FFh
 	out	PIC2_DATA,	al	; mask all interrupts on slave PIC
-	mov	al,	0FBh
-	out	PIC1_DATA,	al	; mask all but cascading on master PIC
+	;mov	al,	0FBh
+	out	PIC1_DATA,	al	; mask all on master PIC including cascading
 	pop	ax
 	ret
 
@@ -75,6 +87,61 @@ PIC8259.unmaskAllInterrupt:
 	out	PIC2_DATA,	al	; unmask all interrupts on slave PIC
 	pop	ax
 	ret
+
+PIC8259.sendMasterEOI:
+	push	ax
+	mov	al,	PIC8259.EOI
+	out	PIC1_DATA,	al
+	pop	ax
+	ret
+
+PIC8259.sendSlaveEOI:
+	push	ax
+	mov	al,	PIC8259.EOI
+	out	PIC2_DATA,	al
+	pop	ax
+	ret
+
+</assemblyX86>
+<comment language="Chinese">
+--	重新初始化PIC 8259来重新映射中断向量
+--	发送ICW1到命令端口开始重新初始化PIC
+--	然后把新的中断向量作为ICW2发送到数据端口
+--	接着发送ICW3，指明从PIC串接在主PIC的IRQ2上
+--	最后发送ICW4，指明平台是x86
+</comment>
+<comment language="English">
+--	Re-initialize PIC 8259 to remap the interrupt vector
+--	First sends ICW1 to the command ports to start initialization
+--	Then sends the new interrupt vectors as ICW2 to the data ports
+--	After that, sends ICW3 to indicate that a slave PIC is cascaded to the
+	IRQ2 of the master PIC
+--	Finally, sends ICW4 to indicate the platform is x86
+</comment>
+<assemblyX86 compiler="fasm">
+MACRO PIC8259.initialize vector{
+	push	ax
+	mov	al,	ICW1_INIT OR ICW1_ICW4
+	out	PIC1_COMMAND,	al
+	out	PIC2_COMMAND,	al
+	
+	mov	al,	vector
+	out	PIC1_DATA,	al
+	mov	al,	vector + 8
+	out	PIC2_DATA,	al
+	
+	mov	al,	04h
+	out	PIC1_DATA,	al
+	; ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
+	mov	al,	02h
+	out	PIC2_DATA,	al
+	; ICW3: tell Slave PIC its cascade identity (0000 0010)
+
+	mov	al,	ICW4_8086
+	out	PIC1_DATA,	al
+	out	PIC2_DATA,	al
+	pop	ax
+}
 
 END IF ; _PIC_8259_H_
 </assemblyX86>

@@ -39,16 +39,100 @@ Float64.INT32MIN:	; -2147483648
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数做舍入
 返回：转换失败eax = 0；转换成功eax = 1且st(0) = round/floor/ceiling(d)
+--	Intel 64和IA32架构软件开发者手册 卷1 章节4.8.4
 </comment>
 <comment language="English">
 
+--	Intel 64 and IA 32 Architecture Software Developer Manual
+	Volume 1 Section 4.8.4
 </comment>
+<cpp>
+enum RoundType{FLOOR, CEILING, TOWARD_ZERO, TOWARD_INFINITY,
+	NEAREST_EVEN, NEAREST_ODD, NEAREST_LARGER, NEAREST_SMALLER};
+double round(double d, RoundType type);
+</cpp>
+<assemblyX64 compiler="fasm">
+; [bool,double] round(double d, enum RoundType type)
+Float64.round:
+
+</assemblyX64>
 <assemblyX86 compiler="fasm">
 ; [bool,double] round(double d, enum RoundType type)
 Float64.round:
 ; stack: |ret |d       |type|
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	fld	[esp+4]
+	jmp	.return		; Infinity
+.fail:	xor	eax,	eax
+	retn	12
+.normal:
+	fld	[esp+4]
+	sub	esp,	4
+	fstcw	[esp]
+	fstcw	[esp+2]
+	and	WORD [esp+2],	not FPU.ROUND_MODE
+; stack: |cw|cw|ret |d       |type|
+	cmp	DWORD [esp+16],	4
+	ja	.larger4
+	jb	.less4
+.nearest_even:
+	fldcw	[esp+2]
 	
+	frndint
+	jmp	.restore
+.nearest_odd:
 	
+	frndint
+	jmp	.restore
+.larger4:
+	cmp	DWORD [esp+16],	6
+	ja	.nearest_smaller
+	jb	.nearest_odd
+.nearest_larger:
+	or	WORD [esp+2],	FPU.ROUND_DOWN
+	fldcw	[esp+2]
+	fadd	QWORD [Float64.HALF]
+	frndint
+	jmp	.restore
+.nearest_smaller:
+	
+	frndint
+	jmp	.restore
+.less4:
+	cmp	DWROD [esp+16],	2
+	ja	.toward_inf
+	jb	.less2
+.toward_zero:
+	or	WORD [esp+2],	FPU.ROUND_ZERO
+	fldcw	[esp+2]
+	frndint
+	jmp	.restore
+.less2:
+	cmp	DWORD [esp+16],	0
+	jne	.ceiling
+.floor:
+	or	WORD [esp+2],	FPU.ROUND_DOWN
+	fldcw	[esp+2]
+	frndint
+	jmp	.restore
+.ceiling:
+	or	WORD [esp+2],	FPU.ROUND_UP
+	fldcw	[esp+2]
+	frndint
+	jmp	.restore
+.restore:
+	fldcw	[esp]
+	add	esp,	4
+.return:
+	mov	eax,	1
+	retn	12
 </assemblyX86>
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数开算术平方根
@@ -94,9 +178,28 @@ Float64.sqrt:
 
 </comment>
 <assemblyX86 compiler="fasm">
-; [bool,double] power(double d, double power)
+; [bool,double] power(double b, double power)
 Float64.power:
+; stack: |ret |b       |power   |
 	
+	fld	QWORD [esp+12]
+	fld	QWORD [esp+4]
+	fyl2x			; st0 = power * log2(b)
+	fld	st0
+	sub	esp,	4
+	fstcw	[esp]
+	fstcw	[esp+2]
+	or	WORD [esp+2],	FPU.ROUND_ZERO
+	fldcw	[esp+2]
+	frndint			; st0 = roundToward0(power * log2(b))
+				; st1 = power * log2(b)
+	fsubr	st0,	st1	; st0 = power * log2(b) - round(power * log2(b))
+	f2xm1
+	fld1			; st0 = 1, st1 = result - 1
+	faddp	st1,	st0	; st0 = result, st1 = power * log2(b)
+	fscale
+	mov	eax,	1
+	retn	16
 </assemblyX86>
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数求自然对数
@@ -108,7 +211,32 @@ Float64.power:
 <assemblyX86 compiler="fasm">
 ; [bool,double] ln(double d)
 Float64.ln:
-
+; stack: |ret |d       |
+	mov	eax,	80000000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	jnz	.fail		; negative
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	; Positive Infinity
+	fld	QWORD [esp+4]
+	mov	eax,	1	; true
+	retn	8
+.normal:
+	fldln2
+	fld	QWORD [esp+4]
+	fyl2x
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
 </assemblyX86>
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数求以10为底的对数
@@ -120,7 +248,32 @@ Float64.ln:
 <assemblyX86 compiler="fasm">
 ; [bool,double] lg(double d)
 Float64.lg:
-
+; stack: |ret |d       |
+	mov	eax,	80000000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	jnz	.fail		; negative
+	mov	eax,	7FF00000h
+	and	eax,	[esp+8]	; high 32 bits of d
+	cmp	eax,	7FF00000h
+	jne	.normal		; jump if not Infinity/NaN
+	test	DWORD [esp+8],	0FFFFFh
+	jnz	.fail		; NaN
+	cmp	DWORD [esp+4],	0
+	jne	.fail		; NaN
+	; Positive Infinity
+	fld	QWORD [esp+4]
+	mov	eax,	1	; true
+	retn	8
+.normal:
+	fldlg2
+	fld	QWORD [esp+4]
+	fyl2x
+	mov	eax,	1	; true
+	retn	8
+.fail:
+	;fldz
+	xor	eax,	eax	; false
+	retn	8
 </assemblyX86>
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数求自然对数
@@ -132,7 +285,17 @@ Float64.lg:
 <assemblyX86 compiler="fasm">
 ; [bool,double] log(double d, double base)
 Float64.log:
+; stack: |ret |d       |base    |	
 	
+	fld1
+	fld	QWORD [esp+12]
+	fyl2x			; st0 = log2(base)
+	fld1
+	fdivrp	st1,	st0	; st0 = 1/log2(base)
+	fld	QWORD [esp+12]
+	fyl2x
+	mov	eax,	1
+	retn	16
 </assemblyX86>
 <comment language="Chinese">
 对（堆栈传入的）双精度浮点数做正弦运算

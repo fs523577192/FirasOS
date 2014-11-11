@@ -27,6 +27,7 @@ BelongsTo: Loader of the OS
 	http://www.ctyme.com/intr/rb-1336.htm
 	http://www.ctyme.com/intr/rb-1337.htm
 </comment>
+<include></include>
 <assemblyX86 compiler="fasm">
 IF ~DEFINED _A20_H_
 _A20_H_	EQU	1

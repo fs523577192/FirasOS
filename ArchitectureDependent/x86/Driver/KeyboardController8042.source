@@ -22,53 +22,120 @@ public:
 	const static BYTE  DATA_PORT = 0x60;
 	const static BYTE  STATUS_PORT = 0x64, COMMAND_PORT = 0x64;
 	
+	void waitForInput(){
+	
+	}
+	
 	void waitForOutput(){
+		
+	}
+	
+	bool hasError(){
 	
 	}
 	
 	bool enablePS2(){
-	
+		
 	}
 	
 	bool disablePS2(){
-	
+		
 	}
 	
 }; // class KC8042
 </cpp>
 <assemblyX86 compiler="fasm">
-KC8042.BYTE DATA_PORT	EQU	0x60
-KC8042.STATUS_PORT	EQU	0x64
-KC8042.COMMAND_PORT	EQU	0x64
+KC8042.DATA_PORT	EQU	60h
+KC8042.STATUS_PORT	EQU	64h
+KC8042.COMMAND_PORT	EQU	64h
+KC8042.HAS_OUTPUT	EQU	1
+KC8042.HAS_INPUT	EQU	2
+KC8042.TIMEOUT		EQU	40h
+KC8042.PARITY_ERROR	EQU	80h
 
+MACRO KC8042.WAIT_INPUT{
+	mov	cx,	0FFFFh
+@@:	in	al,	KC8042.STATUS_PORT
+	dec	cx
+	jz	KC8042.timeout
+	test	al,	KC8042.HAS_INPUT
+	jnz	@B	; wait until 8042 flush input buffer
+}
+MACRO KC8042.WAIT_OUTPUT{
+	mov	cx,	0FFFFh
+@@:	in	al,	KC8042.STATUS_PORT
+	dec	cx
+	jz	KC8042.timeout
+	test	al,	KC8042.HAS_OUTPUT
+	jz	@B	; wait until 8042 has output
+}
+MACRO KC8042.CLEAR_OUTPUT{
+	mov	cx,	0FFFFh
+@@:	in	al,	KC8042.STATUS_PORT
+	dec	cx
+	jz	KC8042.timeout
+	test	al,	KC8042.HAS_OUTPUT
+	jz	@F
+	in	al,	KC8042.DATA_PORT
+	jmp	@B
+@@:
+}
+
+KC8042.waitForInput:
+	push	ax
+	KC8042.WAIT_INPUT
+	pop	ax
+	ret
+	
 KC8042.waitForOutput:
 	push	ax
-@@:	in	al,	KC8042.STATUS_PORT
-	test	al,	1
-	jz	@B	; wait until 8042 has output
+	KC8042.WAIT_OUTPUT
 	pop	ax
+	ret
+
+KC8042.clearOutput:
+	push	ax
+	KC8042.CLEAR_OUTPUT
+	pop	ax
+	ret
+	
+KC8042.hasError:
+	in	al,	KC8042.STATUS_PORT
+	and	al,	KC8042.PARITY_ERROR OR KC8042.TIMEOUT
 	ret
 
 KC8042.enablePS2:
 	push	ax
-	;call	Wait8042
+	KC8042.WAIT_INPUT
+	KC8042.CLEAR_OUTPUT
 	mov	al,	0AEh	; 启用8042的第一通道
+				; Enable Keyboard Interface
 	out	KC8042.COMMAND_PORT,	al
-	;call	Wait8042
+	KC8042.WAIT_INPUT
+	KC8042.CLEAR_OUTPUT
 	mov	al,	0A8h	; 启用8042的第二通道
+				; Enable Auxiliary Interface
 	out	KC8042.COMMAND_PORT,	al
 	pop	ax
 	ret
 
 KC8042.disablePS2:
 	push	ax
-	;call	Wait8042
+	KC8042.WAIT_INPUT
+	KC8042.CLEAR_OUTPUT
 	mov	al,	0ADh	; 禁用8042的第一通道
+				; Disable Keyboard Interface
 	out	KC8042.COMMAND_PORT,	al
-	;call	Wait8042
+	KC8042.WAIT_INPUT
+	KC8042.CLEAR_OUTPUT
 	mov	al,	0A7h	; 禁用8042的第二通道
+				; Disable Auxiliary Interface
 	out	KC8042.COMMAND_PORT,	al
 	pop	ax
+	ret
+
+KC8042.timeout:
+	; 
 	ret
 
 </assemblyX86>

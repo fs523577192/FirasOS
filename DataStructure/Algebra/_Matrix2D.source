@@ -1,0 +1,100 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef	_MATRIX2D_H_
+#define	_MATRIX2D_H_
+</cpp>
+<cpp>
+template <typename T> class _Matrix2D{
+public:
+	
+	unsigned r, c;
+	
+	T *content;
+	
+	_Matrix2D(unsigned sideLength){
+		r = c = sideLength;
+		if(sideLength == 0)
+		#ifdef _EXCEPTION_H_
+			throw IllegalArgumentException();
+		#else
+			content = (T*)0;
+		#endif
+		else
+			content = new T[sideLength * sideLength];
+	}
+	
+	_Matrix2D(unsigned rows, unsigned columns){
+		r = rows; c = columns;
+		if(rows == 0 || columns == 0)
+		#ifdef _EXCEPTION_H_
+			throw IllegalArgumentException();
+		#else
+			content = (T*)0;
+		#endif
+		else
+		content = new T[rows * columns];
+	}
+	
+	unsigned* getSize(){
+		if(this == (_Matrix2D*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return (unsigned*)0;
+		#endif
+		unsigned size[] = new unsigned[2];
+		size[0] = r; size[1] = c;
+		return size;
+	}
+	
+	bool isSquare(){
+		if(this == (_Matrix2D*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		return r == c;
+	}
+	
+	_Matrix2D* transpose(){
+		if(this == (_Matrix2D*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return (_Matrix2D*)0;
+		#endif
+		_Matrix2D* t = new _Matrix2D(c, r);
+		for(unsigned i=0; i<r; i++)
+			for(unsigned j=0; i<c; j++)
+				t->content[j][i] = content[i][j];
+	}
+	
+	_Matrix2D* product(){
+	
+	}
+	
+	T determinant(){
+	
+	}
+	
+	_Matrix2D* inverse(){
+	
+	}
+</cpp>
+
+<cpp>
+}; // class Matrix<T>
+#endif // _MATRIX2D_H_
+</cpp>

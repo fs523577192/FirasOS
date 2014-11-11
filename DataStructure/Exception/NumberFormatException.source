@@ -1,0 +1,30 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>../Exception</include>
+<java>
+class NumberFormatException extends Exception{
+	
+}
+</java>
+<cpp>
+#ifndef _EXCEPTION_H_
+#define _EXCEPTION_H_
+
+class NumberFormatException : public Exception{
+private:
+	const static char *numberFormatMessage;
+public:
+	NumberFormatException(){
+		message = numberFormatMessage;
+	}
+}; // class NumberFormatException
+const char *NumberFormatException::numberFormatMessage = "Number Format Exception";
+
+#endif // _EXCEPTION_H_
+</cpp>

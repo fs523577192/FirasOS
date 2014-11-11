@@ -1,0 +1,81 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<cpp>
+#ifndef	_MATRIX_2D_H_
+#define	_MATRIX_2D_H_
+</cpp>
+<include>../Matrix</include>
+<cpp>
+template <typename T> class Matrix2D : public Matrix{
+protected:
+	
+	Array<unsigned> s;
+	
+	T *content;
+	
+public:
+	
+	Matrix2D(unsigned sideLength){
+		s = Array<unsigned>(2);
+		
+		if(sideLength == 0)
+		#ifdef _EXCEPTION_H_
+			throw IllegalArgumentException();
+		#else
+			content = (T*)0;
+		#endif
+		else
+			content = new T[sideLength * sideLength];
+	}
+	
+	Matrix2D(unsigned rows, unsigned columns){
+		r = rows; c = columns;
+		if(rows == 0 || columns == 0)
+		#ifdef _EXCEPTION_H_
+			throw IllegalArgumentException();
+		#else
+			content = (T*)0;
+		#endif
+		else
+		content = new T[rows * columns];
+	}
+	
+	Matrix2D(Array<unsigned> size){
+		
+	}
+	
+	inline Array<unsigned> getSize(){
+		return s;
+	}
+	
+	Matrix2D* transpose(){
+	
+	}
+	
+	Matrix2D* product(){
+	
+	}
+	
+	T determinant(){
+	
+	}
+	
+	Matrix2D* inverse(){
+	
+	}
+</cpp>
+
+<cpp>
+}; // class Matrix2D<T>
+#endif // _MATRIX_2D_H_
+</cpp>

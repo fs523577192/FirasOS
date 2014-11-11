@@ -1,0 +1,16 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+Bresenham Line Drawing Algorithm
+
+</head>
+<cpp>
+#ifndef _BRESENHAM_H_
+#define _BRESENHAM_H_
+namespace GUI{
+
+
+} // namespace GUI
+#endif // _BRESENHAM_H_
+</cpp>
