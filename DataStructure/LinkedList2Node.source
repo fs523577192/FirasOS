@@ -8,7 +8,6 @@ Doubly Linked List Node
 Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
-<include>Collection</include>
 <cpp>
 #ifndef _LINKED_LIST_2_NODE_H_
 #define _LINKED_LIST_2_NODE_H_
@@ -17,19 +16,37 @@ BelongsTo: Data Structure in the OS
 IF ~DEFINED _LINKED_LIST_2_NODE_H_
 _LINKED_LIST_2_NODE_H_	EQU	1
 
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_PREV	EQU	8
-LINKED_LIST_KEY		EQU	16
+LinkedList2Node.NEXT	EQU	0
+LinkedList2Node.PREV	EQU	8
+LinkedList2Node.KEY	EQU	16
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_2_NODE_H_
 _LINKED_LIST_2_NODE_H_	EQU	1
 
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_PREV	EQU	4
-LINKED_LIST_KEY		EQU	8
+LinkedList2Node.NEXT	EQU	0
+LinkedList2Node.PREV	EQU	4
+LinkedList2Node.KEY	EQU	8
 </assemblyX86>
+<java>
+class LinkedList2Node{
+	protected LinkedList2Node next, prev;
+	protected key;
+	public LinkedList2Node(T k){
+		key = k; next = prev = null;
+	}
+	public LinkedList2Node(T k, LinkedList2Node n, LinkedList2Node p){
+		key = k; next = n; prev = p;
+	}
+	public void remove(){
+		if(prev != null) prev.next = next;
+		if(next != null) next.prev = prev;
+	}
+</java>
 <cpp>
+template <typename T> class _LinkedList2;
+template <typename T> class _LinkedListO2;
+template <typename T> class _LinkedQueue;
 template <typename T> class LinkedList2;
 template <typename T> class LinkedListO2;
 template <typename T> class LinkedQueue;
@@ -42,18 +59,21 @@ protected:
 	T key;
 	
 	#define LinkedList2NullNode ((LinkedList2Node*)0)
+	friend class _LinkedList2<T>;
+	friend class _LinkedListO2<T>;
+	friend class _LinkedQueue<T>;
 	friend class LinkedList2<T>;
 	friend class LinkedListO2<T>;
 	friend class LinkedQueue<T>;
 	
 public:
 	
-	LinkedList2Node(T e){
+	CALLCONV LinkedList2Node(T e){
 		key = e;
 		prev = next = LinkedList2NullNode;
 	}
 	
-	LinkedList2Node(T e, LinkedList2Node *n, LinkedList2Node *p){
+	CALLCONV LinkedList2Node(T e, LinkedList2Node *n, LinkedList2Node *p){
 		key = e;
 		next = n; prev = p;
 		if(n != LinkedList2NullNode) n->prev = this;
@@ -61,10 +81,102 @@ public:
 	}
 	
 	~LinkedList2Node(){
-		if(getPrev() != LinkedList2NullNode) prev->next = next;
-		if(getNext() != LinkedList2NullNode) next->prev = prev;
+		if(prev != LinkedList2NullNode) prev->next = next;
+		if(next != LinkedList2NullNode) next->prev = prev;
 	}
-	
+</cpp>
+<assemblyX64 compiler="fasm">
+; bool LinkedListNode::initialize(LinkedList2Node* this, T* key,
+	unsigned sizeOfT, LinkedList2Node* next, LinkedList2Node* prev);
+; rcx: this	rdx: pkey	r8: size	r9: next
+; stack: |ret     |prev    |
+LinkedList2Node.initialize:
+	test	rcx,	rcx
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	ret
+@@:	mov	[rcx+LinkedListNode.NEXT],	r9
+	mov	rax,	
+	mov	[rcx+LinkedListNode.PREV],	rax
+	add	rcx,	LinkedListNode.KEY
+	test	rdx,	rdx
+	jz	.null		; jump if pointer to key is null
+	; TODO: NullPointerException
+@@:	test	r8,	r8
+	jz	.true
+	mov	al,	[rdx]
+	mov	[rcx],	al
+	inc	rcx
+	inc	rdx
+	jmp	@B
+.null:	test	r8,	r8
+	jz	.true
+	mov	BYTE [rcx],	0
+	inc	rcx
+	jmp	.null
+.true:	mov	rax,	1
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+; bool LinkedListNode::initialize(LinkedList2Node* this, T* key,
+	unsigned sizeOfT, LinkedList2Node* next, LinkedList2Node* prev);
+LinkedList2Node.initialize:
+	enter
+	push	ecx
+	push	esi
+	push	edi
+; stack: |ebp |ret |this|pkey|size|next|prev|
+	mov	edi,	[ebp+8]
+	test	edi,	edi
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	jmp	.return
+@@:	mov	eax,	[ebp+20]
+	stosd			; this->next = next
+	mov	eax,	[ebp+24]
+	stosd			; this->prev = prev
+	mov	ecx,	[ebp+16]
+	mov	esi,	[ebp+12]
+	test	esi,	esi
+	jz	.null		; jump if pointer to key is null
+	; TODO: NullPointerException
+	rep	movsb
+	jmp	.true
+.null:
+	xor	eax,	eax
+	rep	stosb
+.true:	mov	eax,	1
+.return:
+	pop	edi
+	pop	esi
+	pop	ecx
+	retn	20
+</assemblyX86>
+<java>
+	T getKey(){
+		return key;
+	}
+	LinkedList2Node getNext(){
+		return next;
+	}
+	LinkedList2Node getPrev(){
+		return prev;
+	}
+	LinkedList2Node getTail(){
+		LinkedList2Node temp = this;
+		while(temp.next != null) temp = temp.next;
+		return temp;
+	}
+	LinkedList2Node getHead(){
+		LinkedList2Node temp = this;
+		while(temp.prev != null) temp = temp.prev;
+		return temp;
+	}
+} // class LinkedList2Node
+</java>
+<cpp>	
 	inline T getKey(){
 		#ifdef _EXCEPTION_H_
 		if(this == LinkedList2NullNode) throw NullPointerException();
@@ -92,7 +204,7 @@ public:
 		return prev;
 	}
 	
-	LinkedList2Node *getTail(){
+	CALLCONV LinkedList2Node *getTail(){
 		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
@@ -104,7 +216,7 @@ public:
 		return temp;
 	}
 	
-	LinkedList2Node *gethead(){
+	CALLCONV LinkedList2Node *gethead(){
 		if(this == LinkedList2NullNode)
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
@@ -127,9 +239,9 @@ LinkedListNode.getTail:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
 	xor	rax,	rax			; rax = null
-@@:	cmp	rax,	[rcx+LINKED_LIST_NEXT]
+@@:	cmp	rax,	[rcx+LinkedList2Node.NEXT]
 	je	@F				; jump if rcx->next == null
-	mov	rcx,	[rcx+LINKED_LIST_NEXT]	; rcx = rcx->next
+	mov	rcx,	[rcx+LinkedList2Node.NEXT]	; rcx = rcx->next
 	jmp	@B
 @@:	mov	rax,	rcx
 	ret
@@ -138,9 +250,9 @@ LinkedList2Node.gethead:
 	;test	rcx,	rcx
 	; TODO: NullPointerException
 	xor	rax,	rax			; rax = null
-@@:	cmp	rax,	[rcx+LINKED_LIST_PREV]
+@@:	cmp	rax,	[rcx+LinkedList2Node.PREV]
 	je	@F				; jump if rcx->prev == null
-	mov	rcx,	[rcx+LINKED_LIST_PREV]	; rcx = rcx->prev
+	mov	rcx,	[rcx+LinkedList2Node.PREV]	; rcx = rcx->prev
 	jmp	@B
 @@:	mov	rax,	rcx
 	ret
@@ -153,9 +265,9 @@ LinkedList2Node.getTail:
 	;cmp	DWORD [esp+4],	0
 	; TODO: NullPointerException
 @@:	mov	eax,	[esp+4]			; eax = this
-	cmp	DWORD [eax+LINKED_LIST_NEXT],	0
+	cmp	DWORD [eax+LinkedList2Node.NEXT],	0
 	je	@F				; jump if eax->next == null
-	mov	eax,	[eax+LINKED_LIST_NEXT]	; eax = eax->next
+	mov	eax,	[eax+LinkedList2Node.NEXT]	; eax = eax->next
 	jmp	@B
 @@:	retn	4
 
@@ -163,9 +275,9 @@ LinkedList2Node.gethead:
 	;cmp	DWORD [esp+4],	0
 	; TODO: NullPointerException
 @@:	mov	eax,	[esp+4]			; eax = this
-	cmp	DWORD [eax+LINKED_LIST_PREV],	0
+	cmp	DWORD [eax+LinkedList2Node.PREV],	0
 	je	@F				; jump if eax->prev == null
-	mov	eax,	[eax+LINKED_LIST_PREV]	; eax = eax->prev
+	mov	eax,	[eax+LinkedList2Node.PREV]	; eax = eax->prev
 	jmp	@B
 @@:	retn	4
 

@@ -14,42 +14,142 @@ BelongsTo: Data Structure in the OS
 IF ~DEFINED _LINKED_LIST_NODE_H_
 _LINKED_LIST_NODE_H_	EQU	1
 
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_KEY		EQU	8
+LinkedListNode.NEXT	EQU	0
+LinkedListNode.KEY	EQU	8
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 IF ~DEFINED _LINKED_LIST_NODE_H_
 _LINKED_LIST_NODE_H_	EQU	1
 
-LINKED_LIST_NEXT	EQU	0
-LINKED_LIST_KEY		EQU	4
+LinkedListNode.NEXT	EQU	0
+LinkedListNode.KEY	EQU	4
 </assemblyX86>
-<include>Collection</include>
+<include>../Macro<include>
+<java>
+public class LinkedListNode<T>{
+	protected LinkedListNode<T> next;
+	T key;
+	
+	public LinkedListNode(T k){
+		key = k; next = null;
+	}
+	public LinkedListNode(T k, LinkedListNode<T> n){
+		key = k; next = n;
+	}
+</java>
 <cpp>
+template <typename T> class _LinkedList;
+template <typename T> class _LinkedListO;
+template <typename T> class _LinkedStack;
+template <typename T> class _LinkedQueue1;
 template <typename T> class LinkedList;
 template <typename T> class LinkedListO;
 template <typename T> class LinkedStack;
+template <typename T> class LinkedQueue1;
 
 template <typename T> class LinkedListNode{
 protected:
 	LinkedListNode *next;
 	T key;
 	
+	friend class _LinkedList<T>;
+	friend class _LinkedListO<T>;
+	friend class _LinkedStack<T>;
+	friend class _LinkedQueue1<T>;
 	friend class LinkedList<T>;
 	friend class LinkedListO<T>;
 	friend class LinkedStack<T>;
-	
+	friend class LinkedQueue1<T>;
 public:
 	#define LinkedListNullNode ((LinkedListNode*)0)
-	LinkedListNode(T k){
-		key = k;
-		next = LinkedListNullNode;
+	CALLCONV LinkedListNode(T k){
+		key = k; next = LinkedListNullNode;
 	}
-	LinkedListNode(T k, LinkedListNode* n){
-		key = k;
-		next = n;
+	CALLCONV LinkedListNode(T k, LinkedListNode* n){
+		key = k; next = n;
 	}
-
+</cpp>
+<assemblyX64 compiler="fasm">
+; bool LinkedListNode::initialize(LinkedListNode* this, T* key,
+	unsigned sizeOfT, LinkedListNode* node);
+; rcx: this	rdx: pkey	r8: size	r9: node
+LinkedListNode.initialize:
+	test	rcx,	rcx
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	ret
+@@:	mov	[rcx+LinkedListNode.NEXT],	r9
+	add	rcx,	LinkedListNode.KEY
+	test	rdx,	rdx
+	jz	.null		; jump if pointer to key is null
+	; TODO: NullPointerException
+@@:	test	r8,	r8
+	jz	.true
+	mov	al,	[rdx]
+	mov	[rcx],	al
+	inc	rcx
+	inc	rdx
+	jmp	@B
+.null:	test	r8,	r8
+	jz	.true
+	mov	BYTE [rcx],	0
+	inc	rcx
+	jmp	.null
+.true:	mov	rax,	1
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+; bool LinkedListNode::initialize(LinkedListNode* this, T* key,
+	unsigned sizeOfT, LinkedListNode* node);
+LinkedListNode.initialize:
+	enter
+	push	ecx
+	push	esi
+	push	edi
+; stack: |ebp |ret |this|pkey|size|node|
+	mov	edi,	[ebp+8]
+	test	edi,	edi
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	jmp	.return
+@@:	mov	eax,	[ebp+20]
+	stosd			; this->next = node
+	mov	ecx,	[ebp+16]
+	mov	esi,	[ebp+12]
+	test	esi,	esi
+	jz	.null		; jump if pointer to key is null
+	; TODO: NullPointerException
+	rep	movsb
+	jmp	.true
+.null:
+	xor	eax,	eax
+	rep	stosb
+.true:	mov	eax,	1
+.return:
+	pop	edi
+	pop	esi
+	pop	ecx
+	leave
+	retn	16
+</assemblyX86>
+<java>
+	T getKey(){
+		return key;
+	}
+	LinkedListNode getNext(){
+		return next;
+	}
+	LinkedListNode getTail(){
+		LinkedListNode temp = this;
+		while(temp.next != null) temp = temp.next;
+		return temp;
+	}
+} // class LinkedListNode
+</java>
+<cpp>
+	
 	inline T getKey(){
 		#ifdef _EXCEPTION_H_
 		if(this == LinkedListNullNode) throw NullPointerException();
@@ -65,7 +165,7 @@ public:
 		#endif
 		return next;
 	}
-	LinkedListNode *getTail(){
+	CALLCONV LinkedListNode *getTail(){
 		if(this == LinkedListNullNode)
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
@@ -84,12 +184,15 @@ public:
 <assemblyX64 compiler="fasm">
 
 LinkedListNode.getTail:
-	;test	rcx,	rcx
+	test	rcx,	rcx
+	jnz	@F
 	; TODO: NullPointerException
-	xor	rax,	rax			; rax = null
-@@:	cmp	rax,	[rcx+LINKED_LIST_NEXT]
+	xor	rax,	rax
+	ret
+@@:	xor	rax,	rax			; rax = null
+@@:	cmp	rax,	[rcx+LinkedListNode.NEXT]
 	je	@F				; jump if rcx->next == null
-	mov	rcx,	[rcx+LINKED_LIST_NEXT]	; rcx = rcx->next
+	mov	rcx,	[rcx+LinkedListNode.NEXT]	; rcx = rcx->next
 	jmp	@B
 @@:	mov	rax,	rcx
 	ret
@@ -99,12 +202,15 @@ END IF ; _LINKED_LIST_NODE_H_
 <assemblyX86 compiler="fasm">
 
 LinkedListNode.getTail:
-	;cmp	DWORD [esp+4],	0
+	cmp	DWORD [esp+4],	0
+	jne	@F
 	; TODO: NullPointerException
+	xor	eax,	eax
+	retn	4
 @@:	mov	eax,	[esp+4]			; eax = this
-	cmp	DWORD [eax+LINKED_LIST_NEXT],	0
+	cmp	DWORD [eax+LinkedListNode.NEXT],	0
 	je	@F				; jump if eax->next == null
-	mov	eax,	[eax+LINKED_LIST_NEXT]	; eax = eax->next
+	mov	eax,	[eax+LinkedListNode.NEXT]	; eax = eax->next
 	jmp	@B
 @@:	retn	4
 
