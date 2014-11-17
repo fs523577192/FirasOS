@@ -6,7 +6,7 @@
 Author: Firas
 BelongsTo: Data Structure in the OS
 </head>
-<include>../Exception</include>
+<include>Exception</include>
 <java>
 class ArithmeticException extends Exception{
 	

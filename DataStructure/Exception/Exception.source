@@ -22,7 +22,7 @@ public class Exception{
 #define _EXCEPTION_H_
 class Exception{
 protected:
-	const char *message;
+	char *message;
 public:
 	char *getMessage(){
 		return message;

@@ -24,7 +24,7 @@ _LINKED_LIST_NODE_H_	EQU	1
 LinkedListNode.NEXT	EQU	0
 LinkedListNode.KEY	EQU	4
 </assemblyX86>
-<include>../Macro<include>
+<include>../Macro</include>
 <java>
 public class LinkedListNode<T>{
 	protected LinkedListNode<T> next;
@@ -161,7 +161,7 @@ LinkedListNode.initialize:
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
 		#else
-			return LinkedListNullNode
+			return LinkedListNullNode;
 		#endif
 		return next;
 	}
@@ -170,7 +170,7 @@ LinkedListNode.initialize:
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
 		#else
-			return LinkedListNullNode
+			return LinkedListNullNode;
 		#endif
 		register LinkedListNode *temp = this;
 		while(temp->next != LinkedListNullNode) temp = temp->next;

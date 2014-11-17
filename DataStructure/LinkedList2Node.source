@@ -28,6 +28,7 @@ LinkedList2Node.NEXT	EQU	0
 LinkedList2Node.PREV	EQU	4
 LinkedList2Node.KEY	EQU	8
 </assemblyX86>
+<include>../Macro</include>
 <java>
 class LinkedList2Node{
 	protected LinkedList2Node next, prev;

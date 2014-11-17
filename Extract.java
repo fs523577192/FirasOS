@@ -32,20 +32,28 @@ public class Extract{
 					}else if(currentState == State.Cpp1){
 						fwCpp.write(str);
 						currentState = State.Cpp2;
+					}else if(currentState == State.Cpp2){
+						fwCpp.write(str);
 					}else if(currentState == State.X86_1){
 						fwX86.write(str);
 						currentState = State.X86_2;
+					}else if(currentState == State.X86_2){
+						fwCpp.write(str);
 					}else if(currentState == State.X64_1){
 						fwX64.write(str);
 						currentState = State.X64_2;
+					}else if(currentState == State.X64_2){
+						fwCpp.write(str);
 					}else if(currentState == State.Java1){
 						fwJava.write(str);
 						currentState = State.Java2;
+					}else if(currentState == State.Java2){
+						fwCpp.write(str);
 					}else if(currentState == State.Include1){
 						currentState = State.Include2;
-						fwCpp.write("#include \"" + str + ".Cpp\"");
-						fwX86.write("INCLUDE \"" + str + "_x86.asm\"");
-						fwX64.write("INCLUDE \"" + str + "_x64.asm\"");
+						fwCpp.write("#include \"" + str + ".cpp\"\n");
+						fwX86.write("INCLUDE \"" + str + "_x86.asm\"\n");
+						fwX64.write("INCLUDE \"" + str + "_x64.asm\"\n");
 					}else if(currentState == State.Comment1){
 						currentState = State.Comment2;
 					}else if(currentState == State.Head1){
@@ -62,6 +70,8 @@ public class Extract{
 						currentState = State.X86_1;
 					}else if(currentState == State.X64_0){
 						currentState = State.X64_1;
+					}else if(currentState == State.Java0){
+						currentState = State.Java1;
 					}else if(currentState == State.Include0){
 						currentState = State.Include1;
 					}else if(currentState == State.Comment0){
@@ -125,22 +135,46 @@ public class Extract{
 					}
 					sb = new StringBuilder();
 				}else if((char)i == '/'){
-					sb.append((char)i);
 					if(currentState == State.Cpp2){
-						currentState = State.Cpp3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.Cpp3;
+						}else{
+							currentState = State.Cpp1;
+						}
 					}else if(currentState == State.X86_2){
-						currentState = State.X86_3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.X86_3;
+						}else{
+							currentState = State.X86_1;
+						}
 					}else if(currentState == State.X64_2){
-						currentState = State.X64_3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.X64_3;
+						}else{
+							currentState = State.X64_1;
+						}
 					}else if(currentState == State.Java2){
-						currentState = State.Java3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.Java3;
+						}else{
+							currentState = State.Java1;
+						}
 					}else if(currentState == State.Include2){
 						currentState = State.Include3;
 					}else if(currentState == State.Comment2){
-						currentState = State.Comment3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.Comment3;
+						}else{
+							currentState = State.Comment1;
+						}
 					}else if(currentState == State.Head2){
-						currentState = State.Head3;
+						if(sb.charAt(sb.length()-1) == '<'){
+							currentState = State.Head3;
+						}else{
+							currentState = State.Head1;
+						}
 					}
+					sb.append((char)i);
 				}else{
 					sb.append((char)i);
 					if(currentState == State.Null1){
