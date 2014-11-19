@@ -104,7 +104,6 @@ LinkedListNode.initialize:
 	unsigned sizeOfT, LinkedListNode* node);
 LinkedListNode.initialize:
 	enter
-	push	ecx
 	push	esi
 	push	edi
 ; stack: |ebp |ret |this|pkey|size|node|
@@ -112,7 +111,7 @@ LinkedListNode.initialize:
 	test	edi,	edi
 	jnz	@F
 	; TODO: NullPointerException
-	xor	rax,	rax
+	xor	eax,	eax
 	jmp	.return
 @@:	mov	eax,	[ebp+20]
 	stosd			; this->next = node
@@ -130,7 +129,6 @@ LinkedListNode.initialize:
 .return:
 	pop	edi
 	pop	esi
-	pop	ecx
 	leave
 	retn	16
 </assemblyX86>

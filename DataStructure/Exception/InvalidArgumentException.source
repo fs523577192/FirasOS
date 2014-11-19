@@ -1,0 +1,22 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<include>Exception</include>
+<cpp>
+
+class InvalidArgumentException : public Exception{
+private:
+	const static char *invalidArgumentMessage;
+public:
+	InvalidArgumentException(){
+		
+	}
+}; // class InvalidArgumentException
+const char *InvalidArgumentException::invalidArgumentMessage = "Invalid Argument";
+
+</cpp>

@@ -1,0 +1,402 @@
+<head language="Chinese">
+作者：伍裕平
+归属：操作系统数据结构
+</head>
+<head language="English">
+Author: Firas
+BelongsTo: Data Structure in the OS
+</head>
+<cpp>
+#ifndef _LINKED_QUEUE_2_H_
+#define _LINKED_QUEUE_2_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _LINKED_QUEUE_2_H_
+_LINKED_QUEUE_2_H_	EQU	1
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _LINKED_QUEUE_2_H_
+_LINKED_QUEUE_2_H_	EQU	1
+</assemblyX86>
+<include>LinkedList2Node</include>
+<cpp>
+template <typename T> class _LinkedQueue2{
+private:
+	LinkedList2Node<T> *head;
+
+public:
+	
+	_LinkedQueue2(){
+		head = (LinkedList2Node<T>*)0;
+	}
+	
+	_LinkedQueue2(T k){
+		head = new LinkedList2Node<T>(k);
+	}
+	
+	~_LinkedQueue2(){
+		removeAllElement();
+	}
+	
+	inline bool isEmpty(){	// inherited from Collection
+		if(this == (_LinkedQueue2*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return true;
+		#endif
+		return head == LinkedList2NullNode;
+	}
+	
+	unsigned getSize(){	// inherited from Collection
+		if(isEmpty()) return 0;
+		register unsigned size = 1;
+		register LinkedList2Node<T> *temp = head;
+		while(temp->next != head){
+			size++;
+			temp = temp->next;
+		}
+		return size;
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+
+_LinkedQueue2.isEmpty:
+	test	rcx,	rcx
+	jz	.true		; if this==null, return true
+	; TODO: NullPointerException
+	mov	rax,	[rcx]
+	test	rax,	rax
+	jz	.true
+	xor	rax,	rax
+	ret
+.true:	mov	rax,	1
+	ret
+
+_LinkedQueue2.getSize:
+	xor	rax,	rax	; rax = 0
+	test	rcx,	rcx
+	jz	.return		; if this==null, return 0
+	; TODO: NullPointerException
+	mov	rcx,	[rcx]	; rcx = head
+	test	rcx,	rcx
+	jz	.return		; jump if head == null
+	push	rbx		; ##
+	mov	rbx,	rcx	; rbx = head
+@@:	cmp	rbx,	[rcx]
+	je	@F		; jump if rcx->next == head
+	inc	rax
+	mov	rcx,	[rcx]
+	jmp	@B
+@@:	pop	rbx		; ##
+.return:
+	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+
+_LinkedQueue2.isEmpty:
+	mov	eax,	[esp+4]		; eax = this
+	test	eax,	eax
+	jz	.true		; if this==null, return true
+	; TODO: NullPointerException
+	mov	eax,	[eax]		; eax = this->head
+	test	eax,	eax
+	jz	.true
+	xor	eax,	eax
+	retn	4
+.true	mov	eax,	1
+	retn	4
+
+_LinkedQueue2.getSize:
+	mov	ecx,	[esp+4]		; ecx = this
+	xor	eax,	eax		; eax = 0
+	test	ecx,	ecx
+	jz	.return
+	; TODO: NullPointerException
+	mov	ecx,	[ecx]		; ecx = this->head
+	test	ecx,	ecx
+	jz	.return			; jump if this == null
+	mov	edx,	ecx		; ebx = this->head
+@@:	cmp	edx,	[ecx]
+	je	.return			; jump if ecx->next == head
+	inc	eax
+	mov	ecx,	[ecx]
+	jmp	@B
+.return:
+	retn	4
+</assemblyX86>
+<cpp>
+	
+	bool hasElement(T e){
+		if(isEmpty()) return false;
+		if(head->getKey() == e) return true;
+		for(register LinkedList2Node<T> *temp = head->next;
+				temp != head; temp = temp->next){
+			if(temp->getKey() == e) return true;
+		}
+		return false;
+	}
+	
+	bool removeAllElement(){	// inherited from Collection
+		if(isEmpty()) return false;
+		while(head->prev != head){
+			delete head->prev;
+		}
+		delete head;
+		head = (LinkedList2Node<T>*)0;
+		return true;
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+_LinkedQueue2.removeAllElement:
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.false
+@@:	sub	rsp,	4*8
+	mov	rax,	[rcx]
+	test	rax,	rax
+	jz	.false
+	;
+	; TODO: delete
+	xor	rax,	rax
+	mov	[rcx],	rax	; head = 0
+	or	al,	1	; rax = 1
+	add	rsp,	4*8
+	ret
+.false:	xor	rax,	rax
+	ret
+</assemblyX64>
+<assemblyX86>
+_LinkedQueue2.removeAllElement:
+	
+	xor	eax,	eax
+	retn	4
+</assemblyX86 compiler="fasm">
+<cpp>
+	
+	T getHeadElement(){	// inherited from Queue
+		#ifdef _EXCEPTION_H_
+		if(this == (_LinkedQueue2*)0 || head == (LinkedList2Node<T>*)0)
+			throw NullPointerException();
+		#endif
+		return head->key;
+	}
+	
+	bool setHeadElement(T e){
+		if(this == (_LinkedQueue2*)0 || head == (LinkedList2Node<T>*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		head->key = e;
+		return true;
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+; T* _LinkedQueue2::getHeadElement(_LinkedQueue2 *this)
+_LinkedQueue2.getHeadElement:
+	test	rcx,	rcx
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	ret
+@@:	mov	rax,	[rcx]	; rax = this->head
+	test	rax,	rax
+	jnz	@F
+	; TODO: NullPointerException
+	ret
+@@:	mov	rax,	[rax+LinkedList2Node.KEY]
+	ret
+
+; bool _LinkedQueue2::setHeadElement(_LinkedQueue2 *this,
+		T* pKey, unsigned sizeOfT)
+_LinkedQueue2.setHeadElement:
+	test	rcx,	rcx
+	jz	.null
+	; TODO: NullPointerException
+	test	rdx,	rdx
+	jz	.null
+	; TODO: NullPointerException
+	test	r8,	r8
+	jz	.null
+	; TODO: InvalidArgumentException
+	mov	rcx,	[rcx]		; rcx = this->head
+	test	rcx,	rcx
+	jnz	@F
+	; TODO: NullPointerException
+.null:	xor	rax,	rax
+	ret
+@@:	add	rcx,	LinkedList2Node.KEY
+@@:	mov	al,	[rdx]
+	mov	[rcx],	al
+	dec	r8
+	jnz	@B
+	mov	rax,	1
+	ret
+</assemblyX64>
+<assemblyX86>
+_LinkedQueue2.getHeadElement:
+	mov	eax,	[esp+4]
+	test	eax,	eax
+	jnz	@F
+	; TODO: NullPointerException
+	retn	4
+@@:	mov	eax,	[eax]	; eax = this->head
+	test	eax,	eax
+	jnz	@F
+	; TODO: NullPointerException
+	retn	4
+@@:	mov	eax,	[eax+LinkedList2Node.KEY]
+	retn	4
+
+_LinkedQueue2.setHeadElement:
+	enter
+	push	esi
+	push	edi
+	mov	eax,	[esp+4]	; eax = this
+	test	eax,	eax
+	jnz	@F
+	; TODO: NullPointerException
+	jmp	.return
+@@:	mov	ecx,	[esp+12]
+	test	ecx,	ecx
+	jnz	@F
+	; TODO: InvalidArgumentException
+@@:	mov	edi,	[eax]	; edi = this->head
+	test	edi,	edi
+	jnz	@F
+	; TODO: NullPointerException
+	xor	eax,	eax
+	jmp	.return
+@@:	mov	esi,	[esp+8]	; esi = pKey
+	test	esi,	esi
+	jnz	@F
+	; TODO: NullPointerException
+	xor	eax,	eax
+	jmp	.return
+@@:	rep	movsb
+	mov	eax,	1
+.return:
+	pop	edi
+	pop	esi
+	leave
+	retn	4*3
+</assemblyX86 compiler="fasm">
+<cpp>
+	
+	bool addElementToHead(T e){	// inherited from Queue
+		return addElement(e);
+	}
+	
+	bool removeHeadElement(){	// inherited from Queue
+		if(isEmpty()) return false;
+		if(head == head->prev){
+			delete head;
+			head = (LinkedList2Node<T>*)0;
+		}else{
+			head = head->next;
+			delete head->prev;
+		}
+		return true;
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+; bool _LinkedQueue2::removeHeadElement(_LinkedQueue2 *this)
+_LinkedQueue2.removeHeadElement:
+	test	rcx,	rcx
+	jnz	@F
+	xor	rax,	rax
+	ret
+@@:	mov	rax,	[rcx]	; rax = this->head
+	test	rax,	rax
+	jnz	@F
+	ret
+@@:	push	QWORD [rax]	; push head->next
+	pop	QWORD [rcx]	; pop this->head
+	;mov	rcx,	rax
+	;sub	rsp,	4*8
+	;call	LinkedList2Node.delete
+	;add	rsp,	4*8
+	mov	rax,	1
+	ret
+</assemblyX64>
+<assemblyX86>
+_LinkedQueue2.removeHeadElement:
+	mov	ecx,	[esp+4]
+	test	ecx,	ecx
+	jnz	@F
+	xor	eax,	eax
+	retn	4
+@@:	mov	eax,	[ecx]	; eax = this->head
+	test	eax,	eax
+	jnz	@F
+	ret
+@@:	push	DWORD [eax]
+	pop	DWORD [ecx]
+	;push	eax
+	;call	LinkedList2Node.delete
+	mov	eax,	1
+	retn	4
+</assemblyX86 compiler="fasm">
+<cpp>
+	
+	T getTailElement(){	// inherited from Queue
+		#ifdef _EXCEPTION_H_
+		if(this == (_LinkedQueue2*)0 || head == (LinkedList2Node<T>*)0)
+			throw NullPointerException();
+		#endif
+		return head->prev->key;
+	}
+	
+	bool setTailElement(T e){
+		if(this == (_LinkedQueue2*)0 || head == (LinkedList2Node<T>*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		head->prev->key = e;
+		return true;
+	}
+	
+	bool addElementToTail(T e){
+		if(this == (_LinkedQueue2*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return false;
+		#endif
+		if(head == (LinkedList2Node<T>*)0){
+			head = new LinkedList2Node<T>(e);
+			head->next = head->prev = head;
+		}else{
+			new LinkedList2Node<T>(e, head, head->prev);
+		}
+		return true;
+	}
+	
+	bool removeTailElement(){	// inherited from Queue
+		if(isEmpty()) return false;
+		if(head == head->prev){
+			delete head;
+			head = (LinkedList2Node<T>*)0;
+		}else{
+			delete head->prev;
+		}
+		return true;
+	}
+	
+}; // class _LinkedQueue2<T>
+#endif // _LINKED_QUEUE_2_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+_LinkedQueue2.removeTailElement:
+
+END IF ; _LINKED_QUEUE_2_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+_LinkedQueue2.removeTailElement:
+
+END IF ; _LINKED_QUEUE_2_H_
+</assemblyX86>
