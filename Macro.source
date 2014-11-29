@@ -1,5 +1,10 @@
+<head language="Chinese">
 
-<comment language=Chinese>
+</head>
+<head language="English">
+
+</head>
+<comment language="Chinese">
 --	在MBR、VBR之类的对代码占用的空间要小的地方，
 	用xor指令清零再用or 1或inc指令比但用一条
 	mov 1指令所需空间更少
@@ -14,41 +19,37 @@
 	64位模式中inc eax的机器码为0xFF 0xC0
 	or al, 1的机器码为0x0C 0x01
 </comment>
-<assemblyX86 compiler=fasm>
+<assemblyX86 compiler="fasm">
 IF ~DEFINED _MACRO_H_
 _MACRO_H_	EQU	1
+
 ; reg can be a 32-bit general register
 MACRO	MOV1TO	reg{
-IF DEFINED _LIMITED_SPACE_
 	xor	reg,	reg
 	inc	reg
-ELSE
-	mov	reg,	1
-END IF ; DEFINED _LIMITED_SPACE_
 } ; MACRO MOV1TO
 </assemblyX86>
-<assemblyX64 compiler=fasm>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _MACRO_H_
+_MACRO_H_	EQU	1
+
 ; reg can be a 64-bit or 32-bit general register
 MACRO	MOV1TO	reg{
-IF DEFINED _LIMITED_SPACE_
 	xor	reg,	reg
-MATCH =rax, reg {	or	al,	1	}
-MATCH =rbx, reg {	or	bl,	1	}
-MATCH =rcx, reg {	or	cl,	1	}
-MATCH =rdx, reg {	or	dl,	1	}
-MATCH =rbp, reg {	inc	ebp		}
-MATCH =rsi, reg {	inc	esi		}
-MATCH =rdi, reg {	inc	edi		}
-MATCH =eax, reg {	or	al,	1	}
-MATCH =ebx, reg {	or	bl,	1	}
-MATCH =ecx, reg {	or	cl,	1	}
-MATCH =edx, reg {	or	dl,	1	}
-MATCH =ebp, reg {	inc	ebp		}
-MATCH =esi, reg {	inc	esi		}
-MATCH =edi, reg {	inc	edi		}
-ELSE
-	mov	reg,	1
-END IF ; DEFINED _LIMITED_SPACE_
+MATCH =rax, reg \{	or	al,	1	\}
+MATCH =rbx, reg \{	or	bl,	1	\}
+MATCH =rcx, reg \{	or	cl,	1	\}
+MATCH =rdx, reg \{	or	dl,	1	\}
+MATCH =rbp, reg \{	inc	ebp		\}
+MATCH =rsi, reg \{	inc	esi		\}
+MATCH =rdi, reg \{	inc	edi		\}
+MATCH =eax, reg \{	or	al,	1	\}
+MATCH =ebx, reg \{	or	bl,	1	\}
+MATCH =ecx, reg \{	or	cl,	1	\}
+MATCH =edx, reg \{	or	dl,	1	\}
+MATCH =ebp, reg \{	inc	ebp		\}
+MATCH =esi, reg \{	inc	esi		\}
+MATCH =edi, reg \{	inc	edi		\}
 } ; MACRO MOV1TO
 </assemblyX64>
 <cpp>
@@ -102,7 +103,7 @@ const INT64	INT64_MAX = 0x7FFFFFFFFFFFFFFFLL;
 const INT64	INT64_MIN = 0x8000000000000000LL;
 const UINT64	UINT64_MAX = 0xFFFFFFFFFFFFFFFFLL;
 </cpp>
-<assemblyX64 compiler=fasm>
+<assemblyX64 compiler="fasm">
 INT8_MAX	EQU 7Fh
 INT8_MIN	EQU 80h
 UINT8_MAX	EQU 0FFh
@@ -116,9 +117,18 @@ INT64_MAX	EQU 7FFFFFFFFFFFFFFFh
 INT64_MIN	EQU 8000000000000000h
 UINT64_MAX	EQU 0FFFFFFFFFFFFFFFFh
 
+MACRO TEST_NULL reg{
+	test	reg,	reg
+	jnz	@F
+	; TODO: NullPointerException
+	xor	rax,	rax
+	ret
+@@:
+} ; MACRO TEST_NULL
+
 END IF ; ~DEFINED _MACRO_H_
 </assemblyX64>
-<assemblyX86 compiler=fasm>
+<assemblyX86 compiler="fasm">
 INT8_MAX	EQU 7Fh
 INT8_MIN	EQU 80h
 UINT8_MAX	EQU 0FFh
@@ -129,6 +139,14 @@ INT32_MAX	EQU 7FFFFFFFh
 INT32_MIN	EQU 80000000h
 UINT32_MAX	EQU 0FFFFFFFFh
 
+MACRO TEST_NULL mem, n{
+	cmp	mem,	0
+	jne	@F
+	; TODO: NullPointerException
+	xor	eax,	eax
+	retn	n
+@@:	
+} ; MACRO TEST_NULL
 END IF ; ~DEFINED _MACRO_H_
 </assemblyX86>
 <cpp>

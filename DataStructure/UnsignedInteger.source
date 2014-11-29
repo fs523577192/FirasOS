@@ -1,0 +1,33 @@
+
+<cpp>
+
+class UnsignedInteger{
+protected:
+	unsigned n;
+public:
+	
+	unsigned MAX_VALUE = 0xFFFFFFFF, MIN_VALUE = 0;
+	
+	SignedInteger(unsigned u=0){
+		n = u;
+	}
+	
+	SignedInteger(String str, BYTE radix=10){
+		
+	}
+	
+	inline int compareTo(unsigned i){
+		return (n > i) ? 1 : (n < si.n ? -1 : 0);
+	}
+	
+	inline int compareTo(UnsignedInteger ui){
+		return compareTo(ui.n);
+	}
+	
+	String toString(BYTE radix){
+		
+	}
+	
+}; // class UnsignedInteger
+
+</cpp>

@@ -92,12 +92,8 @@ public:
 ; rcx: this	rdx: pkey	r8: size	r9: next
 ; stack: |ret     |shadow  |shadow  |shadow  |shadow  |prev    |
 LinkedList2Node.initialize:
-	test	rcx,	rcx
-	jnz	@F
-	; TODO: NullPointerException
-	xor	rax,	rax
-	ret
-@@:	mov	[rcx+LinkedListNode.NEXT],	r9
+	TEST_NULL rcx
+	mov	[rcx+LinkedListNode.NEXT],	r9
 	mov	rax,	[rsp+5*8]
 	mov	[rcx+LinkedListNode.PREV],	rax
 	add	rcx,	LinkedListNode.KEY

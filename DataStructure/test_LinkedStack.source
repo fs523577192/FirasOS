@@ -20,9 +20,18 @@ entry start
 section '.text' code readable executable
 
 start:
+	sub	rsp,	(4+2)*8
+LABEL	.linkedStack	AT	[rsp+4*8]
+LABEL	.i1	AT	[rsp+5*8]
+	xor	rcx,	rcx
+	call	_LinkedStack.isEmpty
+	mov	[.i1],	rax
+	xor	rcx,	rcx
+	call	_LinkedStack.getSize
+	mov	rdx,	rax
 	
-	
-
+	xor	rcx,	rcx
+	call	[ExitProcess]
 </assemblyX64>
 <cpp>
 #include <iostream>
@@ -31,7 +40,13 @@ start:
 <include>_LinkedStack</include>
 <cpp>
 int main(){
-	_LinkedStack<float> *stack = new _LinkedStack<float>();
+	_LinkedStack<float> *stack = (_LinkedStack<float>*)0;
+	try{
+		std::cout << stack->isEmpty();
+	}catch(NullPointerException npe){
+		std::cerr << "NullPointerException caught" << '\n';
+	}
+	stack = new _LinkedStack<float>();
 	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 1 0
 	std::cout << stack->pushElement(2.5f) << ' ';
@@ -73,5 +88,29 @@ int main(){
 
 </assemblyX86>
 <assemblyX64 compiler="fasm">
+section '.data' data readable writeable
 
+item	dq 8 dup(0)
+buffer	db 32 dup(0)
+
+section '.idata' import data readable writeable
+
+	dd 0,0,0,RVA kernel_name,RVA kernel_table
+	dd 0,0,0,RVA user_name,RVA user_table
+	dd 0,0,0,0,0
+
+kernel_table:
+	ExitProcess dq RVA _ExitProcess
+	dq 0
+user_table:
+	MessageBoxA dq RVA _MessageBoxA
+	dq 0
+
+	kernel_name	db 'KERNEL32.DLL',0
+	user_name	db 'USER32.DLL',0
+
+_ExitProcess	dw 0
+	db 'ExitProcess',0
+_MessageBoxA	dw 0
+	db 'MessageBoxA',0
 </assemblyX64>

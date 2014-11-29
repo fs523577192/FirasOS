@@ -32,10 +32,6 @@ public class _LinkedStack<T>{
 		top = new LinkedListNode<T>(e);
 	}
 	
-	public ~_LinkedStack(){
-		removeAllElement();
-	}
-	
 	public boolean isEmpty(){
 		return top == null;
 	}
@@ -58,28 +54,28 @@ private:
 	LinkedListNode<T> *top;
 public:
 	
-	_LinkedStack(){
+	CALLCONV _LinkedStack(){
 		top = (LinkedListNode<T>*)0;
 	}
 	
-	_LinkedStack(T e){
+	CALLCONV _LinkedStack(T e){
 		top = new LinkedListNode<T>(e);
 	}
 	
-	~_LinkedStack(){
+	CALLCONV ~_LinkedStack(){
 		removeAllElement();
 	}
 </cpp>
 <assemblyX64 compiler="fasm">
 ; bool _LinedStack::initialize(_LinkedStack* this, LinkedListNode* top);
 _LinkedStack.initialize:
-	test	rcx,	rcx
-	jnz	@F
-	; TODO: NullPointerException
 	xor	rax,	rax
-	ret
-@@:	mov	[rcx],	rdx
-	mov	rax,	1
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.return
+	mov	[rcx],	rdx
+	mov	al,	1
+.return:
 	ret
 </assemblyX64>
 <assemblyX86 compiler="fasm">
@@ -87,12 +83,12 @@ _LinkedStack.initialize:
 _LinkedStack.initialize:
 	mov	eax,	[esp+4]
 	test	eax,	eax
-	jnz	@F
 	; TODO: NullPointerException
-	retn	4
+	jz	.return
 @@:	mov	ecx,	[esp+8]
 	mov	[eax],	ecx
 	mov	eax,	1
+.return:
 	retn	4
 </assemblyX86>
 <cpp>
@@ -107,7 +103,7 @@ _LinkedStack.initialize:
 		return top == (LinkedListNode<T>*)0;
 	}
 	
-	unsigned getSize(){
+	CALLCONV unsigned getSize(){
 		if(isEmpty()) return 0;
 		register unsigned size = 1;
 		register LinkedListNode<T> *temp = top;
@@ -119,7 +115,7 @@ _LinkedStack.initialize:
 	}
 </cpp>
 <assemblyX64 compiler="fasm">
-
+; bool _LinkedStack::isEmpty(_LinkedStack *this)
 _LinkedStack.isEmpty:
 	test	rcx,	rcx
 	jz	.true			; if this==null, return true
@@ -132,6 +128,7 @@ _LinkedStack.isEmpty:
 .true:	mov	rax,	1
 	ret
 
+; unsigned _LinkedStack::getSize(_LinkedStack *this)
 _LinkedStack.getSize:
 	xor	rax,	rax		; rax = 0
 	test	rcx,	rcx
@@ -162,14 +159,14 @@ _LinkedStack.isEmpty:
 	retn	4
 
 _LinkedStack.getSize:
-	mov	edx,	[esp+4]		; ebx = this
+	mov	ecx,	[esp+4]		; ecx = this
 	xor	eax,	eax		; eax = 0
-	test	edx,	edx
+	test	ecx,	ecx
 	jz	.return			; if this==null, return 0
 	; TODO: NullPointerException
-@@:	mov	edx,	[edx]		; first loop: ebx = top
-					; other loop: ebx = ebx->next
-	test	edx,	edx
+@@:	mov	ecx,	[ecx]		; first loop: ecx = this->top
+					; other loop: ecx = ecx->next
+	test	ecx,	ecx
 	jz	.return
 	inc	eax
 	jmp	@B
@@ -177,7 +174,7 @@ _LinkedStack.getSize:
 	retn	4
 </assemblyX86>
 <java>
-	boolean removeElement(T e){
+	CALLCONV boolean removeElement(T e){
 		if(isEmpty()) return false;
 		if(top.getKey() == e){
 			popElement();
@@ -196,7 +193,7 @@ _LinkedStack.getSize:
 </java>
 <cpp>
 	
-	bool removeElement(T e){
+	CALLCONV bool removeElement(T e){
 		if(isEmpty()) return false;
 		if(top->getKey()==e){
 			popElement();
@@ -311,8 +308,8 @@ _LinkedStack.removeAllElement:
 _LinkedStack.removeAllElement:
 	push	esi
 	push	edi
-; stack: |ebx |ret |this|
-	mov	edi,	[esp+8]	; edi = this
+; stack: |esi |edi |ret |this|
+	mov	edi,	[esp+3*4]	; edi = this
 	test	edi,	edi
 	jnz	@F
 	; TODO: NullPointerException
@@ -338,14 +335,15 @@ _LinkedStack.removeAllElement:
 </assemblyX86>
 <cpp>
 	
-	bool hasElement(T e){
+	CALLCONV bool hasElement(T e){
 		if(this == (_LinkedStack*)0)
 		#ifdef _EXCEPTION_H_
 			throw NullPointerException();
 		#else
 			return false;
 		#endif
-		for(register LinkedListNode<T> *temp = top; temp != (LinkedListNode<T>*)0;
+		for(register LinkedListNode<T> *temp = top;
+			temp != (LinkedListNode<T>*)0;
 			temp = temp->next) if(temp->getKey()==e) return true;
 		return false;
 	}
@@ -354,26 +352,31 @@ _LinkedStack.removeAllElement:
 ; rcx = this, rdx = &e, r8 = int compareKey(T*a, T*b)
 _LinkedStack.hasElement:
 	test	rcx,	rcx
+	jz	.false
+	; TODO: NullPointerException
+	test	r8,	r8
 	jnz	@F
 .false:
 	xor	rax,	rax
 	ret
-@@:	mov	rax,	[rcx]	; rax = this->top
+@@:	mov	rax,	[rcx]		; rax = this->top
+	mov	[rsp+16],	rdx	; @@ save &e
+	mov	[rsp+24],	r8	; save compare function
 @@:	test	rax,	rax
 	jz	.false
-	push	QWORD [rax]	; ## save rax->next
+	push	QWORD [rax]		; ## save rax->next
 	lea	rcx,	[rax+LinkedListNode.KEY]	; rcx = &(top->key)
-	call	r8
-	test	rax,	rax	; cmp	rax,	0
-	pop	rax		; ## not influence Z/E flag
+	call	QWORD [rsp+24]
+	mov	rdx,	[rsp+16]	; @@ restore &e
+	test	rax,	rax		; cmp	rax,	0
+	pop	rax		; ## restore rax->next, not influence Z/E flag
 	jne	@B
 @@:	mov	rax,	1
 	ret
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 _LinkedStack.hasElement:
-	push	ebp
-	mov	ebp,	esp
+	enter
 ; stack: |ebp |ret |this|&e  |cmpK|
 	mov	eax,	[ebp+8]
 	test	eax,	eax
@@ -381,18 +384,17 @@ _LinkedStack.hasElement:
 @@:	mov	eax,	[eax]	; eax = this->top
 	test	eax,	eax
 	jz	.return
-	push	eax		; ##
-	lea	eax,	[eax+LinkedListNode.KEY]	; eax = &(top->key)
+	push	DWORD [eax]	; ## save eax->next
+	add	eax,	LinkedListNode.KEY	; eax = &(top->key)
 	push	eax
 	push	DWORD [ebp+12]
 	call	DWORD [ebp+16]
 	test	eax,	eax	; cmp	eax,	0
-	pop	eax		; ## not influence Z/E flag
+	pop	eax		; restore rax->next, ## not influence Z/E flag
 	jne	@B
 	mov	eax,	1
 .return:
-	mov	esp,	ebp
-	pop	ebp
+	leave
 	retn	4*3
 </assemblyX86>	
 <cpp>

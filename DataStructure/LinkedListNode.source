@@ -74,12 +74,8 @@ public:
 	unsigned sizeOfT, LinkedListNode* node);
 ; rcx: this	rdx: pkey	r8: size	r9: node
 LinkedListNode.initialize:
-	test	rcx,	rcx
-	jnz	@F
-	; TODO: NullPointerException
-	xor	rax,	rax
-	ret
-@@:	mov	[rcx+LinkedListNode.NEXT],	r9
+	TEST_NULL rcx
+	mov	[rcx+LinkedListNode.NEXT],	r9
 	add	rcx,	LinkedListNode.KEY
 	test	rdx,	rdx
 	jz	.null		; jump if pointer to key is null
@@ -182,12 +178,8 @@ LinkedListNode.initialize:
 <assemblyX64 compiler="fasm">
 
 LinkedListNode.getTail:
-	test	rcx,	rcx
-	jnz	@F
-	; TODO: NullPointerException
-	xor	rax,	rax
-	ret
-@@:	xor	rax,	rax			; rax = null
+	TEST_NULL rcx
+	xor	rax,	rax			; rax = null
 @@:	cmp	rax,	[rcx+LinkedListNode.NEXT]
 	je	@F				; jump if rcx->next == null
 	mov	rcx,	[rcx+LinkedListNode.NEXT]	; rcx = rcx->next
