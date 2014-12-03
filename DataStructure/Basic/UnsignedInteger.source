@@ -1,0 +1,567 @@
+<head language="Chinese">
+
+</head>
+<head language="English>
+
+</head>
+<cpp>
+#ifndef _UNSIGNED_INTEGER_H_
+#define _UNSIGNED_INTEGER_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+IF ~DEFINED _UNSIGNED_INTEGER_H_
+_UNSIGNED_INTEGER_H_	EQU	1
+
+UnsignedInteger.MAX	EQU	0FFFFFFFFFFFFFFFFh
+
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+IF ~DEFINED _UNSIGNED_INTEGER_H_
+_UNSIGNED_INTEGER_H_	EQU	1
+
+UnsignedInteger.MAX	EQU	0FFFFFFFFh
+
+</assemblyX86>
+<include>../../Macro</include>
+<include>../Exception/NullPointerException</include>
+<include>../Exception/NumberFormatException</include>
+<include>../Exception/InvalidArgumentException</include>
+<cpp>
+class UnsignedInteger{
+protected:
+	unsigned n;
+public:
+	
+	unsigned MAX_VALUE = ~0;
+	
+	UnsignedInteger(unsigned i=0){
+		n = i;
+	}
+	
+	UnsignedInteger(String *str, BYTE radix=10){
+		n = 0;
+		if(str == (String*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#endif
+		else if(radix < 2 || radix > 36)
+		#ifdef _EXCEPTION_H_
+			throw InvalidArgumentException();
+		#endif
+		else{
+			for(; c != 0; ){
+				if(c >= '0' && c <= '9'){
+					c -= '0';
+				}else if(c >= 'A' && c <= 'Z'){
+					c -= 'A' - 10;
+				}else if(c >= 'a' && c <= 'z'){
+					c -= 'a' - 10;
+				}else{
+				#ifdef _EXCEPTION_H_
+					throw NumberFormatException();
+				#endif
+					break;
+				}
+				if(c >= radix){
+				#ifdef _EXCEPTION_H_
+					throw NumberFormatException();
+				#endif
+					break;
+				}
+				n = n * radix + c;
+			}
+		}
+	}
+</cpp>
+<assemblyX64 compiler="fasm">
+; unsigned UnsignedInteger::parseStringANSI(
+;	_IN_ char *str, _IN_ unsigned radix,
+;	_OUT_ bool *valid)
+UnsignedInteger.parseStringANSI:
+	xor	rax,	rax
+	mov	[rsp+8*3],	r8	; @@ save valid
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.false
+	cmp	BYTE [rcx],	0
+	; TODO: NumberFormatException
+	je	.false
+	cmp	rdx,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	rdx,	36
+	jna	.parse
+.false:
+	mov	r8,	[rsp+8*3]
+	test	r8,	r8
+	jz	@F
+	mov	QWORD [r8],	0
+@@:	ret
+.parse:
+	mov	r9,	rcx		; r9 = str
+	mov	rcx,	rdx		; rcx = radix
+.loop0:
+	mov	dl,	[r9]
+	test	dl,	dl
+	jz	.true
+	inc	r9
+	sub	dl,	'0'
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	dl,	9
+	jna	@F
+	sub	dl,	'A'-'0'-10
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	dl,	36
+	jna	@F
+	sub	dl,	'a'-'A'
+	; TODO: NumberFormatException
+	jb	.false
+@@:	cmp	dl,	cl
+	; >= radix, NumberFormatException
+	jae	.false
+	movzx	r8,	dl
+	mul	rcx
+	; out of range, NumberFormatException
+	jc	.false
+	add	rax,	r8
+	jmp	.loop0
+.true:
+	mov	r8,	[rsp+8*3]
+	test	r8,	r8
+	jz	@F
+	mov	QWORD [r8],	1
+@@:	ret
+
+; unsigned UnsignedInteger::parseStringUnicode(
+;	_IN_ wchar_t *str, _IN_ unsigned radix,
+;	_OUT_ bool *valid)
+UnsignedInteger.parseStringUnicode:
+	xor	rax,	rax
+	mov	[rsp+8*3],	r8	; @@ save valid
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.false
+	cmp	BYTE [rcx],	0
+	; TODO: NumberFormatException
+	je	.false
+	cmp	rdx,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	rdx,	36
+	jna	.parse
+.false:
+	mov	r8,	[rsp+8*3]	; @@ restore valid
+	test	r8,	r8
+	jz	@F
+	mov	QWORD [r8],	0
+@@:	ret
+.parse:
+	mov	r9,	rcx		; r9 = str
+	mov	rcx,	rdx		; rcx = radix
+.loop0:
+	mov	dx,	[r9]
+	test	dx,	dx
+	jz	.true
+	add	r9,	2
+	sub	dx,	'0'
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	dx,	9
+	jna	@F
+	sub	dx,	'A'-'0'-10
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	dx,	36
+	jna	@F
+	sub	dx,	'a'-'A'
+	; TODO: NumberFormatException
+	jb	.false
+@@:	cmp	dx,	cx
+	; >= radix, NumberFormatException
+	jae	.false
+	movzx	r8,	dl
+	mul	rcx
+	; out of range, NumberFormatException
+	jc	.false
+	add	rax,	r8
+	jmp	.loop0
+.true:
+	mov	r8,	[rsp+8*3]
+	test	r8,	r8
+	jz	@F
+	mov	QWORD [r8],	1
+@@:	ret
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+UnsignedInteger.parseStringANSI:
+	push	ebx
+	push	esi
+; stack: |esi |ebx |ret |str |radix|valid|
+	xor	eax,	eax
+	xor	ebx,	ebx
+	mov	esi,	[esp+3*4]
+	test	esi,	esi
+	; TODO: NullPointerException
+	jz	.false
+	cmp	BYTE [esi],	0
+	; TODO: NumberFormatException
+	je	.false
+	mov	ecx,	[esp+4*4]	; force DWORD align
+	;movzx	ecx,	BYTE [esp+4*4]	; ecx = radix
+	cmp	cl,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	cl,	36
+	jna	.loop0
+.false:
+	mov	ecx,	[esp+5*4]
+	test	ecx,	ecx
+	jz	.return
+	mov	DWORD [ecx],	0
+	jmp	.return
+.loop0:
+	mov	bl,	[esi]
+	test	bl,	bl
+	jz	.true
+	inc	esi
+	sub	bl,	'0'
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	bl,	9
+	jna	@F
+	sub	bl,	'A'-'0'-10
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	bl,	36
+	jna	@F
+	sub	bl,	'a'-'A'
+	; TODO: NumberFormatException
+	jb	.false
+@@:	cmp	bl,	cl
+	; >= radix, NumberFormatException
+	jae	.false
+	mul	ecx
+	; out of range, NumberFormatException
+	jc	.false
+	add	eax,	ebx
+	jmp	.loop0
+.true:
+	mov	ecx,	[esp+5*4]
+	test	ecx,	ecx
+	jz	.return
+	mov	DWORD [ecx],	1
+.return:
+	pop	esi
+	pop	ebx
+	retn	3*4
+	
+UnsignedInteger.parseStringUnicode:
+	push	ebx
+	push	esi
+; stack: |esi |ebx |ret |str |radix|valid|
+	xor	eax,	eax
+	xor	ebx,	ebx
+	mov	esi,	[esp+3*4]
+	test	esi,	esi
+	; TODO: NullPointerException
+	jz	.false
+	cmp	BYTE [esi],	0
+	; TODO: NumberFormatException
+	je	.false
+	mov	ecx,	[esp+4*4]	; force DWORD align
+	;movzx	ecx,	BYTE [esp+4*4]	; ecx = radix
+	cmp	cl,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	cl,	36
+	jna	.loop0
+.false:
+	mov	ecx,	[esp+5*4]
+	test	ecx,	ecx
+	jz	.return
+	mov	DWORD [ecx],	0
+	jmp	.return
+.loop0:
+	mov	bx,	[esi]
+	test	bx,	bx
+	jz	.true
+	add	esi,	2
+	sub	bx,	'0'
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	bx,	9
+	jna	@F
+	sub	bx,	'A'-'0'-10
+	; TODO: NumberFormatException
+	jb	.false
+	cmp	bx,	36
+	jna	@F
+	sub	bx,	'a'-'A'
+	; TODO: NumberFormatException
+	jb	.false
+@@:	cmp	bx,	cx
+	; >= radix, NumberFormatException
+	jae	.false
+	mul	ecx
+	; out of range, NumberFormatException
+	jc	.false
+	add	eax,	ebx
+	jmp	.loop0
+.true:
+	mov	ecx,	[esp+5*4]
+	test	ecx,	ecx
+	jz	.return
+	mov	DWORD [ecx],	1
+.return:
+	pop	esi
+	pop	ebx
+	retn	3*4
+</assemblyX86>
+<cpp>
+	
+	inline int compareTo(unsigned i){
+		return (n > i) ? 1 : (n < si.n ? -1 : 0);
+	}
+	
+	inline int compareTo(UnsignedInteger si){
+		return compareTo(si.n);
+	}
+	
+	String* toString(BYTE radix){
+		char buffer[8 * sizeof(int)];
+		if(this == (SignedInteger*)0)
+		#ifdef _EXCEPTION_H_
+			throw NullPointerException();
+		#else
+			return (String*)0;
+		#endif
+		if(radix < 2 || radix > 36)
+		#ifdef _EXCEPTION_H_
+			throw InvalidArgumentException();
+		#else
+			return (String*)0;
+		#endif
+		
+		unsigned q = n, r;
+		int i = 8 * sizeof(int) - 1, j = 0;
+		while(q != 0 && i >= 0){
+			r = q % radix;
+			q = q / radix;
+			buffer[i] = r + '0';
+			if(buffer[i] > '9') buffer[i] += 'A'-'9'-1;
+			i++;
+		}
+		while(i < 8 * sizeof(int)){
+			
+		}
+	}
+	
+}; // class UnsignedInteger
+#endif // _UNSIGNED_INTEGER_H_
+</cpp>
+<assemblyX64 compiler="fasm">
+; bool UnsignedInteger::toStringANSI(char *buffer, int i, unsigned radix)
+UnsignedInteger.toStringANSI:
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.false
+	cmp	r8b,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	r8b,	36
+	jna	@F
+.false:
+	xor	rax,	rax
+	mov	[rcx],	al
+	ret
+@@:	test	rdx,	rdx	; cmp rdx, 0
+	jnz	@F
+	mov	WORD [rcx],	'0'
+	jmp	.true
+@@:	movzx	r8,	r8b
+	sub	rsp,	64		; reserve space in stack
+	mov	r9,	rsp
+	mov	rax,	rdx
+.loop1:
+	xor	rdx,	rdx
+	div	r8
+	add	dl,	'0'
+	cmp	dl,	'9'
+	jna	@F
+	add	dl,	'A'-'9'-1
+@@:	mov	[r9],	dl
+	inc	r9
+	test	rax,	rax
+	jnz	.loop1
+@@:	dec	r9			; loop to reverse the order
+	mov	al,	[r9]
+	mov	[rcx],	al
+	inc	rcx
+	cmp	r9,	rsp
+	jne	@B
+	mov	BYTE [rcx],	0
+	add	rsp,	64		; reserve space in stack
+.true:
+	mov	rax,	1
+	ret
+
+; bool UnsignedInteger::toStringUnicode(wchar_t *buffer, int i, unsigned radix)
+UnsignedInteger.toStringUnicode:
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jz	.false
+	cmp	r8b,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	r8b,	36
+	jna	@F
+.false:
+	xor	rax,	rax
+	mov	[rcx],	ax
+	ret
+@@:	test	rdx,	rdx	; cmp rdx, 0
+	jnz	@F
+	mov	DWORD [rcx],	'0'
+	jmp	.true
+@@:	movzx	r8,	r8b
+	sub	rsp,	64		; reserve space in stack
+	mov	r9,	rsp
+	mov	rax,	rdx
+.loop1:
+	xor	rdx,	rdx
+	div	r8
+	add	dl,	'0'
+	cmp	dl,	'9'
+	jna	@F
+	add	dl,	'A'-'9'-1
+@@:	mov	[r9],	dl
+	inc	r9
+	test	rax,	rax
+	jnz	.loop1
+@@:	dec	r9			; loop to reverse the order
+	movzx	ax,	BYTE [r9]
+	mov	[rcx],	ax
+	add	rcx,	2
+	cmp	r9,	rsp
+	jne	@B
+	mov	WORD [rcx],	0
+	add	rsp,	64		; reserve space in stack
+.true:
+	mov	rax,	1
+	ret
+END IF ; _UNSIGNED_INTEGER_H_
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+UnsignedInteger.toStringANSI:
+	push	ebx
+	push	edi
+	push	ebp
+	mov	ebp,	esp
+; stack: |ebp |edi |ebx |ret |buffer|i   |radix|
+LABEL	.buffer	AT	ebp+4*4
+LABEL	.i	AT	ebp+5*4
+LABEL	.radix	AT	ebp+6*4
+	mov	edi,	[.buffer]
+	test	edi,	edi
+	; TODO: NullPointerException
+	jz	.false
+	movzx	ecx,	BYTE [.radix]
+	cmp	ecx,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	ecx,	36
+	jna	@F
+.false:
+	xor	eax,	eax
+	jmp	.return
+@@:	mov	eax,	[.i]
+	test	eax,	eax	; cmp eax, 0
+	jnz	@F
+	mov	WORD [edi],	'0'
+	jmp	.true
+@@:	sub	esp,	32	; reserve space
+	mov	ebx,	esp
+.loop1:
+	xor	edx,	edx
+	div	ecx
+	add	dl,	'0'
+	cmp	dl,	'9'
+	jna	@F
+	add	dl,	'A'-'9'-1
+@@:	mov	[ebx],	dl
+	inc	ebx
+	test	eax,	eax
+	jnz	.loop1
+@@:	dec	ebx		; loop to reverse
+	mov	al,	[ebx]
+	stosb
+	cmp	ebx,	esp
+	jne	@B
+	mov	BYTE [edi],	0
+.true:
+	mov	eax,	1
+.return:
+	mov	esp,	ebp
+	pop	ebp
+	pop	edi
+	pop	ebx
+	retn	4*3
+	
+UnsignedInteger.toStringUnicode:
+	push	ebx
+	push	edi
+	push	ebp
+	mov	ebp,	esp
+; stack: |ebp |edi |ebx |ret |buffer|i   |radix|
+LABEL	.buffer	AT	ebp+4*4
+LABEL	.i	AT	ebp+5*4
+LABEL	.radix	AT	ebp+6*4
+	mov	edi,	[.buffer]
+	; TODO: NullPointerException
+	test	edi,	edi
+	jz	.false
+	movzx	ecx,	BYTE [.radix]
+	cmp	ecx,	2
+	; TODO: InvalidArgumentException
+	jb	.false
+	cmp	ecx,	36
+	jna	@F
+.false:
+	xor	eax,	eax
+	jmp	.return
+@@:	mov	eax,	[.i]
+	test	eax,	eax	; cmp eax, 0
+	jnz	@F
+	mov	DWORD [edi],	'0'
+	jmp	.true
+@@:	sub	esp,	32	; reserve space
+	mov	ebx,	esp
+.loop1:
+	xor	edx,	edx
+	div	ecx
+	add	dl,	'0'
+	cmp	dl,	'9'
+	jna	@F
+	add	dl,	'A'-'9'-1
+@@:	mov	[ebx],	dl
+	inc	ebx
+	test	eax,	eax
+	jnz	.loop1
+@@:	dec	ebx		; loop to reverse
+	movzx	ax,	BYTE [ebx]
+	stosw
+	cmp	ebx,	esp
+	jne	@B
+	mov	WORD [edi],	0
+.true:
+	mov	eax,	1
+.return:
+	mov	esp,	ebp
+	pop	ebp
+	pop	edi
+	pop	ebx
+	retn	4*3
+END IF ; _UNSIGNED_INTEGER_H_
+</assemblyX86>

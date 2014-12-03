@@ -1,0 +1,233 @@
+<head language="Chinese">
+联合图像专家组（JPEG）制定的JFIF格式图像标准
+http://www.w3.org/Graphics/JPEG/itu-t81.pdf
+http://www.w3.org/Graphics/JPEG/jfif3.pdf
+</head>
+<head language="English">
+JPEG File Interchange Format (JFIF) by Joint Photographic Experts Group (JPEG)
+http://www.w3.org/Graphics/JPEG/itu-t81.pdf
+http://www.w3.org/Graphics/JPEG/jfif3.pdf
+</head>
+<cpp>
+#ifndef _JPEG_H_
+#define _JPEG_H_
+</cpp>
+<include>../Macro</include>
+<comment language="Chinese">
+
+</comment>
+<comment language="English">
+
+</comment>
+<java>
+public class Jpeg{
+	public static final byte BYTE START_OF_MARKER = 0xFF;
+	public static final byte START_OF_IMAGE = 0xD8;
+	public static final byte END_OF_IMAGE = 0xD9;
+	
+</java>
+<cpp>
+class Jpeg{
+public:
+	const static BYTE START_OF_MARKER = 0xFF;
+	const static BYTE START_OF_IMAGE = 0xD8;
+	const static BYTE END_OF_IMAGE = 0xD9;
+	
+</cpp>
+<java>
+	protected class App0Header{
+		public static final byte MARKER = 0xE0;
+		public short length;
+		public char identifier[] = new char[5];
+		public short version;
+		public byte unit;
+		public short densityX, densityY;
+		public byte thumbnailX, thumbnailY;
+	}
+</java>
+<cpp>
+protected:
+	class App0Header{
+	public:
+		const static BYTE MARKER = 0xE0;
+	protected:
+		WORD length;
+		char identifier[5];	// "JFIF\0"
+		WORD version;		// usually 0x0101 or 0x0102
+		BYTE unit;		// units = 0: no units, X and Y specify
+					//            the pixel aspect ratio
+					// units = 1: X and Y are dots per inch
+					// units = 2: X and Y are dots per cm
+		WORD densityX, densityY;
+		BYTE thumbnailX, thumbnailY;
+	}; // class JPEG_APP0
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Start Of Frame 0
+</comment>
+<java>
+	protected class StartOfFrame0{
+		public static final byte MARKER = 0xC0;
+		public short length;
+		public byte precision;
+		public short rows, columns;
+		public byte colors;
+		public class ColorComponent{
+			public byte id;
+			public byte h_v;
+			public byte quantizationTable;
+			public byte getHorizontalSamplingFactor(){
+				return (h_v & 0xF);
+			}
+			public byte getVerticalSamplingFactor(){
+				return (h_v >> 4);
+			}
+		}
+	}
+</java>
+<cpp>
+	class StartOfFrame0{
+	public:
+		const static BYTE MARKER = 0xC0;
+		WORD length;
+		BYTE precision;
+		WORD rows, columns;
+		BYTE colors;		// 1 for grey scale, 3 for YCbCr
+	
+		class ColorComponent{
+		public:
+			BYTE id;
+			BYTE h_v;	// The first 4 bits: h
+					// The second 4 bits: v
+			BYTE quantizationTable;
+			
+			inline BYTE getHorizontalSamplingFactor(){
+				return (h_v & 0xF);
+			}
+			inline BYTE getVerticalSamplingFactor(){
+				return (h_v >> 4);
+			}
+		}; // class ColorComponent
+	}; // class StartOfFrame0
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Define Huffman Table (DHT)
+</comment>
+<java>
+	protected class HuffmanTable{
+		public static final byte MARKER = 0xC4;
+		public short length;
+		public byte identifier;
+		public boolean isDC(){
+			return (identifier & 1) == 0;
+		}
+		public boolean isAC(){
+			return (identifier & 1) != 0;
+		}
+		public byte getTableNumber(){
+			return (identifier >> 4);
+		}
+	}
+</java>
+<cpp>
+	class HuffmanTable{
+	public:
+		const static BYTE MARKER = 0xC4;
+		WORD length;
+		BYTE identifier;
+		inline bool isDC(){
+			return (identifier & 1) == 0;
+		}
+		inline bool isAC(){
+			return (identifier & 1) != 0;
+		}
+		inline BYTE getTableNumber(){
+			return (identifier >> 4);
+		}
+	}; // class HuffmanTable
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Define Quantization Table (DQT)
+</comment>
+<java>
+	protected class QuantizationTable{
+		public static final byte MARKER = 0xDB;
+		public short length;
+		
+		public byte identifier;
+		public boolean is8Bits(){
+			return (identifier & 1) == 0;
+		}
+		public boolean is16Bits(){
+			return (identifier & 1) != 0;
+		}
+		public byte getTableNumber(){
+			return (identifier >> 4);
+		}
+	}
+</java>
+<cpp>
+	class QuantizationTable{
+	public:
+		const static BYTE MARKER = 0xDB;
+		WORD length;
+		
+		BYTE identifier;
+		inline bool is8Bits(){
+			return (identifier & 1) == 0;
+		}
+		inline bool is16Bits(){
+			return (identifier & 1) != 0;
+		}
+		inline BYTE getTableNumber(){
+			return (identifier >> 4);
+		}
+	}; // class QuantizationTable
+</cpp>
+<comment language="Chinese">
+</comment>
+<comment language="English">
+--	Start Of Scan
+</comment>
+<java>
+	protected class StartOfScan{
+		public static final byte MARKER = 0xDA;
+		public short length;
+		public byte colors;
+		public class ColorComponent{
+			public byte selector;
+			public codingTable;
+		}
+		public byte spectrumStart, spectrumEnd;
+		public byte successiveApproximation;
+	}
+</java>
+<cpp>
+	class StartOfScan{
+	public:
+		const static BYTE MARKER = 0xDA;
+		WORD length;
+		BYTE colors;
+		class ColorComponent{
+		public:
+			BYTE selector;
+			BYTE codingTable;
+			
+		};
+		BYTE spectrumStart, spectrumEnd;
+		BYTE successiveApproximation;
+	}; // class StartOfScan
+</cpp>
+<java>
+} // class Jpeg
+</java>
+<cpp>
+}; // class Jpeg
+#endif // _JPEG_H_
+</cpp>

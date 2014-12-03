@@ -1,0 +1,563 @@
+<head language="Chinese">
+
+</head>
+<head language="English">
+
+</head>
+<assemblyX86 compiler="fasm" Platform="Windows">
+format PE console
+entry start
+include "C:\FASM\INCLUDE\win32a.inc"
+
+section '.code' code readable executable
+
+</assemblyX86>
+<assemblyX64 compiler="fasm" Platform="Windows">
+format PE64 GUI
+entry start
+
+section '.text' code readable executable
+
+</assemblyX64>
+<cpp>
+#include <iostream>
+</cpp>
+<include>SignedInteger</include>
+<cpp>
+int main(){
+	
+	return 0;
+}
+</cpp>
+<assemblyX86 compiler="fasm">
+start:
+	int3
+	
+	push	DWORD 2
+	push	DWORD 0
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 10
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 2
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 16
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 10
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 2
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 16
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 10
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 2
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 16
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 10
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 2
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	push	DWORD 16
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringANSI
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringANSI
+	
+	
+	push	DWORD 2
+	push	DWORD 0
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 10
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 2
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 16
+	push	DWORD 31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 10
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 2
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 16
+	push	DWORD -31
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 10
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 2
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 16
+	push	DWORD SignedInteger.MAX
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 10
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 10
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 2
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 2
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 16
+	push	DWORD SignedInteger.MIN
+	push	buffer
+	call	SignedInteger.toStringUnicode
+	push	result
+	push	DWORD 16
+	push	buffer
+	call	SignedInteger.parseStringUnicode
+	
+	push	DWORD 0
+	call	[ExitProcess]
+	
+section '.data' data readable writeable
+
+result	dd 0
+buffer	db 68 dup(0)
+
+section '.idata' import data readable
+library	kernel, 'kernel32.dll',\
+	user, 'user32.dll',\
+	msvcrt, 'msvcrt.dll'
+import	kernel, \
+	ExitProcess, 'ExitProcess'
+import	user,\
+	MessageBoxA, 'MessageBoxA',\
+	MessageBoxW, 'MessageBoxW'
+import	msvcrt,\
+	printf,'printf',\
+	getchar,'getchar'
+
+</assemblyX86>
+<assemblyX64 compiler="fasm">
+start:
+	sub	rsp,	5*8	; reserve space for function call
+	int3
+	
+	mov	rcx,	buffer
+	mov	rdx,	0
+	mov	r8,	2
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	10
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	2
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	16
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	10
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	2
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	16
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	10
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	2
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	16
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	10
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	2
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	16
+	call	SignedInteger.toStringANSI
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringANSI
+	
+	
+	mov	rcx,	buffer
+	mov	rdx,	0
+	mov	r8,	2
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	10
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	2
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	31
+	mov	r8,	16
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	10
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	2
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	-31
+	mov	r8,	16
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	10
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	2
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MAX
+	mov	r8,	16
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	10
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	10
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	2
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	2
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	mov	rcx,	buffer
+	mov	rdx,	SignedInteger.MIN
+	mov	r8,	16
+	call	SignedInteger.toStringUnicode
+	mov	rcx,	buffer
+	mov	rdx,	16
+	mov	r8,	result
+	call	SignedInteger.parseStringUnicode
+	
+	xor	rcx,	rcx
+	call	[ExitProcess]
+
+section '.data' data readable writeable
+
+result	dq 0
+buffer	db 132 dup(0)
+
+section '.idata' import data readable writeable
+
+	dd 0,0,0,RVA kernel_name,RVA kernel_table
+	dd 0,0,0,RVA user_name,RVA user_table
+	dd 0,0,0,0,0
+
+kernel_table:
+	ExitProcess dq RVA _ExitProcess
+	dq 0
+user_table:
+	MessageBoxA dq RVA _MessageBoxA
+	dq 0
+
+	kernel_name	db 'KERNEL32.DLL',0
+	user_name	db 'USER32.DLL',0
+
+_ExitProcess	dw 0
+	db 'ExitProcess',0
+_MessageBoxA	dw 0
+	db 'MessageBoxA',0
+_MessageBoxW	dw 0
+	db 'MessageBoxW',0
+</assemblyX64>
