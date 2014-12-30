@@ -1,0 +1,2 @@
+java Extract DataStructure\_LinkedStack.source
+java Extract DataStructure\test_LinkedStack.source

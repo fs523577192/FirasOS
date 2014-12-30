@@ -92,8 +92,12 @@ public:
 ; rcx: this	rdx: pkey	r8: size	r9: next
 ; stack: |ret     |shadow  |shadow  |shadow  |shadow  |prev    |
 LinkedList2Node.initialize:
-	TEST_NULL rcx
-	mov	[rcx+LinkedListNode.NEXT],	r9
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jnz	@F
+	mov	rax,	rcx
+	ret			; return NULL
+@@:	mov	[rcx+LinkedListNode.NEXT],	r9
 	mov	rax,	[rsp+5*8]
 	mov	[rcx+LinkedListNode.PREV],	rax
 	add	rcx,	LinkedListNode.KEY
@@ -106,11 +110,13 @@ LinkedList2Node.initialize:
 	mov	[rcx],	al
 	inc	rcx
 	inc	rdx
+	dec	r8
 	jmp	@B
 .null:	test	r8,	r8
 	jz	.true
 	mov	BYTE [rcx],	0
 	inc	rcx
+	dec	r8
 	jmp	.null
 .true:	mov	rax,	1
 	ret
@@ -119,22 +125,26 @@ LinkedList2Node.initialize:
 ; bool LinkedListNode::initialize(LinkedList2Node* this, T* key,
 	unsigned sizeOfT, LinkedList2Node* next, LinkedList2Node* prev);
 LinkedList2Node.initialize:
-	enter
 	push	esi
 	push	edi
-; stack: |ebp |ret |this|pkey|size|next|prev|
-	mov	edi,	[ebp+8]
+; stack: |edi |esi |ret |this|pkey|size|next|prev|
+LABEL	.this	AT	esp+3*4
+LABEL	.pkey	AT	esp+4*4
+LABEL	.size	AT	esp+5*4
+LABEL	.next	AT	esp+6*4
+LABEL	.prev	AT	esp+7*4
+	mov	edi,	[.this]
 	test	edi,	edi
 	jnz	@F
 	; TODO: NullPointerException
 	xor	rax,	rax
 	jmp	.return
-@@:	mov	eax,	[ebp+20]
+@@:	mov	eax,	[.next]
 	stosd			; this->next = next
-	mov	eax,	[ebp+24]
+	mov	eax,	[.prev]
 	stosd			; this->prev = prev
-	mov	ecx,	[ebp+16]
-	mov	esi,	[ebp+12]
+	mov	ecx,	[.size]
+	mov	esi,	[.pkey]
 	test	esi,	esi
 	jz	.null		; jump if pointer to key is null
 	; TODO: NullPointerException

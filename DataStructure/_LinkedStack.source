@@ -174,89 +174,6 @@ _LinkedStack.getSize:
 	retn	4
 </assemblyX86>
 <java>
-	CALLCONV boolean removeElement(T e){
-		if(isEmpty()) return false;
-		if(top.getKey() == e){
-			popElement();
-			return true;
-		}
-		LinkedListNode<T> temp1 = top, temp2 = top.getNext();
-		while(temp2 != null){
-			if(temp2.getKey() == e){
-				temp1.getNext() = temp2.getNext();
-				return true;
-			}
-			temp1 = temp2;
-			temp2 = temp2.getNext();
-		}
-	}
-</java>
-<cpp>
-	
-	CALLCONV bool removeElement(T e){
-		if(isEmpty()) return false;
-		if(top->getKey()==e){
-			popElement();
-			return true;
-		}
-		LinkedListNode<T> *temp1 = top, *temp2 = top->next;
-		while(temp2 != (LinkedListNode<T>*)0){
-			if(temp2->getKey()==e){
-				temp1->next = temp2->next;
-				delete temp2;
-				return true;
-			}
-			temp1 = temp2;
-			temp2 = temp2->next;
-		}
-		return false;
-	}
-</cpp>
-<assemblyX64 compiler="fasm">
-; bool _LinkedStack::removeElement(_LinkedStack *this, T *e,
-			int compare(T *a, T *b))
-_LinkedStack.removeElement:
-	sub	rsp,	4*8		; shadow space
-	call	_LinkedStack.isEmpty
-	test	rax,	rax
-	jz	@F
-	xor	rax,	rax
-	jmp	.return
-@@:	mov	[rsp+8],	rcx	; ## save this
-	mov	rcx,	[rcx]		; rcx = this->top
-	lea	rcx,	[rcx+LinkedListNode.KEY]
-	call	r8
-	test	rax,	rax		; cmp	rax,	0
-	mov	rcx,	[rsp+8]		; ## not influence Z/E flag
-	jne	@F
-	call	_LinkedStack.popElement
-	mov	rax,	1
-	jmp	.return
-@@:	;mov	rcx,	
-	;call	LinkedListNode.delete
-.return:
-	add	rsp,	4*8		; release shadow space
-	ret
-</assemblyX64>
-<assemblyX86 compiler="fasm">
-; bool _LinkedStack::removeElement(_LinkedStack *this, T *e,
-			int compare(T *a, T *b))
-_LinkedStack.removeElement:
-	enter
-; stack: |ebp |ret |this|e   |
-	push	DWORD [ebp+8]
-	call	_LinkedStack.isEmpty
-	test	eax,	eax
-	jz	@F
-	xor	eax,	eax
-	jmp	.return
-	
-	;call	LinkedListNode.delete
-.return:
-	leave
-	retn	3*4
-</assemblyX86>
-<java>
 	boolean removeAllElement(){
 		if(isEmpty()) return false;
 		top = null;
@@ -284,13 +201,13 @@ _LinkedStack.removeAllElement:
 	; TODO: NullPointerException
 	xor	rax,	rax
 	jmp	.return
-@@:	mov	rax,	[rcx]	; rax = this->top
+@@:	mov	rax,	[rcx]		; rax = this->top
 	test	rax,	rax
 	jnz	@F
 	xor	rax,	rax
-	jmp	.return		; return false
-@@:	mov	rcx,	[rcx]	; rcx = this->top
-@@:	mov	rax,	[rcx]	; rax = top->next (new top)
+	jmp	.return			; return false
+@@:	mov	rcx,	[rcx]		; rcx = this->top
+@@:	mov	rax,	[rcx]		; rax = top->next (new top)
 	mov	[rsp+6*8],	rax
 	;call	LinkedListNode.delete	; delete top
 	mov	rcx,	[rsp+6*8]	; rcx = new top
@@ -335,70 +252,6 @@ _LinkedStack.removeAllElement:
 </assemblyX86>
 <cpp>
 	
-	CALLCONV bool hasElement(T e){
-		if(this == (_LinkedStack*)0)
-		#ifdef _EXCEPTION_H_
-			throw NullPointerException();
-		#else
-			return false;
-		#endif
-		for(register LinkedListNode<T> *temp = top;
-			temp != (LinkedListNode<T>*)0;
-			temp = temp->next) if(temp->getKey()==e) return true;
-		return false;
-	}
-</cpp>
-<assemblyX64 compiler="fasm">
-; rcx = this, rdx = &e, r8 = int compareKey(T*a, T*b)
-_LinkedStack.hasElement:
-	test	rcx,	rcx
-	jz	.false
-	; TODO: NullPointerException
-	test	r8,	r8
-	jnz	@F
-.false:
-	xor	rax,	rax
-	ret
-@@:	mov	rax,	[rcx]		; rax = this->top
-	mov	[rsp+16],	rdx	; @@ save &e
-	mov	[rsp+24],	r8	; save compare function
-@@:	test	rax,	rax
-	jz	.false
-	push	QWORD [rax]		; ## save rax->next
-	lea	rcx,	[rax+LinkedListNode.KEY]	; rcx = &(top->key)
-	call	QWORD [rsp+24]
-	mov	rdx,	[rsp+16]	; @@ restore &e
-	test	rax,	rax		; cmp	rax,	0
-	pop	rax		; ## restore rax->next, not influence Z/E flag
-	jne	@B
-@@:	mov	rax,	1
-	ret
-</assemblyX64>
-<assemblyX86 compiler="fasm">
-_LinkedStack.hasElement:
-	enter
-; stack: |ebp |ret |this|&e  |cmpK|
-	mov	eax,	[ebp+8]
-	test	eax,	eax
-	jz	.return
-@@:	mov	eax,	[eax]	; eax = this->top
-	test	eax,	eax
-	jz	.return
-	push	DWORD [eax]	; ## save eax->next
-	add	eax,	LinkedListNode.KEY	; eax = &(top->key)
-	push	eax
-	push	DWORD [ebp+12]
-	call	DWORD [ebp+16]
-	test	eax,	eax	; cmp	eax,	0
-	pop	eax		; restore rax->next, ## not influence Z/E flag
-	jne	@B
-	mov	eax,	1
-.return:
-	leave
-	retn	4*3
-</assemblyX86>	
-<cpp>
-	
 	bool pushElement(T e){
 		if(this == (_LinkedStack*)0)
 		#ifdef _EXCEPTION_H_
@@ -433,66 +286,109 @@ _LinkedStack.pushNode:
 	; TODO: NullPointerException
 	test	rdx,	rdx
 	jnz	@F
-.false:	xor	rax,	rax
+.false:
+	xor	rax,	rax
 	ret
 @@:	mov	rax,	[rcx]	; this->top
 	mov	[rdx+LinkedListNode.NEXT],	rax	; node->next = top
+	mov	[rcx],	rdx
 	mov	rax,	1
 	ret
 
-; T* _LinkedStack::popNode(_LinkedStack *this)
+; bool _LinkedStack::popNode(_IN_ _LinkedStack *this,
+;			_OUT_ T *pkey, _IN_ unsigned sizeOfT)
 _LinkedStack.popNode:
 	test	rcx,	rcx
 	jnz	@F
 	; TODO: NullPointerException
+.false:
+	xor	rax,	rax
 	ret
 @@:	mov	rax,	[rcx]	; rax = this->top
 	test	rax,	rax
-	jz	@F
-	push	QWORD [rax]
-	pop	QWORD [rcx]	; top = top->next
+	; TODO: NullPointerException
+	jz	.false		; if top==null, return false
+	
+	lea	r9,	[rax+LinkedListNode.KEY]	; r9 = &(top->key)
+	test	rdx,	rdx
+	jz	.notCopy
+@@:	test	r8,	r8
+	jz	.notCopy
+	mov	al,	[r9]
+	mov	[rdx],	al
+	inc	r9
+	inc	rdx
+	dec	r8
+	jmp	@B
+.notCopy:
+	mov	rax,	[rcx]
+	mov	rdx,	[rax+LinkedListNode.NEXT]
+	mov	[rcx],	rdx	; top = top->next
+	
 	;sub	rsp,	4*8
 	;mov	rcx,	rax
 	;call	LinkedListNode.delete
 	;add	rsp,	4*8
-@@:	ret
+.true:
+	mov	rax,	1
+	ret
 
 END IF ; __LINKED_STACK_H_
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 _LinkedStack.pushNode:
-	mov	eax,	[esp+4]	; this
+	mov	eax,	[esp+4]		; this
 	test	eax,	eax
 	jnz	@F
 	; TODO: NullPointerException
 	retn	4*2
-@@:	mov	ecx,	[esp+8]	; node
+@@:	mov	ecx,	[esp+8]		; node
 	test	ecx,	ecx
 	jnz	@F
 	; TODO: NullPointerException
 	xor	eax,	eax
 	retn	4*2
-@@:	mov	eax,	[eax]	; this->top
-	mov	[ecx+LinkedListNode.NEXT],	eax	; node->next = top
+@@:	mov	edx,	[eax]		; this->top
+	mov	[ecx+LinkedListNode.NEXT],	edx	; node->next = top
+	mov	[eax],	ecx		; top = node
 	mov	eax,	1
 	retn	4*2
 
 _LinkedStack.popNode:
-	mov	ecx,	[esp+4]	; this
+	mov	ecx,	[esp+4]		; this
 	test	ecx,	ecx
 	jnz	@F
 	; TODO: NullPointerException
+.false:
 	xor	eax,	eax
-	retn	4
-@@:	mov	eax,	[ecx]	; eax = this->top
+	retn	4*3
+@@:	mov	eax,	[ecx]		; eax = this->top
 	test	eax,	eax
-	jnz	@F
+	jz	.false
 	; TODO: NullPointerException
-	push	DWORD [eax]
-	pop	DWORD [ecx]	; top = top->next
+	
+	push	esi
+	push	edi
+; stack: |edi |esi |ret |this|pkey|size|
+LABEL	.pkey	AT	esp+4*4
+LABEL	.size	AT	esp+4*5
+	mov	edi,	[.pkey]
+	test	edi,	edi
+	jz	.notCopy
+	mov	ecx,	[.size]
+	lea	esi,	[eax+LinkedListNode.KEY]
+	rep	movsb
+.notCopy:
+	pop	edi
+	pop	esi
+	mov	ecx,	[esp+4]		; this
+	mov	eax,	[ecx]		; this->top
+	mov	edx,	[eax+LinkedListNode.NEXT]
+	mov	[ecx],	edx		; top = top->next
 	;push	eax
 	;call	LinkedListNode.delete
-@@:	retn	4
+.true:	mov	eax,	1
+	retn	4*3
 
 END IF ; __LINKED_STACK_H_
 </assemblyX86>

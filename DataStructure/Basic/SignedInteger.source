@@ -1,8 +1,12 @@
 <head language="Chinese">
-
+有符号整数（处理器通用寄存器的位数）
+作者：伍裕平
+归属：基本数据结构
 </head>
-<head language="English>
-
+<head language="English">
+signed integer (the number of bits depends on the processor)
+Author: Firas
+BelongsTo: Basic Data Structure
 </head>
 <cpp>
 #ifndef _SIGNED_INTEGER_H_
@@ -48,7 +52,7 @@ public:
 ;	_OUT_ bool *valid)
 SignedInteger.parseStringANSI:
 	xor	rax,	rax
-	mov	[rsp+8*3],	r8	; save valid
+	mov	[rsp+8*3],	r8	; @@ save valid
 	test	rcx,	rcx
 	; TODO: NullPointerException
 	jz	.false
@@ -61,7 +65,7 @@ SignedInteger.parseStringANSI:
 	cmp	rdx,	36
 	jna	.parse
 .false:
-	mov	r8,	[rsp+8*3]
+	mov	r8,	[rsp+8*3]	; @@ restore valid
 	test	r8,	r8
 	jz	@F
 	mov	QWORD [r8],	0
@@ -107,7 +111,7 @@ SignedInteger.parseStringANSI:
 	test	BYTE [rsp+8],	1
 	jz	@F
 	neg	rax
-@@:	mov	r8,	[rsp+8*3]
+@@:	mov	r8,	[rsp+8*3]	; @@ restore valid
 	test	r8,	r8
 	jz	@F
 	mov	QWORD [r8],	1
@@ -118,7 +122,7 @@ SignedInteger.parseStringANSI:
 ;	_OUT_ bool *valid)
 SignedInteger.parseStringUnicode:
 	xor	rax,	rax
-	mov	[rsp+8*3],	r8	; save valid
+	mov	[rsp+8*3],	r8	; @@ save valid
 	test	rcx,	rcx
 	; TODO: NullPointerException
 	jz	.false
@@ -131,7 +135,7 @@ SignedInteger.parseStringUnicode:
 	cmp	rdx,	36
 	jna	.parse
 .false:
-	mov	r8,	[rsp+8*3]
+	mov	r8,	[rsp+8*3]	; @@ restore valid
 	test	r8,	r8
 	jz	@F
 	mov	QWORD [r8],	0
@@ -177,7 +181,7 @@ SignedInteger.parseStringUnicode:
 	test	BYTE [rsp+8],	1
 	jz	@F
 	neg	rax
-@@:	mov	r8,	[rsp+8*3]
+@@:	mov	r8,	[rsp+8*3]	; @@ restore valid
 	test	r8,	r8
 	jz	@F
 	mov	QWORD [r8],	1
@@ -333,15 +337,15 @@ SignedInteger.parseStringUnicode:
 <cpp>
 	
 	inline int compareTo(int i){
-		return (n > i) ? 1 : (n < si.n ? -1 : 0);
+		return (n > i) ? 1 : (n < i ? -1 : 0);
 	}
 	
 	inline int compareTo(SignedInteger si){
-		return compareTo(si.n);
+		return (n > si.n) ? 1 : (n < si.n ? -1 : 0);
 	}
 	
 	inline int getSign(){
-		return compareTo(0);
+		return (n > 0) ? 1 : (n < 0 ? -1 : 0);
 	}
 	
 	String* toString(BYTE radix){
@@ -399,7 +403,7 @@ SignedInteger.toStringANSI:
 	xor	rax,	rax
 	mov	[rcx],	al
 	ret
-@@:	test	rdx,	rdx	; cmp rdx, 0
+@@:	test	rdx,	rdx		; cmp rdx, 0
 	jnz	@F
 	mov	WORD [rcx],	'0'
 	jmp	.true
@@ -449,7 +453,7 @@ SignedInteger.toStringUnicode:
 	xor	rax,	rax
 	mov	[rcx],	ax
 	ret
-@@:	test	rdx,	rdx	; cmp rdx, 0
+@@:	test	rdx,	rdx		; cmp rdx, 0
 	jnz	@F
 	mov	DWORD [rcx],	'0'
 	jmp	.true
@@ -510,11 +514,11 @@ LABEL	.radix	AT	ebp+6*4
 	xor	eax,	eax
 	jmp	.return
 @@:	mov	eax,	[.i]
-	test	eax,	eax	; cmp eax, 0
+	test	eax,	eax		; cmp eax, 0
 	jnz	@F
 	mov	WORD [edi],	'0'
 	jmp	.true
-@@:	sub	esp,	32	; reserve space
+@@:	sub	esp,	32		; reserve space
 	mov	ebx,	esp
 	cmp	eax,	0
 	jge	.loop1
@@ -532,7 +536,7 @@ LABEL	.radix	AT	ebp+6*4
 	inc	ebx
 	test	eax,	eax
 	jnz	.loop1
-@@:	dec	ebx		; loop to reverse
+@@:	dec	ebx			; loop to reverse
 	mov	al,	[ebx]
 	stosb
 	cmp	ebx,	esp
@@ -570,11 +574,11 @@ LABEL	.radix	AT	ebp+6*4
 	xor	eax,	eax
 	jmp	.return
 @@:	mov	eax,	[.i]
-	test	eax,	eax	; cmp eax, 0
+	test	eax,	eax		; cmp eax, 0
 	jnz	@F
 	mov	DWORD [edi],	'0'
 	jmp	.true
-@@:	sub	esp,	32	; reserve space
+@@:	sub	esp,	32		; reserve space
 	mov	ebx,	esp
 	cmp	eax,	0
 	jge	.loop1
@@ -592,7 +596,7 @@ LABEL	.radix	AT	ebp+6*4
 	inc	ebx
 	test	eax,	eax
 	jnz	.loop1
-@@:	dec	ebx		; loop to reverse
+@@:	dec	ebx			; loop to reverse
 	movzx	ax,	BYTE [ebx]
 	stosw
 	cmp	ebx,	esp

@@ -1,38 +1,24 @@
 <head language="Chinese">
-
+²âÊÔ¼òµ¥Á´Õ»
+×÷Õß£ºÎéÔ£Æ½
 </head>
 <head language="English">
-
+Test _LinkedStack
+By: Firas
 </head>
+<assemblyX64 compiler="fasm" Platform="Windows">
+format PE64 GUI
+entry start
+
+section '.text' code readable executable
+</assemblyX64>
 <assemblyX86 compiler="fasm" Platform="Windows">
 format PE console
 entry start
 include "C:\FASM\INCLUDE\win32a.inc"
 
 section '.code' code readable executable
-start:
-	
 </assemblyX86>
-<assemblyX64 compiler="fasm" Platform="Windows">
-format PE64 GUI
-entry start
-
-section '.text' code readable executable
-
-start:
-	sub	rsp,	(4+2)*8
-LABEL	.linkedStack	AT	[rsp+4*8]
-LABEL	.i1	AT	[rsp+5*8]
-	xor	rcx,	rcx
-	call	_LinkedStack.isEmpty
-	mov	[.i1],	rax
-	xor	rcx,	rcx
-	call	_LinkedStack.getSize
-	mov	rdx,	rax
-	
-	xor	rcx,	rcx
-	call	[ExitProcess]
-</assemblyX64>
 <cpp>
 #include <iostream>
 </cpp>
@@ -44,22 +30,180 @@ int main(){
 	try{
 		std::cout << stack->isEmpty();
 	}catch(NullPointerException npe){
-		std::cerr << "NullPointerException caught" << '\n';
+		std::cerr << "NullPointerException caught when accessing null stack\n";
 	}
 	stack = new _LinkedStack<float>();
 	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 1 0
+	try{
+		std::cout << stack->popElement();
+	}catch(NullPointerException npe){
+		std::cerr << "NullPointerException caught when popping empty stack\n";
+	}
 	std::cout << stack->pushElement(2.5f) << ' ';
 	std::cout << stack->pushElement(0.5f) << ' ';
 	std::cout << stack->pushElement(0.25f) << '\n';
 	// 1 1 1
 	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 3
-	std::cout << stack->hasElement(0.5f) << ' ';
-	std::cout << stack->hasElement(1.0f) << '\n' << '\n';
-	// 1 0
 	delete stack;
+</cpp>
+<assemblyX64 compiler="fasm">
+start:
+	int3
+	sub	rsp,	4*8		; shadow space
+
+	xor	rcx,	rcx		; rcx = NULL
+	call	_LinkedStack.isEmpty	; 1
+	xor	rcx,	rcx		; rcx = NULL
+	call	_LinkedStack.getSize	; 0
+	xor	rcx,	rcx		; rcx = NULL
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 0
 	
+	lea	rcx,	[stack0]
+	xor	rdx,	rdx		; rdx = NULL
+	call	_LinkedStack.initialize
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 1
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 0
+	lea	rcx,	[stack0]
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 0
+	
+	xor	r9,	r9		; NULL
+	mov	r8,	8
+	lea	rdx,	[d0]		; 0.5
+	lea	rcx,	[item]
+	call	LinkedListNode.initialize
+	
+	xor	r9,	r9		; NULL
+	mov	r8,	8
+	lea	rdx,	[d0+8]		; 1.5
+	lea	rcx,	[item+16]
+	call	LinkedListNode.initialize
+	
+	xor	r9,	r9		; NULL
+	mov	r8,	8
+	lea	rdx,	[d0+16]		; 2.5
+	lea	rcx,	[item+32]
+	call	LinkedListNode.initialize
+	
+	xor	r9,	r9		; NULL
+	mov	r8,	8
+	lea	rdx,	[d0+24]		; 3.5
+	lea	rcx,	[item+48]
+	call	LinkedListNode.initialize
+	
+	lea	rcx,	[stack0]
+	lea	rdx,	[item]		; push 0.5
+	call	_LinkedStack.pushNode	; 1
+	
+	lea	rcx,	[stack0]
+	lea	rdx,	[item+16]	; push 1.5
+	call	_LinkedStack.pushNode	; 1
+	
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 0
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 2
+	
+	lea	rcx,	[stack0]	; pop 1.5
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 1
+	
+	lea	rcx,	[stack0]	; pop 0.5
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 1
+	
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 1
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 0
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+start:
+	int3
+	
+	push	DWORD 0			; NULL
+	call	_LinkedStack.isEmpty	; 1
+	push	DWORD 0			; NULL
+	call	_LinkedStack.getSize	; 0
+	push	DWORD 8
+	push	d0+32
+	push	DWORD 0			; NULL
+	call	_LinkedStack.popNode	; 0
+	
+	push	DWORD 0			; NULL
+	push	stack0
+	call	_LinkedStack.initialize
+	push	stack0
+	call	_LinkedStack.isEmpty	; 1
+	push	stack0
+	call	_LinkedStack.getSize	; 0
+	push	DWORD 8
+	push	d0+32
+	push	stack0
+	call	_LinkedStack.popNode	; 0
+	
+	push	DWORD 0			; NULL
+	push	DWORD 8
+	push	d0			; 0.5
+	push	item
+	call	LinkedListNode.initialize
+	
+	push	DWORD 0			; NULL
+	push	DWORD 8
+	push	d0+8			; 1.5
+	push	item+16
+	call	LinkedListNode.initialize
+	
+	push	DWORD 0			; NULL
+	push	DWORD 8
+	push	d0+16			; 2.5
+	push	item+32
+	call	LinkedListNode.initialize
+	
+	push	DWORD 0			; NULL
+	push	DWORD 8
+	push	d0+24			; 3.5
+	push	item+48
+	call	LinkedListNode.initialize
+	
+	push	item			; push 0.5
+	push	stack0
+	call	_LinkedStack.pushNode	; 1
+	
+	push	item+16			; push 1.5
+	push	stack0
+	call	_LinkedStack.pushNode	; 1
+	
+	push	stack0
+	call	_LinkedStack.isEmpty	; 0
+	push	stack0
+	call	_LinkedStack.getSize	; 2
+	
+	push	DWORD 8
+	push	d0+32
+	push	stack0			; pop 1.5
+	call	_LinkedStack.popNode	; 1
+	
+	push	DWORD 8
+	push	d0+32
+	push	stack0			; pop 0.5
+	call	_LinkedStack.popNode	; 1
+	
+	push	stack0
+	call	_LinkedStack.isEmpty	; 1
+	push	stack0
+	call	_LinkedStack.getSize	; 0
+</assemblyX86>
+<cpp>
 	stack = new _LinkedStack<float>(1.5f);
 	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 1
@@ -69,9 +213,6 @@ int main(){
 	// 1 1 1
 	std::cout << stack->isEmpty() << ' ' << stack->getSize() << '\n';
 	// 0 4
-	std::cout << stack->hasElement(0.5f) << ' ';
-	std::cout << stack->hasElement(1.0f) << '\n';
-	// 1 0
 	std::cout << stack->popElement() << '\t';
 	std::cout << stack->popElement() << '\n';
 	// 2.5	0.25
@@ -84,12 +225,95 @@ int main(){
 	return 0;
 }
 </cpp>
-<assemblyX86 compiler="fasm">
-
-</assemblyX86>
 <assemblyX64 compiler="fasm">
-section '.data' data readable writeable
+	lea	rdx,	[item+48]	; 3.5
+	lea	rcx,	[stack0]
+	call	_LinkedStack.initialize
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 0
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 1
+	
+	lea	rcx,	[stack0]
+	lea	rdx,	[item+32]	; push 2.5
+	call	_LinkedStack.pushNode
+	
+	lea	rcx,	[stack0]
+	lea	rdx,	[item+16]	; push 1.5
+	call	_LinkedStack.pushNode
+	
+	lea	rcx,	[stack0]
+	lea	rdx,	[item]		; push 0.5
+	call	_LinkedStack.pushNode
+	
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 0
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 4
+	
+	lea	rcx,	[stack0]	; pop 0.5
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 1
+	
+	lea	rcx,	[stack0]	; pop 1.5
+	lea	rdx,	[d0+32]
+	mov	r8,	8
+	call	_LinkedStack.popNode	; 1
+	
+	lea	rcx,	[stack0]
+	call	_LinkedStack.isEmpty	; 0
+	lea	rcx,	[stack0]
+	call	_LinkedStack.getSize	; 2
+</assemblyX64>
+<assemblyX86 compiler="fasm">
+	push	item+48			; 3.5
+	push	stack0
+	call	_LinkedStack.initialize
+	push	stack0
+	call	_LinkedStack.isEmpty	; 0
+	push	stack0
+	call	_LinkedStack.getSize	; 1
+	
+	push	item+32			; push 2.5
+	push	stack0
+	call	_LinkedStack.pushNode	; 1
+	
+	push	item+16			; push 1.5
+	push	stack0
+	call	_LinkedStack.pushNode	; 1
+	
+	push	item			; push 0.5
+	push	stack0
+	call	_LinkedStack.pushNode	; 1
+	
+	push	stack0
+	call	_LinkedStack.isEmpty	; 0
+	push	stack0
+	call	_LinkedStack.getSize	; 4
+	
+	push	DWORD 8
+	push	d0+32
+	push	stack0			; pop 0.5
+	call	_LinkedStack.popNode	; 1
+	
+	push	DWORD 8
+	push	d0+32
+	push	stack0			; pop 1.5
+	call	_LinkedStack.popNode	; 1
+	
+	push	stack0
+	call	_LinkedStack.isEmpty	; 0
+	push	stack0
+	call	_LinkedStack.getSize	; 2
+</assemblyX86>
+<assemblyX64 compiler="fasm" platform="Windows">
+	xor	rcx,	rcx
+	call	[ExitProcess]
 
+section '.data' data readable writeable
+stack0	dq 0
+d0	dq 0.5, 1.5, 2.5, 3.5, 4.5
 item	dq 8 dup(0)
 buffer	db 32 dup(0)
 
@@ -112,5 +336,28 @@ user_table:
 _ExitProcess	dw 0
 	db 'ExitProcess',0
 _MessageBoxA	dw 0
-	db 'MessageBoxA',0
+	db 'MessageBoxA',0	
 </assemblyX64>
+<assemblyX86 compiler="fasm" platform="Windows">
+	push	DWORD 0
+	call	[ExitProcess]
+	
+section '.data' data readable writeable
+stack0	dd 0
+d0	dq 0.5, 1.5, 2.5, 3.5, 4.5
+item	dd 16 dup(0)
+buffer	db 32 dup(0)
+
+section '.idata' import data readable
+library	kernel, 'kernel32.dll',\
+	user, 'user32.dll',\
+	msvcrt, 'msvcrt.dll'
+import	kernel, \
+	ExitProcess, 'ExitProcess'
+import	user,\
+	MessageBoxA, 'MessageBoxA',\
+	MessageBoxW, 'MessageBoxW'
+import	msvcrt,\
+	printf,'printf',\
+	getchar,'getchar'
+</assemblyX86>

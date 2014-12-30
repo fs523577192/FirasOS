@@ -71,11 +71,15 @@ public:
 </cpp>
 <assemblyX64 compiler="fasm">
 ; bool LinkedListNode::initialize(LinkedListNode* this, T* key,
-	unsigned sizeOfT, LinkedListNode* node);
+;	unsigned sizeOfT, LinkedListNode* node);
 ; rcx: this	rdx: pkey	r8: size	r9: node
 LinkedListNode.initialize:
-	TEST_NULL rcx
-	mov	[rcx+LinkedListNode.NEXT],	r9
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jnz	@F
+	mov	rax,	rcx	; return NULL
+	ret
+@@:	mov	[rcx+LinkedListNode.NEXT],	r9
 	add	rcx,	LinkedListNode.KEY
 	test	rdx,	rdx
 	jz	.null		; jump if pointer to key is null
@@ -86,20 +90,23 @@ LinkedListNode.initialize:
 	mov	[rcx],	al
 	inc	rcx
 	inc	rdx
+	dec	r8
 	jmp	@B
 .null:	test	r8,	r8
 	jz	.true
 	mov	BYTE [rcx],	0
 	inc	rcx
+	dec	r8
 	jmp	.null
 .true:	mov	rax,	1
 	ret
 </assemblyX64>
 <assemblyX86 compiler="fasm">
 ; bool LinkedListNode::initialize(LinkedListNode* this, T* key,
-	unsigned sizeOfT, LinkedListNode* node);
+;	unsigned sizeOfT, LinkedListNode* node);
 LinkedListNode.initialize:
-	enter
+	push	ebp
+	mov	ebp,	esp
 	push	esi
 	push	edi
 ; stack: |ebp |ret |this|pkey|size|node|
@@ -125,7 +132,8 @@ LinkedListNode.initialize:
 .return:
 	pop	edi
 	pop	esi
-	leave
+	mov	esp,	ebp
+	pop	ebp
 	retn	16
 </assemblyX86>
 <java>
@@ -140,7 +148,7 @@ LinkedListNode.initialize:
 		while(temp.next != null) temp = temp.next;
 		return temp;
 	}
-} // class LinkedListNode
+} // class LinkedListNode<T>
 </java>
 <cpp>
 	
@@ -178,8 +186,11 @@ LinkedListNode.initialize:
 <assemblyX64 compiler="fasm">
 
 LinkedListNode.getTail:
-	TEST_NULL rcx
 	xor	rax,	rax			; rax = null
+	test	rcx,	rcx
+	; TODO: NullPointerException
+	jnz	@F
+	ret
 @@:	cmp	rax,	[rcx+LinkedListNode.NEXT]
 	je	@F				; jump if rcx->next == null
 	mov	rcx,	[rcx+LinkedListNode.NEXT]	; rcx = rcx->next
